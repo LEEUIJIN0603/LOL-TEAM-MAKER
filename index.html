@@ -67,8 +67,101 @@
       text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     }
 
-    /* PAGE */
-    .page { max-width: 920px; margin: 0 auto; padding: 28px 20px 60px; }
+    /* PAGE — 2컬럼 레이아웃 */
+    .page { max-width: 1200px; margin: 0 auto; padding: 28px 20px 60px; }
+    .layout { display: grid; grid-template-columns: 1fr 260px; gap: 20px; align-items: start; }
+
+    /* MEMBER LIST PANEL */
+    .member-panel {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+      position: sticky; top: 20px;
+    }
+    .member-panel-head {
+      padding: 14px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .member-panel-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1rem;
+      letter-spacing: 3px; color: var(--gold);
+    }
+    .member-count {
+      font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem;
+      color: var(--muted); letter-spacing: 1px;
+    }
+    .member-add-row {
+      display: flex; gap: 6px; padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .member-add-row input {
+      flex: 1; background: #06101a; border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-bright);
+      font-family: 'Noto Sans KR', sans-serif; font-size: 0.82rem;
+      padding: 7px 8px;
+    }
+    .member-add-row input:focus { outline: none; border-color: var(--gold); }
+    .member-add-row input::placeholder { color: #1e3045; }
+    .btn-add-member {
+      background: var(--gold-dim); border: 1px solid var(--gold);
+      border-radius: 6px; color: var(--gold); font-size: 1.1rem;
+      padding: 0 10px; cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+    }
+    .btn-add-member:hover { background: var(--gold); color: #04080e; }
+
+    .member-list { padding: 8px 10px; max-height: 480px; overflow-y: auto; }
+    .member-list::-webkit-scrollbar { width: 4px; }
+    .member-list::-webkit-scrollbar-track { background: transparent; }
+    .member-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .member-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 8px; border-radius: 7px;
+      cursor: pointer; transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    .member-item:hover { background: var(--panel2); border-color: var(--border); }
+    .member-item.used { opacity: 0.35; cursor: default; }
+    .member-item.used:hover { background: transparent; border-color: transparent; }
+    .member-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--panel2); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700; color: var(--gold); flex-shrink: 0;
+      font-family: 'Bebas Neue', sans-serif; letter-spacing: 0;
+    }
+    .member-name { font-size: 0.88rem; font-weight: 500; color: var(--text); flex: 1; }
+    .member-item:not(.used):hover .member-name { color: var(--text-bright); }
+    .member-del {
+      background: none; border: none; color: var(--muted);
+      font-size: 0.9rem; cursor: pointer; padding: 2px 4px;
+      border-radius: 4px; transition: all 0.15s; flex-shrink: 0;
+      opacity: 0; line-height: 1;
+    }
+    .member-item:hover .member-del { opacity: 1; }
+    .member-del:hover { color: var(--red-team); background: rgba(232,64,64,0.1); }
+
+    .member-actions {
+      padding: 10px 12px; border-top: 1px solid var(--border);
+      display: flex; gap: 6px;
+    }
+    .btn-fill-all {
+      flex: 1; padding: 8px; background: var(--gold-dim);
+      border: 1px solid var(--gold); border-radius: 7px;
+      color: var(--gold); font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-fill-all:hover { background: var(--gold); color: #04080e; }
+    .btn-clear-inputs {
+      padding: 8px 10px; background: transparent;
+      border: 1px solid var(--border); border-radius: 7px;
+      color: var(--muted); font-size: 0.75rem; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-clear-inputs:hover { border-color: var(--red-team); color: var(--red-team); }
+
+    .member-empty {
+      text-align: center; padding: 24px 12px;
+      color: var(--muted); font-size: 0.8rem; line-height: 1.6;
+    }
 
     /* TABS */
     .tabs { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
@@ -102,11 +195,31 @@
     .pos-col-labels { display: grid; grid-template-columns: 96px 1fr 1fr; gap: 10px; margin-bottom: 6px; }
     .pos-col-labels span { font-size: 0.68rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); text-align: center; }
     .pos-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
-    .pos-row { display: grid; grid-template-columns: 96px 1fr 1fr; gap: 10px; align-items: center; }
+    .pos-row { display: grid; grid-template-columns: 96px 1fr 1fr 56px; gap: 10px; align-items: center; }
     .pos-badge { display: flex; align-items: center; justify-content: center; gap: 5px; background: #06101a; border: 1px solid var(--border); border-radius: 8px; padding: 9px 6px; }
     .pos-icon { width: 20px; height: 20px; object-fit: contain; filter: brightness(1.3) saturate(0.8); }
     .pos-emoji { font-size: 14px; line-height: 1; }
     .pos-name { font-family: 'Bebas Neue', sans-serif; font-size: 0.88rem; letter-spacing: 2px; color: var(--gold); }
+
+    /* 포지션 고정 버튼 */
+    .lock-btn {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+      background: #06101a; border: 1px solid var(--border); border-radius: 8px;
+      padding: 7px 4px; cursor: pointer; transition: all 0.2s; width: 100%; height: 100%;
+      color: var(--muted); font-size: 0.58rem; letter-spacing: 0.5px;
+    }
+    .lock-btn .lock-icon { font-size: 1rem; line-height: 1; transition: all 0.2s; }
+    .lock-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .lock-btn.locked {
+      background: rgba(200,155,60,0.1); border-color: var(--gold);
+      color: var(--gold2);
+    }
+    .lock-btn.locked .lock-icon { filter: drop-shadow(0 0 4px rgba(200,155,60,0.6)); }
+    /* 고정된 행 입력칸 시각적 표시 */
+    .pos-row.locked-row input[type=text] {
+      border-color: rgba(200,155,60,0.4);
+      background: rgba(200,155,60,0.05);
+    }
 
     /* ABILITY GRID — 2열 레이아웃: 왼쪽 라벨+힌트, 오른쪽 입력칸들 */
     .ability-grid {
@@ -210,6 +323,74 @@
     .btn-reroll { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: 9px; color: var(--muted); font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 3px; cursor: pointer; transition: all 0.2s; }
     .btn-reroll:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
 
+    /* DEAL ANIMATION (팀만 랜덤용) */
+    .deal-wrap { display: none; margin-bottom: 18px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px 20px; }
+    .deal-wrap.active { display: block; animation: fadeUp 0.3s ease; }
+    .deal-header { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 4px; color: var(--gold); text-align: center; margin-bottom: 18px; }
+    .deal-stage { position: relative; height: 160px; margin-bottom: 14px; display: flex; align-items: center; justify-content: center; }
+    .deal-deck { position: relative; width: 72px; height: 100px; flex-shrink: 0; }
+    .deal-deck-card { position: absolute; inset: 0; background: linear-gradient(135deg, #0d1e32, #1a2e48); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+    .deal-deck-card:nth-child(1) { opacity: 0.35; }
+    .deal-deck-card:nth-child(2) { transform: translate(-2px,-2px); opacity: 0.2; }
+    .deal-deck-card:nth-child(3) { transform: translate(-4px,-4px); opacity: 0.1; }
+    .flying-card { position: absolute; width: 72px; height: 100px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; backface-visibility: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.5); pointer-events: none; opacity: 0; z-index: 10; }
+    .flying-card .fc-team { font-family: 'Bebas Neue', sans-serif; font-size: 0.62rem; letter-spacing: 2px; opacity: 0.7; }
+    .flying-card .fc-name { font-size: 0.78rem; font-weight: 700; max-width: 62px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .flying-card.blue-card { background: rgba(10,30,70,0.97); border: 1.5px solid var(--blue-team); color: var(--blue-team); }
+    .flying-card.red-card  { background: rgba(70,10,10,0.97); border: 1.5px solid var(--red-team);  color: var(--red-team); }
+    .deal-piles { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; pointer-events: none; }
+    .deal-pile { width: 88px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .deal-pile-stack { position: relative; width: 72px; height: 100px; }
+    .deal-pile-slot { position: absolute; inset: 0; border: 1.5px dashed; border-radius: 8px; opacity: 0.25; }
+    .deal-pile-slot.blue { border-color: var(--blue-team); }
+    .deal-pile-slot.red  { border-color: var(--red-team); }
+    .deal-pile-lbl { font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 3px; }
+    .deal-pile-lbl.blue { color: var(--blue-team); }
+    .deal-pile-lbl.red  { color: var(--red-team); }
+    .deal-pile-count { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; line-height: 1; }
+    .deal-pile-count.blue { color: var(--blue-team); }
+    .deal-pile-count.red  { color: var(--red-team); }
+    .deal-names-row { display: flex; gap: 8px; justify-content: space-between; font-size: 0.72rem; color: var(--muted); min-height: 18px; }
+    .deal-names-row span { transition: color 0.2s; }
+
+    /* OPTION TOGGLE */
+    .option-row {
+      display: flex; gap: 10px; margin-bottom: 18px;
+    }
+    .opt-btn {
+      flex: 1; display: flex; align-items: center; gap: 10px;
+      background: #06101a; border: 1px solid var(--border); border-radius: 9px;
+      padding: 12px 14px; cursor: pointer; transition: all 0.2s;
+      text-align: left;
+    }
+    .opt-btn.selected {
+      border-color: var(--gold); background: var(--gold-dim);
+    }
+    .opt-radio {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid var(--muted); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .opt-btn.selected .opt-radio {
+      border-color: var(--gold); background: var(--gold);
+    }
+    .opt-radio-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #04080e; opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .opt-btn.selected .opt-radio-dot { opacity: 1; }
+    .opt-text { display: flex; flex-direction: column; gap: 2px; }
+    .opt-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+    .opt-btn.selected .opt-title { color: var(--gold2); }
+    .opt-desc { font-size: 0.7rem; color: var(--muted); }
+
+    @media (max-width: 820px) {
+      .layout { grid-template-columns: 1fr; }
+      .member-panel { position: static; }
+      .member-list { max-height: 200px; }
+    }
     @media (max-width: 620px) {
       .hero { height: 200px; }
       .hero-title { font-size: 2.4rem; letter-spacing: 6px; }
@@ -217,7 +398,8 @@
       .ability-wrap:nth-child(n+6) { margin-top: 0; }
       .flip-grid { grid-template-columns: repeat(5, 1fr); }
       .teams-row { grid-template-columns: 1fr; }
-      .pos-row, .pos-col-labels { grid-template-columns: 80px 1fr 1fr; }
+      .pos-row { grid-template-columns: 70px 1fr 1fr 48px; }
+      .pos-col-labels { grid-template-columns: 70px 1fr 1fr 48px; }
       .tabs { grid-template-columns: 1fr; }
       .tab-btn { border-right: none; border-bottom: 1px solid var(--border); }
     }
@@ -236,6 +418,8 @@
 </div>
 
 <div class="page">
+<div class="layout">
+<div class="layout-main">
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('pos',this)">
       <span class="t-main">🎯 포지션 고정</span>
@@ -255,7 +439,7 @@
   <div class="panel active" id="panel-pos">
     <div class="card">
       <div class="card-title">▸ 포지션별 2명 입력</div>
-      <div class="pos-col-labels"><span>포지션</span><span>후보 A</span><span>후보 B</span></div>
+      <div class="pos-col-labels" style="grid-template-columns: 96px 1fr 1fr 56px;"><span>포지션</span><span>후보 A</span><span>후보 B</span><span>고정</span></div>
       <div class="pos-rows" id="posRows"></div>
       <button class="btn-main" id="btnPos" onclick="doPos()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errPos"></div>
@@ -278,6 +462,23 @@
     <div class="card">
       <div class="card-title">▸ 참가자 10명 입력</div>
       <div class="rand-grid" id="randGrid"></div>
+      <div class="card-title" style="margin-top:4px">▸ 배정 방식 선택</div>
+      <div class="option-row" id="optRand">
+        <button class="opt-btn selected" onclick="selectOpt('optRand',this)">
+          <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+          <div class="opt-text">
+            <span class="opt-title">🎲 팀 + 포지션 모두 랜덤</span>
+            <span class="opt-desc">팀 배정 및 포지션 모두 무작위</span>
+          </div>
+        </button>
+        <button class="opt-btn" onclick="selectOpt('optRand',this)">
+          <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+          <div class="opt-text">
+            <span class="opt-title">👥 팀만 랜덤 (포지션 없음)</span>
+            <span class="opt-desc">팀만 나누고 포지션은 미배정</span>
+          </div>
+        </button>
+      </div>
       <button class="btn-main" id="btnRand" onclick="doRandom()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errRand"></div>
     </div>
@@ -291,6 +492,28 @@
         <div class="flip-team-lbl red">레드팀</div>
       </div>
     </div>
+    <div class="deal-wrap" id="dealRand">
+      <div class="deal-header">▸ 팀 배정 중...</div>
+      <div class="deal-stage" id="dealStageRand">
+        <div class="deal-piles">
+          <div class="deal-pile">
+            <div class="deal-pile-stack"><div class="deal-pile-slot blue"></div></div>
+            <div class="deal-pile-lbl blue">블루팀</div>
+            <div class="deal-pile-count blue" id="dealCntBlueRand">0</div>
+          </div>
+          <div class="deal-pile">
+            <div class="deal-pile-stack"><div class="deal-pile-slot red"></div></div>
+            <div class="deal-pile-lbl red">레드팀</div>
+            <div class="deal-pile-count red" id="dealCntRedRand">0</div>
+          </div>
+        </div>
+        <div class="deal-deck">
+          <div class="deal-deck-card">🃏</div>
+          <div class="deal-deck-card">🃏</div>
+          <div class="deal-deck-card">🃏</div>
+        </div>
+      </div>
+    </div>
     <div class="result-wrap" id="resRand"></div>
   </div>
 
@@ -299,6 +522,23 @@
     <div class="card">
       <div class="card-title">▸ 참가자 이름 + 능력치 입력 (1~10)</div>
       <div class="ability-grid" id="abilityGrid"></div>
+      <div class="card-title" style="margin-top:4px">▸ 배정 방식 선택</div>
+      <div class="option-row" id="optAbility">
+        <button class="opt-btn selected" onclick="selectOpt('optAbility',this)">
+          <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+          <div class="opt-text">
+            <span class="opt-title">🎲 팀 + 포지션 모두 랜덤</span>
+            <span class="opt-desc">팀 배정 및 포지션 모두 무작위</span>
+          </div>
+        </button>
+        <button class="opt-btn" onclick="selectOpt('optAbility',this)">
+          <div class="opt-radio"><div class="opt-radio-dot"></div></div>
+          <div class="opt-text">
+            <span class="opt-title">👥 팀만 랜덤 (포지션 없음)</span>
+            <span class="opt-desc">팀만 나누고 포지션은 미배정</span>
+          </div>
+        </button>
+      </div>
       <button class="btn-main" id="btnAbility" onclick="doAbility()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errAbility"></div>
     </div>
@@ -312,9 +552,54 @@
         <div class="flip-team-lbl red">레드팀</div>
       </div>
     </div>
+    <div class="deal-wrap" id="dealAbility">
+      <div class="deal-header">▸ 팀 배정 중...</div>
+      <div class="deal-stage" id="dealStageAbility">
+        <div class="deal-piles">
+          <div class="deal-pile">
+            <div class="deal-pile-stack"><div class="deal-pile-slot blue"></div></div>
+            <div class="deal-pile-lbl blue">블루팀</div>
+            <div class="deal-pile-count blue" id="dealCntBlueAbility">0</div>
+          </div>
+          <div class="deal-pile">
+            <div class="deal-pile-stack"><div class="deal-pile-slot red"></div></div>
+            <div class="deal-pile-lbl red">레드팀</div>
+            <div class="deal-pile-count red" id="dealCntRedAbility">0</div>
+          </div>
+        </div>
+        <div class="deal-deck">
+          <div class="deal-deck-card">🃏</div>
+          <div class="deal-deck-card">🃏</div>
+          <div class="deal-deck-card">🃏</div>
+        </div>
+      </div>
+    </div>
     <div class="result-wrap" id="resAbility"></div>
   </div>
+</div><!-- layout-main -->
+
+<!-- 멤버 리스트 패널 -->
+<div class="member-panel">
+  <div class="member-panel-head">
+    <span class="member-panel-title">멤버 리스트</span>
+    <span class="member-count" id="memberCount">0명</span>
+  </div>
+  <div class="member-add-row">
+    <input type="text" id="memberAddInput" placeholder="이름 입력 후 + 클릭" maxlength="12"
+      onkeydown="if(event.key==='Enter') addMember()">
+    <button class="btn-add-member" onclick="addMember()" title="추가">＋</button>
+  </div>
+  <div class="member-list" id="memberList">
+    <div class="member-empty" id="memberEmpty">멤버를 추가하면<br>클릭으로 빠르게 입력할 수 있어요</div>
+  </div>
+  <div class="member-actions">
+    <button class="btn-fill-all" onclick="fillAll()">전체 채우기</button>
+    <button class="btn-clear-inputs" onclick="clearInputs()" title="입력칸 초기화">↺ 초기화</button>
+  </div>
 </div>
+
+</div><!-- layout -->
+</div><!-- page -->
 
 <script>
 const ROLES = ['TOP','JGL','MID','BOT','SPT'];
@@ -335,6 +620,130 @@ document.getElementById('heroBg').src =
   'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/' +
   SPLASHES[Math.floor(Math.random()*SPLASHES.length)] + '.jpg';
 
+// ── 멤버 리스트 ──
+let members = JSON.parse(localStorage.getItem('lol_members') || '[]');
+
+function saveMembers() {
+  try { localStorage.setItem('lol_members', JSON.stringify(members)); } catch(e) {}
+}
+
+function getInitials(name) {
+  return name.length <= 2 ? name : name.slice(0,2);
+}
+
+// 현재 활성 탭의 모든 text 입력칸 반환
+function getActiveInputs() {
+  const activePanel = document.querySelector('.panel.active');
+  if (!activePanel) return [];
+  return [...activePanel.querySelectorAll('input[type=text]:not(.member-add-row input)')];
+}
+
+// 이름이 이미 어떤 입력칸에 들어가 있는지 확인
+function getUsedNames() {
+  return new Set(getActiveInputs().map(i => i.value.trim()).filter(Boolean));
+}
+
+function renderMembers() {
+  const list = document.getElementById('memberList');
+  const empty = document.getElementById('memberEmpty');
+  const used = getUsedNames();
+
+  document.getElementById('memberCount').textContent = members.length + '명';
+
+  // member-item 만 지우고 empty div 는 유지
+  [...list.querySelectorAll('.member-item')].forEach(e => e.remove());
+
+  if (members.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  members.forEach((name, idx) => {
+    const isUsed = used.has(name);
+    const item = document.createElement('div');
+    item.className = 'member-item' + (isUsed ? ' used' : '');
+    item.innerHTML = `
+      <div class="member-avatar">${getInitials(name)}</div>
+      <span class="member-name">${name}</span>
+      <button class="member-del" onclick="deleteMember(${idx},event)" title="삭제">✕</button>
+    `;
+    if (!isUsed) {
+      item.onclick = () => clickMember(name, item);
+    }
+    list.appendChild(item);
+  });
+}
+
+function addMember() {
+  const input = document.getElementById('memberAddInput');
+  const name = input.value.trim();
+  if (!name) return;
+  if (members.includes(name)) {
+    input.style.borderColor = 'var(--red-team)';
+    setTimeout(() => input.style.borderColor = '', 800);
+    return;
+  }
+  members.push(name);
+  saveMembers();
+  input.value = '';
+  renderMembers();
+}
+
+function deleteMember(idx, e) {
+  e.stopPropagation();
+  members.splice(idx, 1);
+  saveMembers();
+  renderMembers();
+}
+
+// 클릭 시 활성 탭의 첫 번째 빈 칸에 채우기
+function clickMember(name, itemEl) {
+  const inputs = getActiveInputs();
+  const emptyInput = inputs.find(i => !i.value.trim());
+  if (!emptyInput) return; // 빈 칸 없음
+  emptyInput.value = name;
+  emptyInput.dispatchEvent(new Event('input'));
+  renderMembers(); // used 상태 갱신
+}
+
+// 전체 채우기: 멤버 리스트에서 순서대로 빈 칸 모두 채우기
+function fillAll() {
+  const inputs = getActiveInputs();
+  const used = getUsedNames();
+  const available = members.filter(m => !used.has(m));
+  let ai = 0;
+  inputs.forEach(inp => {
+    if (!inp.value.trim() && ai < available.length) {
+      inp.value = available[ai++];
+    }
+  });
+  renderMembers();
+}
+
+// 입력칸 초기화 (멤버 리스트는 유지)
+function clearInputs() {
+  getActiveInputs().forEach(inp => { inp.value = ''; });
+  // 능력치 탭이면 숫자칸도 초기화
+  const activePanel = document.querySelector('.panel.active');
+  if (activePanel) {
+    activePanel.querySelectorAll('input[type=number]').forEach(inp => { inp.value = ''; });
+  }
+  renderMembers();
+}
+
+// 탭 전환 시 used 상태 갱신
+function switchTabRefresh() { setTimeout(renderMembers, 50); }
+
+// 입력칸 변경 시 used 상태 갱신 (이벤트 위임)
+document.addEventListener('input', e => {
+  if (e.target.matches('input[type=text]') && !e.target.closest('.member-add-row')) {
+    renderMembers();
+  }
+});
+
+renderMembers();
+
 // 올 랜덤 입력칸
 const rg = document.getElementById('randGrid');
 for (let i = 0; i < 10; i++) {
@@ -349,6 +758,7 @@ const pr = document.getElementById('posRows');
 ROLES.forEach(role => {
   const row = document.createElement('div');
   row.className = 'pos-row';
+  row.setAttribute('data-role', role);
   row.innerHTML = `
     <div class="pos-badge">
       <img class="pos-icon" src="${ICONS[role]}" alt="${role}" onerror="this.style.display='none'">
@@ -357,6 +767,10 @@ ROLES.forEach(role => {
     </div>
     <input type="text" placeholder="이름" maxlength="12" data-role="${role}" data-slot="0">
     <input type="text" placeholder="이름" maxlength="12" data-role="${role}" data-slot="1">
+    <button class="lock-btn" onclick="toggleLock(this)" title="이 포지션 고정">
+      <span class="lock-icon">🔓</span>
+      <span>고정</span>
+    </button>
   `;
   pr.appendChild(row);
 });
@@ -372,9 +786,18 @@ for (let i = 0; i < 10; i++) {
       <span class="ability-hint">능력치 1~10</span>
     </div>
     <input type="text" placeholder="이름" maxlength="12" class="ab-name">
-    <input type="number" placeholder="5" min="1" max="10" class="ab-score" value="">
+    <input type="number" placeholder="5" min="1" max="10" step="0.1" class="ab-score" value="">
   `;
   ag.appendChild(d);
+}
+
+// 포지션 고정 토글
+function toggleLock(btn) {
+  const isLocked = btn.classList.toggle('locked');
+  const row = btn.closest('.pos-row');
+  row.classList.toggle('locked-row', isLocked);
+  btn.querySelector('.lock-icon').textContent = isLocked ? '🔒' : '🔓';
+  btn.querySelector('span:last-child').textContent = isLocked ? '고정됨' : '고정';
 }
 
 function switchTab(id, btn) {
@@ -382,6 +805,18 @@ function switchTab(id, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('panel-' + id).classList.add('active');
+  setTimeout(renderMembers, 50);
+}
+
+// 옵션 토글: 같은 그룹 내 선택 처리
+function selectOpt(groupId, btn) {
+  document.querySelectorAll(`#${groupId} .opt-btn`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// 옵션 그룹에서 몇 번째가 선택됐는지 반환 (0 = 첫번째, 1 = 두번째)
+function getOptIndex(groupId) {
+  return [...document.querySelectorAll(`#${groupId} .opt-btn`)].findIndex(b => b.classList.contains('selected'));
 }
 
 function shuffle(a) {
@@ -461,8 +896,121 @@ function runFlipAnimation(gridId, progId, progTxtId, members, onDone) {
   setTimeout(onDone, TOTAL_MS);
 }
 
+// 카드 날리기 애니메이션 (팀만 랜덤용)
+// stageId: deal-stage DOM id, members: [{name, team:'blue'|'red'}, ...] 10개
+function runDealAnimation(stageId, cntBlueId, cntRedId, members, onDone) {
+  const stage    = document.getElementById(stageId);
+  const cntBlue  = document.getElementById(cntBlueId);
+  const cntRed   = document.getElementById(cntRedId);
+
+  // 덱 위치(중앙) 기준으로 블루(왼쪽)/레드(오른쪽) 더미로 날아감
+  const stageRect = stage.getBoundingClientRect();
+  const TOTAL_MS  = 5000;
+  const CARD_COUNT = members.length; // 10
+  const INTERVAL  = (TOTAL_MS - 600) / CARD_COUNT; // ~440ms 간격
+
+  let blueCount = 0, redCount = 0;
+
+  // 랜덤 순서로 카드 날리기
+  const order = shuffle(members.map((_,i)=>i));
+
+  order.forEach((mi, seq) => {
+    const m = members[mi];
+    const isBlue = m.team === 'blue';
+
+    setTimeout(() => {
+      // 날아가는 카드 생성
+      const card = document.createElement('div');
+      card.className = `flying-card ${isBlue ? 'blue-card' : 'red-card'}`;
+      card.innerHTML = `<span class="fc-team">${isBlue ? 'BLUE' : 'RED'}</span><span class="fc-name">${m.name}</span>`;
+      card.style.cssText = `left: calc(50% - 36px); top: 30px;`;
+      stage.appendChild(card);
+
+      // 목적지: 블루=왼쪽, 레드=오른쪽
+      const destX = isBlue
+        ? `calc(8px + ${(isBlue ? blueCount : redCount) * 3}px)`
+        : `calc(100% - 80px - ${(isBlue ? blueCount : redCount) * 3}px)`;
+      const destY = `${20 + (isBlue ? blueCount : redCount) * 2}px`;
+
+      // 카드 등장 → 날아감
+      requestAnimationFrame(() => {
+        card.style.transition = 'none';
+        card.style.opacity = '1';
+        card.style.transform = 'scale(1.05) rotate(0deg)';
+
+        requestAnimationFrame(() => {
+          const tX = isBlue ? -120 : 120;
+          const rot = isBlue
+            ? (-8 + Math.random()*16)
+            : (-8 + Math.random()*16);
+          card.style.transition = `transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.45s ease, left 0.45s cubic-bezier(0.25,0.46,0.45,0.94), top 0.45s ease`;
+          card.style.left = isBlue ? '6px' : 'calc(100% - 78px)';
+          card.style.top  = `${18 + (isBlue ? blueCount : redCount) * 2}px`;
+          card.style.transform = `scale(0.92) rotate(${rot}deg)`;
+        });
+      });
+
+      // 카운터 업데이트
+      if (isBlue) { blueCount++; cntBlue.textContent = blueCount; }
+      else        { redCount++;  cntRed.textContent  = redCount; }
+
+    }, INTERVAL * seq + 150);
+  });
+
+  setTimeout(onDone, TOTAL_MS);
+}
+
+function startAnim(flipId, dealId, cntBlueId, cntRedId, progId, progTxtId, btnId, members, resEl, rerollFn, showScore, withRole) {
+  const btn = document.getElementById(btnId);
+  resEl.style.display = 'none';
+  btn.disabled = true;
+
+  const t1 = members.slice(0,5);
+  const t2 = members.slice(5);
+
+  if (withRole) {
+    // 카드 플립 애니메이션
+    const flipEl = document.getElementById(flipId);
+    flipEl.classList.add('active');
+    flipEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    runFlipAnimation(flipId.replace('flip','flipGrid'), progId, progTxtId, members, () => {
+      flipEl.classList.remove('active');
+      btn.disabled = false;
+      showResult(resEl, t1, t2, rerollFn, showScore);
+    });
+  } else {
+    // 카드 딜 애니메이션
+    const dealEl = document.getElementById(dealId);
+    // 카운터 리셋
+    document.getElementById(cntBlueId).textContent = '0';
+    document.getElementById(cntRedId).textContent  = '0';
+    // 기존 flying-card 제거
+    document.querySelectorAll(`#${dealId} .flying-card`).forEach(e=>e.remove());
+
+    dealEl.classList.add('active');
+    dealEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+    // members에 team 정보 추가 (t1=blue, t2=red)
+    const dealMembers = [
+      ...t1.map(m=>({...m, team:'blue'})),
+      ...t2.map(m=>({...m, team:'red'})),
+    ];
+    runDealAnimation(
+      dealId.replace('deal','dealStage'),
+      cntBlueId, cntRedId,
+      dealMembers,
+      () => {
+        dealEl.classList.remove('active');
+        btn.disabled = false;
+        showResult(resEl, t1, t2, rerollFn, showScore);
+      }
+    );
+  }
+}
 function makeCard(teamName, cls, members, showScore) {
-  const avg = showScore ? (members.reduce((s,m)=>s+(m.score||0),0)/members.length).toFixed(1) : null;
+  const rawAvg = showScore ? members.reduce((s,m)=>s+(m.score||0),0)/members.length : null;
+  const avg = rawAvg !== null ? parseFloat(rawAvg.toFixed(2)).toString() : null;
+  const hasRole = members[0] && members[0].role;
   const c = document.createElement('div');
   c.className = 'team-card ' + cls;
   c.innerHTML = `
@@ -474,11 +1022,12 @@ function makeCard(teamName, cls, members, showScore) {
       ${members.map((m,i)=>`
         ${i>0?'<div class="div"></div>':''}
         <div class="role-row" style="animation-delay:${i*0.07}s">
+          ${hasRole ? `
           <div class="role-tag">
             <img class="ri" src="${ICONS[m.role]}" alt="" onerror="this.style.display='none'">
             <span class="role-emoji-sm">${ROLE_EMOJI[m.role]}</span>
             <span class="rn">${m.role}</span>
-          </div>
+          </div>` : `<span style="font-size:0.8rem;color:var(--muted);min-width:24px;text-align:center">${i+1}</span>`}
           <span class="pname">${m.name}</span>
           ${showScore && m.score ? `
             <div class="score-bar-wrap"><div class="score-bar" style="width:${m.score*10}%"></div></div>
@@ -510,50 +1059,53 @@ function showResult(wrapEl, t1, t2, rerollFn, showScore) {
   wrapEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
-function startAnim(flipId, progId, progTxtId, btnId, members, resEl, rerollFn, showScore) {
-  const flipEl = document.getElementById(flipId);
-  const btn    = document.getElementById(btnId);
-  resEl.style.display = 'none';
-  flipEl.classList.add('active');
-  btn.disabled = true;
-  flipEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  const t1 = members.slice(0,5);
-  const t2 = members.slice(5);
-  runFlipAnimation(flipId.replace('flip','flipGrid'), progId, progTxtId, members, () => {
-    flipEl.classList.remove('active');
-    btn.disabled = false;
-    showResult(resEl, t1, t2, rerollFn, showScore);
-  });
-}
-
 function doRandom() {
   const inputs = [...document.querySelectorAll('#randGrid input')];
   const names  = inputs.map(i => i.value.trim());
   const err    = document.getElementById('errRand');
   if (names.some(n => !n)) { err.textContent = '10명의 이름을 모두 입력해 주세요!'; return; }
   err.textContent = '';
+  const withRole = getOptIndex('optRand') === 0;
   const players = shuffle(names);
-  const r1 = shuffle([...ROLES]), r2 = shuffle([...ROLES]);
-  const t1 = players.slice(0,5).map((n,i)=>({role:r1[i],name:n})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
-  const t2 = players.slice(5).map((n,i) =>({role:r2[i],name:n})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
-  startAnim('flipRand','progRand','progTxtRand','btnRand',[...t1,...t2],document.getElementById('resRand'),doRandom,false);
+  let t1, t2;
+  if (withRole) {
+    const r1 = shuffle([...ROLES]), r2 = shuffle([...ROLES]);
+    t1 = players.slice(0,5).map((n,i)=>({role:r1[i],name:n})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
+    t2 = players.slice(5).map((n,i) =>({role:r2[i],name:n})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
+  } else {
+    t1 = players.slice(0,5).map(n=>({name:n}));
+    t2 = players.slice(5).map(n=>({name:n}));
+  }
+  startAnim('flipRand','dealRand','dealCntBlueRand','dealCntRedRand','progRand','progTxtRand','btnRand',[...t1,...t2],document.getElementById('resRand'),doRandom,false,withRole);
 }
 
 function doPos() {
   const err  = document.getElementById('errPos');
   const data = {};
   ROLES.forEach(role => {
-    const ins = [...document.querySelectorAll(`[data-role="${role}"]`)];
+    const ins = [...document.querySelectorAll(`.pos-row[data-role="${role}"] input[type=text]`)];
     data[role] = ins.map(i => i.value.trim());
   });
   if (ROLES.some(r => data[r].some(n=>!n))) { err.textContent = '모든 포지션의 이름을 입력해 주세요! (총 10칸)'; return; }
   err.textContent = '';
+
   const t1=[], t2=[];
   ROLES.forEach(role => {
-    const [a,b] = Math.random()<0.5 ? data[role] : [data[role][1],data[role][0]];
-    t1.push({role,name:a}); t2.push({role,name:b});
+    const row = document.querySelector(`.pos-row[data-role="${role}"]`);
+    const isLocked = row && row.classList.contains('locked-row');
+
+    if (isLocked) {
+      // 고정: 후보 A → 블루, 후보 B → 레드 (입력 순서 그대로)
+      t1.push({ role, name: data[role][0] });
+      t2.push({ role, name: data[role][1] });
+    } else {
+      // 랜덤: 50% 확률로 A/B 뒤집기
+      const [a, b] = Math.random() < 0.5 ? data[role] : [data[role][1], data[role][0]];
+      t1.push({ role, name: a });
+      t2.push({ role, name: b });
+    }
   });
-  startAnim('flipPos','progPos','progTxtPos','btnPos',[...t1,...t2],document.getElementById('resPos'),doPos,false);
+  startAnim('flipPos','dealPos','dealCntBluePos','dealCntRedPos','progPos','progTxtPos','btnPos',[...t1,...t2],document.getElementById('resPos'),doPos,false,true);
 }
 
 function doAbility() {
@@ -562,16 +1114,23 @@ function doAbility() {
   const err = document.getElementById('errAbility');
   const players = nameInputs.map((inp,i) => ({
     name: inp.value.trim(),
-    score: parseInt(scoreInputs[i].value, 10),
+    score: parseFloat(scoreInputs[i].value),
   }));
   if (players.some(p => !p.name)) { err.textContent = '10명의 이름을 모두 입력해 주세요!'; return; }
-  if (players.some(p => isNaN(p.score)||p.score<1||p.score>10)) { err.textContent = '능력치는 1~10 사이의 숫자로 입력해 주세요!'; return; }
+  if (players.some(p => isNaN(p.score)||p.score<1||p.score>10)) { err.textContent = '능력치는 1~10 사이의 숫자로 입력해 주세요! (소수점 가능)'; return; }
   err.textContent = '';
+  const withRole = getOptIndex('optAbility') === 0;
   const { g1, g2 } = balancedSplit(players);
-  const r1 = shuffle([...ROLES]), r2 = shuffle([...ROLES]);
-  const t1 = g1.map((pi,i)=>({role:r1[i],name:players[pi].name,score:players[pi].score})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
-  const t2 = g2.map((pi,i)=>({role:r2[i],name:players[pi].name,score:players[pi].score})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
-  startAnim('flipAbility','progAbility','progTxtAbility','btnAbility',[...t1,...t2],document.getElementById('resAbility'),doAbility,true);
+  let t1, t2;
+  if (withRole) {
+    const r1 = shuffle([...ROLES]), r2 = shuffle([...ROLES]);
+    t1 = g1.map((pi,i)=>({role:r1[i],name:players[pi].name,score:players[pi].score})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
+    t2 = g2.map((pi,i)=>({role:r2[i],name:players[pi].name,score:players[pi].score})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
+  } else {
+    t1 = g1.map(pi=>({name:players[pi].name,score:players[pi].score}));
+    t2 = g2.map(pi=>({name:players[pi].name,score:players[pi].score}));
+  }
+  startAnim('flipAbility','dealAbility','dealCntBlueAbility','dealCntRedAbility','progAbility','progTxtAbility','btnAbility',[...t1,...t2],document.getElementById('resAbility'),doAbility,true,withRole);
 }
 </script>
 </body>
