@@ -364,6 +364,78 @@
     .deal-names-row { display: flex; gap: 8px; justify-content: space-between; font-size: 0.72rem; color: var(--muted); min-height: 18px; }
     .deal-names-row span { transition: color 0.2s; }
 
+    /* ── REVEAL 애니메이션 (포지션 고정) ── */
+    .reveal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+    .reveal-team-col { display: flex; flex-direction: column; gap: 7px; }
+    .reveal-team-head { font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 4px; padding: 7px 10px; border-radius: 7px; text-align: center; margin-bottom: 2px; }
+    .reveal-team-head.blue { color: var(--blue-team); background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); }
+    .reveal-team-head.red  { color: var(--red-team);  background: rgba(232,64,64,0.1);  border: 1px solid rgba(232,64,64,0.25); }
+    .reveal-card {
+      display: flex; align-items: center; gap: 10px;
+      background: #06101a; border: 1px solid var(--border);
+      border-radius: 9px; padding: 10px 12px;
+      opacity: 0; transform: translateX(-10px) scale(0.96);
+      transition: opacity 0.45s ease, transform 0.45s ease, border-color 0.3s;
+    }
+    .reveal-card.show { opacity: 1; transform: translateX(0) scale(1); }
+    .reveal-card.blue-card { border-color: rgba(74,158,255,0.45); background: rgba(74,158,255,0.07); }
+    .reveal-card.red-card  { border-color: rgba(232,64,64,0.45);  background: rgba(232,64,64,0.07); }
+    .reveal-role-icon { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+    .reveal-role-emoji { font-size: 14px; flex-shrink: 0; }
+    .reveal-role-name { font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 1.5px; min-width: 32px; }
+    .reveal-card.blue-card .reveal-role-name { color: var(--blue-team); }
+    .reveal-card.red-card  .reveal-role-name { color: var(--red-team); }
+    .reveal-player-name { font-size: 0.95rem; font-weight: 700; color: var(--text-bright); flex: 1; }
+    .reveal-progress { text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 2px; color: var(--muted); }
+
+    /* ── FLIP 애니메이션 (올랜덤 — 포지션 순서대로) ── */
+    .flip-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .flip-col  { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .flip-role-lbl { display: flex; align-items: center; gap: 4px; }
+    .flip-role-icon { width: 18px; height: 18px; object-fit: contain; opacity: 0.6; }
+    .flip-role-emoji { font-size: 13px; line-height: 1; }
+    .flip-role-name { font-family: 'Bebas Neue', sans-serif; font-size: 0.7rem; letter-spacing: 1px; color: var(--muted); }
+    .flip-card-scene { width: 100%; height: 62px; perspective: 500px; }
+    .flip-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.55s cubic-bezier(0.4,0,0.2,1); }
+    .flip-card.flipped { transform: rotateY(180deg); }
+    .flip-card-front, .flip-card-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+    .flip-card-front { background: #06101a; border: 1px solid var(--border); }
+    .flip-card-front-icon { font-size: 1.4rem; opacity: 0.25; }
+    .flip-card-back { background: var(--panel2); border: 1px solid var(--gold); transform: rotateY(180deg); padding: 4px; }
+    .flip-card-back .fc-name { font-size: 0.8rem; font-weight: 700; color: var(--text-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
+    .flip-card-back.blue-card { border-color: var(--blue-team); background: rgba(74,158,255,0.08); }
+    .flip-card-back.red-card  { border-color: var(--red-team);  background: rgba(232,64,64,0.08); }
+    .flip-card-back.blue-card .fc-name { color: var(--blue-team); }
+    .flip-card-back.red-card  .fc-name { color: var(--red-team); }
+    .flip-card-back .fc-team { font-family: 'Bebas Neue', sans-serif; font-size: 0.6rem; letter-spacing: 2px; opacity: 0.6; }
+    .flip-progress-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+    .flip-progress-bar { flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .flip-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; width: 0%; transition: width 0.2s linear; }
+    .flip-progress-text { font-family: 'Bebas Neue', sans-serif; font-size: 0.75rem; letter-spacing: 1px; color: var(--muted); min-width: 36px; text-align: right; }
+    .flip-vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; margin-top: 14px; }
+    .flip-team-lbl { font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 3px; padding: 7px; border-radius: 6px; text-align: center; }
+    .flip-team-lbl.blue { color: var(--blue-team); background: rgba(74,158,255,0.08); border: 1px solid rgba(74,158,255,0.2); }
+    .flip-team-lbl.red  { color: var(--red-team);  background: rgba(232,64,64,0.08);  border: 1px solid rgba(232,64,64,0.2); }
+    .flip-vs-dot { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--gold); letter-spacing: 2px; }
+
+    /* ── 시소 애니메이션 (능력치) ── */
+    @keyframes popIn { from { opacity:0; transform:scale(0.5); } to { opacity:1; transform:scale(1); } }
+    .seesaw-svg-area { display: block; margin: 0 auto 18px; overflow: visible; }
+    .seesaw-beam { transition: transform 0.7s cubic-bezier(0.34,1.2,0.64,1); transform-origin: 200px 60px; }
+    .seesaw-names-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px; }
+    .seesaw-names-col { display: flex; flex-direction: column; gap: 5px; }
+    .seesaw-name-item {
+      font-size: 0.82rem; font-weight: 700; text-align: center;
+      padding: 5px 8px; border-radius: 7px;
+      animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .seesaw-name-item.blue { color: var(--blue-team); background: rgba(74,158,255,0.12); border: 1px solid rgba(74,158,255,0.25); }
+    .seesaw-name-item.red  { color: var(--red-team);  background: rgba(232,64,64,0.12);  border: 1px solid rgba(232,64,64,0.25); }
+    .seesaw-avg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .seesaw-avg { font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 2px; text-align: center; }
+    .seesaw-avg.blue { color: var(--blue-team); }
+    .seesaw-avg.red  { color: var(--red-team); }
+
     /* OPTION TOGGLE */
     .option-row {
       display: flex; gap: 10px; margin-bottom: 18px;
@@ -414,6 +486,59 @@
       .tabs { grid-template-columns: 1fr; }
       .tab-btn { border-right: none; border-bottom: 1px solid var(--border); }
     }
+    /* ══ 배정 모달 ══ */
+    .anim-modal {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(5,9,16,0.88);
+      backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    .anim-modal.open { display: flex; animation: fadeUp 0.3s ease; }
+    .anim-modal-box {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 28px 24px;
+      width: min(720px, 94vw); max-height: 88vh; overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(200,155,60,0.15);
+      position: relative;
+    }
+    .anim-modal-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem;
+      letter-spacing: 5px; color: var(--gold);
+      text-align: center; margin-bottom: 24px;
+      text-shadow: 0 0 20px rgba(200,155,60,0.4);
+    }
+    .modal-section { display: none; }
+    .modal-section.active { display: block; }
+    /* 모달 내 결과 */
+    .modal-result-section { display: none; }
+    .modal-result-section.active { display: block; animation: fadeUp 0.45s ease; }
+    .modal-action-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;
+    }
+    .btn-modal-reroll {
+      padding: 13px; background: var(--gold-dim); border: 1px solid var(--gold);
+      border-radius: 9px; color: var(--gold2);
+      font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 3px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-modal-reroll:hover { background: var(--gold); color: #04080e; }
+    .btn-modal-close {
+      padding: 13px; background: transparent; border: 1px solid var(--border);
+      border-radius: 9px; color: var(--muted);
+      font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 3px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-modal-close:hover { border-color: var(--red-team); color: var(--red-team); }
+    .anim-modal-skip {
+      margin-top: 16px; text-align: center;
+      font-size: 0.78rem; color: var(--muted);
+      cursor: pointer; letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .anim-modal-skip:hover { color: var(--text); }
+    /* 모달 내 팀 결과 카드 */
+    .modal-teams-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    @media (max-width: 500px) { .modal-teams-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -455,16 +580,6 @@
       <button class="btn-main" id="btnPos" onclick="doPos()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errPos"></div>
     </div>
-    <div class="flip-wrap" id="flipPos">
-      <div class="flip-header">▸ 카드를 뽑는 중...</div>
-      <div class="flip-grid" id="flipGridPos"></div>
-      <div class="flip-progress-row"><div class="flip-progress-bar"><div class="flip-progress-fill" id="progPos"></div></div><div class="flip-progress-text" id="progTxtPos">0 / 10</div></div>
-      <div class="flip-vs" style="margin-top:14px">
-        <div class="flip-team-lbl blue">블루팀</div>
-        <div class="flip-vs-dot">VS</div>
-        <div class="flip-team-lbl red">레드팀</div>
-      </div>
-    </div>
     <div class="result-wrap" id="resPos"></div>
   </div>
 
@@ -492,38 +607,6 @@
       </div>
       <button class="btn-main" id="btnRand" onclick="doRandom()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errRand"></div>
-    </div>
-    <div class="flip-wrap" id="flipRand">
-      <div class="flip-header">▸ 카드를 뽑는 중...</div>
-      <div class="flip-grid" id="flipGridRand"></div>
-      <div class="flip-progress-row"><div class="flip-progress-bar"><div class="flip-progress-fill" id="progRand"></div></div><div class="flip-progress-text" id="progTxtRand">0 / 10</div></div>
-      <div class="flip-vs" style="margin-top:14px">
-        <div class="flip-team-lbl blue">블루팀</div>
-        <div class="flip-vs-dot">VS</div>
-        <div class="flip-team-lbl red">레드팀</div>
-      </div>
-    </div>
-    <div class="deal-wrap" id="dealRand">
-      <div class="deal-header">▸ 팀 배정 중...</div>
-      <div class="deal-stage" id="dealStageRand">
-        <div class="deal-piles">
-          <div class="deal-pile">
-            <div class="deal-pile-stack"><div class="deal-pile-slot blue"></div></div>
-            <div class="deal-pile-lbl blue">블루팀</div>
-            <div class="deal-pile-count blue" id="dealCntBlueRand">0</div>
-          </div>
-          <div class="deal-pile">
-            <div class="deal-pile-stack"><div class="deal-pile-slot red"></div></div>
-            <div class="deal-pile-lbl red">레드팀</div>
-            <div class="deal-pile-count red" id="dealCntRedRand">0</div>
-          </div>
-        </div>
-        <div class="deal-deck">
-          <div class="deal-deck-card">🃏</div>
-          <div class="deal-deck-card">🃏</div>
-          <div class="deal-deck-card">🃏</div>
-        </div>
-      </div>
     </div>
     <div class="result-wrap" id="resRand"></div>
   </div>
@@ -553,38 +636,6 @@
       <button class="btn-main" id="btnAbility" onclick="doAbility()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errAbility"></div>
     </div>
-    <div class="flip-wrap" id="flipAbility">
-      <div class="flip-header">▸ 카드를 뽑는 중...</div>
-      <div class="flip-grid" id="flipGridAbility"></div>
-      <div class="flip-progress-row"><div class="flip-progress-bar"><div class="flip-progress-fill" id="progAbility"></div></div><div class="flip-progress-text" id="progTxtAbility">0 / 10</div></div>
-      <div class="flip-vs" style="margin-top:14px">
-        <div class="flip-team-lbl blue">블루팀</div>
-        <div class="flip-vs-dot">VS</div>
-        <div class="flip-team-lbl red">레드팀</div>
-      </div>
-    </div>
-    <div class="deal-wrap" id="dealAbility">
-      <div class="deal-header">▸ 팀 배정 중...</div>
-      <div class="deal-stage" id="dealStageAbility">
-        <div class="deal-piles">
-          <div class="deal-pile">
-            <div class="deal-pile-stack"><div class="deal-pile-slot blue"></div></div>
-            <div class="deal-pile-lbl blue">블루팀</div>
-            <div class="deal-pile-count blue" id="dealCntBlueAbility">0</div>
-          </div>
-          <div class="deal-pile">
-            <div class="deal-pile-stack"><div class="deal-pile-slot red"></div></div>
-            <div class="deal-pile-lbl red">레드팀</div>
-            <div class="deal-pile-count red" id="dealCntRedAbility">0</div>
-          </div>
-        </div>
-        <div class="deal-deck">
-          <div class="deal-deck-card">🃏</div>
-          <div class="deal-deck-card">🃏</div>
-          <div class="deal-deck-card">🃏</div>
-        </div>
-      </div>
-    </div>
     <div class="result-wrap" id="resAbility"></div>
   </div>
 </div><!-- layout-main -->
@@ -611,6 +662,114 @@
 
 </div><!-- layout -->
 </div><!-- page -->
+
+<!-- ══ 배정 모달 ══ -->
+<div class="anim-modal" id="animModal">
+  <div class="anim-modal-box">
+    <div class="anim-modal-title" id="animModalTitle">팀 배정 중...</div>
+
+    <!-- 애니메이션 영역 -->
+    <div id="animSections">
+
+      <!-- 리빌 (포지션 고정) -->
+      <div class="modal-section" id="modalDrum">
+        <div class="reveal-grid">
+          <div class="reveal-team-col" id="revealBlue">
+            <div class="reveal-team-head blue">🔵 블루팀</div>
+          </div>
+          <div class="reveal-team-col" id="revealRed">
+            <div class="reveal-team-head red">🔴 레드팀</div>
+          </div>
+        </div>
+        <div class="reveal-progress" id="revealProgress">0 / 5</div>
+      </div>
+
+      <!-- 카드 플립 (올랜덤) -->
+      <div class="modal-section" id="modalFlip">
+        <div class="flip-grid" id="flipGridRand"></div>
+        <div class="flip-progress-row">
+          <div class="flip-progress-bar"><div class="flip-progress-fill" id="progRand"></div></div>
+          <div class="flip-progress-text" id="progTxtRand">0 / 10</div>
+        </div>
+        <div class="flip-vs" style="margin-top:14px">
+          <div class="flip-team-lbl blue">블루팀</div>
+          <div class="flip-vs-dot">VS</div>
+          <div class="flip-team-lbl red">레드팀</div>
+        </div>
+      </div>
+
+      <!-- 시소 (능력치) — SVG 완전 재설계 -->
+      <div class="modal-section" id="modalScale">
+        <div class="seesaw-wrap">
+          <!--
+            레이아웃:
+            [블루 카운터 영역]    [레드 카운터 영역]  ← 시소와 분리, 고정 위치
+                    [시소 SVG]
+            [이름 목록 블루]  [이름 목록 레드]
+          -->
+          <!-- 카운터: 시소와 분리해서 위에 고정 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+            <div style="text-align:center;background:rgba(74,158,255,0.08);border:1px solid rgba(74,158,255,0.25);border-radius:10px;padding:10px 8px;">
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:3px;color:var(--blue-team);margin-bottom:4px;">🔵 BLUE TEAM</div>
+              <div id="ssBlueCount" style="font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--blue-team);line-height:1;text-shadow:0 0 16px rgba(74,158,255,0.5);">0</div>
+              <div id="ssAvgBlue" style="font-size:0.72rem;color:var(--blue-team);opacity:0.75;margin-top:2px;">평균 -</div>
+            </div>
+            <div style="text-align:center;background:rgba(232,64,64,0.08);border:1px solid rgba(232,64,64,0.25);border-radius:10px;padding:10px 8px;">
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:3px;color:var(--red-team);margin-bottom:4px;">🔴 RED TEAM</div>
+              <div id="ssRedCount" style="font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--red-team);line-height:1;text-shadow:0 0 16px rgba(232,64,64,0.5);">0</div>
+              <div id="ssAvgRed" style="font-size:0.72rem;color:var(--red-team);opacity:0.75;margin-top:2px;">평균 -</div>
+            </div>
+          </div>
+          <!-- 시소 SVG: 순수 시각 요소만, 텍스트 없음 -->
+          <svg class="seesaw-svg-area" width="100%" viewBox="0 0 480 80" style="max-width:480px;margin-bottom:14px;">
+            <defs>
+              <linearGradient id="beamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#4a9eff"/>
+                <stop offset="50%"  stop-color="#c89b3c"/>
+                <stop offset="100%" stop-color="#e84040"/>
+              </linearGradient>
+              <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <!-- 받침대 고정 -->
+            <polygon points="240,78 226,52 254,52" fill="#c89b3c" filter="url(#glow)"/>
+            <rect x="212" y="76" width="56" height="5" rx="2.5" fill="#8a6520"/>
+            <!-- 회전 빔 그룹 (중심: 240, 52) -->
+            <g id="seesawBeamG" style="transform-origin:240px 52px; transition:transform 0.8s cubic-bezier(0.34,1.3,0.64,1);">
+              <!-- 메인 빔 -->
+              <rect x="20" y="48" width="440" height="8" rx="4" fill="url(#beamGrad)" filter="url(#glow)"/>
+              <!-- 블루 접시 -->
+              <rect x="14" y="34" width="80" height="16" rx="8" fill="#0a1e3a" stroke="#4a9eff" stroke-width="2" filter="url(#glow)"/>
+              <!-- 레드 접시 -->
+              <rect x="386" y="34" width="80" height="16" rx="8" fill="#2a0808" stroke="#e84040" stroke-width="2" filter="url(#glow)"/>
+              <!-- 접시 장식 점 -->
+              <circle cx="54"  cy="42" r="4" fill="#4a9eff" opacity="0.6"/>
+              <circle cx="426" cy="42" r="4" fill="#e84040" opacity="0.6"/>
+            </g>
+          </svg>
+          <!-- 이름 목록 -->
+          <div class="seesaw-names-grid">
+            <div class="seesaw-names-col" id="ssNamesBlue"></div>
+            <div class="seesaw-names-col" id="ssNamesRed"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- animSections -->
+
+    <!-- 건너뛰기 (애니 중에만 표시) -->
+    <div class="anim-modal-skip" id="animSkipBtn" onclick="skipAnim()">건너뛰기</div>
+
+    <!-- 결과 섹션 (애니 완료 후 교체) -->
+    <div class="modal-result-section" id="modalResultSection">
+      <div class="modal-teams-row" id="modalTeamsRow"></div>
+      <div class="modal-action-row">
+        <button class="btn-modal-reroll" id="btnModalReroll">↺ 다시 배정하기</button>
+        <button class="btn-modal-close" onclick="closeModalAndReset()">✕ 닫기</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <script>
 const ROLES = ['TOP','JGL','MID','BOT','SPT'];
@@ -817,13 +976,13 @@ function resetTab(id) {
   if (!panel) return;
   panel.querySelectorAll('input[type=text]').forEach(inp => { inp.value = ''; });
   panel.querySelectorAll('input[type=number]').forEach(inp => { inp.value = ''; });
-  // 결과/애니메이션 영역 숨기기
   panel.querySelectorAll('.result-wrap').forEach(el => { el.style.display = 'none'; });
-  panel.querySelectorAll('.flip-wrap, .deal-wrap').forEach(el => { el.classList.remove('active'); });
-  // 포지션 고정 탭이면 락도 해제
-  if (id === 'pos') {
-    panel.querySelectorAll('.lock-btn.locked').forEach(btn => toggleLock(btn));
-  }
+  if (id === 'pos') panel.querySelectorAll('.lock-btn.locked').forEach(btn => toggleLock(btn));
+  // 모달이 열려있으면 닫기
+  closeModal();
+  ['btnPos','btnRand','btnAbility'].forEach(id => {
+    const b = document.getElementById(id); if(b) b.disabled = false;
+  });
   renderMembers();
 }
 
@@ -889,170 +1048,261 @@ function balancedSplit(players) {
   return best;
 }
 
+// ── REVEAL 애니메이션 (포지션 고정) ──
+// TOP→SPT 순서로 블루/레드 카드를 양쪽에 동시 슬라이드인
+function runRevealAnimation(t1, t2, onDone) {
+  const TOTAL    = 10000;
+  const INTERVAL = (TOTAL - 2000) / ROLES.length;
+
+  const blueCol = document.getElementById('revealBlue');
+  const redCol  = document.getElementById('revealRed');
+  const progEl  = document.getElementById('revealProgress');
+
+  blueCol.innerHTML = '<div class="reveal-team-head blue">🔵 블루팀</div>';
+  redCol.innerHTML  = '<div class="reveal-team-head red">🔴 레드팀</div>';
+  progEl.textContent = '0 / 5';
+
+  ROLES.forEach((role, i) => {
+    const bm = t1.find(m => m.role === role);
+    const rm = t2.find(m => m.role === role);
+
+    const mkCard = (member, team) => {
+      const card = document.createElement('div');
+      card.className = `reveal-card ${team}-card`;
+      card.innerHTML = `
+        <img class="reveal-role-icon" src="${ICONS[role]}" onerror="this.style.display='none'">
+        <span class="reveal-role-emoji">${ROLE_EMOJI[role]}</span>
+        <span class="reveal-role-name">${role}</span>
+        <span class="reveal-player-name">${member.name}</span>
+      `;
+      return card;
+    };
+
+    const bc = mkCard(bm, 'blue');
+    const rc = mkCard(rm, 'red');
+    blueCol.appendChild(bc);
+    redCol.appendChild(rc);
+
+    setTimeout(() => {
+      bc.classList.add('show');
+      rc.classList.add('show');
+      progEl.textContent = `${i+1} / 5`;
+    }, INTERVAL * i + 800);
+  });
+
+  setTimeout(onDone, TOTAL);
+}
+
+// ── FLIP 애니메이션 (올랜덤) ──
+// 포지션 있든 없든 모두 카드플립, TOP블루→TOP레드→JGL블루→... 순서대로
 function runFlipAnimation(gridId, progId, progTxtId, members, onDone) {
   const grid = document.getElementById(gridId);
   grid.innerHTML = '';
-  const TOTAL_MS = 5000;
-  const CARD_COUNT = members.length;
-  const INTERVAL = (TOTAL_MS - 800) / CARD_COUNT;
-  const cardEls = [];
+  const TOTAL_MS   = 10000;
+  const CARD_COUNT = members.length; // 10
+  const INTERVAL   = (TOTAL_MS - 2000) / CARD_COUNT;
+  const cardEls    = [];
+
+  const hasRole = members[0] && members[0].role;
 
   for (let ci = 0; ci < 5; ci++) {
     const col = document.createElement('div');
     col.className = 'flip-col';
-    const lbl = document.createElement('div');
-    lbl.className = 'flip-role-lbl';
-    lbl.innerHTML = `
-      <img class="flip-role-icon" src="${ICONS[ROLES[ci]]}" onerror="this.style.display='none'">
-      <span class="flip-role-emoji">${ROLE_EMOJI[ROLES[ci]]}</span>
-      <span class="flip-role-name">${ROLES[ci]}</span>
-    `;
-    col.appendChild(lbl);
+
+    if (hasRole) {
+      col.innerHTML = `<div class="flip-role-lbl">
+        <img class="flip-role-icon" src="${ICONS[ROLES[ci]]}" onerror="this.style.display='none'">
+        <span class="flip-role-emoji">${ROLE_EMOJI[ROLES[ci]]}</span>
+        <span class="flip-role-name">${ROLES[ci]}</span>
+      </div>`;
+    } else {
+      const lbl = document.createElement('div');
+      lbl.className = 'flip-role-lbl';
+      lbl.innerHTML = `<span class="flip-role-name">${ci+1}</span>`;
+      col.appendChild(lbl);
+    }
 
     const blueScene = document.createElement('div'); blueScene.className = 'flip-card-scene';
     const blueCard  = document.createElement('div'); blueCard.className = 'flip-card';
     blueCard.innerHTML = `<div class="flip-card-front"><span class="flip-card-front-icon">?</span></div><div class="flip-card-back blue-card"><span class="fc-team">BLUE</span><span class="fc-name">${members[ci].name}</span></div>`;
     blueScene.appendChild(blueCard); col.appendChild(blueScene);
-    cardEls.push({ el: blueCard });
+    cardEls.push(blueCard); // ci*2 = 블루
 
     const redScene = document.createElement('div'); redScene.className = 'flip-card-scene';
     const redCard  = document.createElement('div'); redCard.className = 'flip-card';
     redCard.innerHTML = `<div class="flip-card-front"><span class="flip-card-front-icon">?</span></div><div class="flip-card-back red-card"><span class="fc-team">RED</span><span class="fc-name">${members[ci+5].name}</span></div>`;
     redScene.appendChild(redCard); col.appendChild(redScene);
-    cardEls.push({ el: redCard });
+    cardEls.push(redCard); // ci*2+1 = 레드
 
     grid.appendChild(col);
   }
 
-  const order = shuffle(cardEls.map((_,i)=>i));
+  // cardEls = [TOP블루(0), TOP레드(1), JGL블루(2), JGL레드(3), MID블루(4), MID레드(5), BOT블루(6), BOT레드(7), SPT블루(8), SPT레드(9)]
+  // TOP블루→TOP레드→JGL블루→JGL레드→MID블루→MID레드→BOT블루→BOT레드→SPT블루→SPT레드
+  const order = [0,1,2,3,4,5,6,7,8,9];
+
   let flipped = 0;
   const progFill = document.getElementById(progId);
   const progTxt  = document.getElementById(progTxtId);
 
   order.forEach((cardIdx, seq) => {
     setTimeout(() => {
-      cardEls[cardIdx].el.classList.add('flipped');
+      cardEls[cardIdx].classList.add('flipped');
       flipped++;
-      const pct = Math.round((flipped/CARD_COUNT)*100);
-      progFill.style.width = pct+'%';
-      progTxt.textContent = `${flipped} / ${CARD_COUNT}`;
-    }, INTERVAL * seq + 200);
+      progFill.style.width = Math.round(flipped/CARD_COUNT*100) + '%';
+      progTxt.textContent  = `${flipped} / ${CARD_COUNT}`;
+    }, INTERVAL * seq + 600);
   });
 
   setTimeout(onDone, TOTAL_MS);
 }
 
-// 카드 날리기 애니메이션 (팀만 랜덤용)
-// stageId: deal-stage DOM id, members: [{name, team:'blue'|'red'}, ...] 10개
-function runDealAnimation(stageId, cntBlueId, cntRedId, members, onDone) {
-  const stage    = document.getElementById(stageId);
-  const cntBlue  = document.getElementById(cntBlueId);
-  const cntRed   = document.getElementById(cntRedId);
+// ── 시소 애니메이션 (능력치) ──
+// SVG 시소가 기울며 이름은 아래 별도 영역에 표시
+function runScaleAnimation(t1, t2, onDone) {
+  const TOTAL    = 10000;
+  const INTERVAL = (TOTAL - 2500) / 10;
 
-  // 덱 위치(중앙) 기준으로 블루(왼쪽)/레드(오른쪽) 더미로 날아감
-  const stageRect = stage.getBoundingClientRect();
-  const TOTAL_MS  = 5000;
-  const CARD_COUNT = members.length; // 10
-  const INTERVAL  = (TOTAL_MS - 600) / CARD_COUNT; // ~440ms 간격
+  const beamG    = document.getElementById('seesawBeamG');
+  const bCountEl = document.getElementById('ssBlueCount');
+  const rCountEl = document.getElementById('ssRedCount');
+  const bNamesEl = document.getElementById('ssNamesBlue');
+  const rNamesEl = document.getElementById('ssNamesRed');
+  const bAvgEl   = document.getElementById('ssAvgBlue');
+  const rAvgEl   = document.getElementById('ssAvgRed');
 
-  let blueCount = 0, redCount = 0;
+  bNamesEl.innerHTML = ''; rNamesEl.innerHTML = '';
+  bCountEl.textContent = '0'; rCountEl.textContent = '0';
+  bAvgEl.textContent = '평균 -'; rAvgEl.textContent = '평균 -';
+  beamG.style.transform = 'rotate(0deg)';
 
-  // 랜덤 순서로 카드 날리기
-  const order = shuffle(members.map((_,i)=>i));
+  const allItems = [];
+  for (let i = 0; i < 5; i++) {
+    allItems.push({ m: t1[i], team: 'blue' });
+    allItems.push({ m: t2[i], team: 'red'  });
+  }
 
-  order.forEach((mi, seq) => {
-    const m = members[mi];
-    const isBlue = m.team === 'blue';
+  let bSum = 0, rSum = 0, bCnt = 0, rCnt = 0;
 
+  allItems.forEach(({ m, team }, idx) => {
     setTimeout(() => {
-      // 날아가는 카드 생성
-      const card = document.createElement('div');
-      card.className = `flying-card ${isBlue ? 'blue-card' : 'red-card'}`;
-      card.innerHTML = `<span class="fc-team">${isBlue ? 'BLUE' : 'RED'}</span><span class="fc-name">${m.name}</span>`;
-      card.style.cssText = `left: calc(50% - 36px); top: 30px;`;
-      stage.appendChild(card);
+      const el = document.createElement('div');
+      el.className = `seesaw-name-item ${team}`;
+      el.textContent = m.score ? `${m.name} (${m.score})` : m.name;
 
-      // 목적지: 블루=왼쪽, 레드=오른쪽
-      const destX = isBlue
-        ? `calc(8px + ${(isBlue ? blueCount : redCount) * 3}px)`
-        : `calc(100% - 80px - ${(isBlue ? blueCount : redCount) * 3}px)`;
-      const destY = `${20 + (isBlue ? blueCount : redCount) * 2}px`;
+      if (team === 'blue') {
+        bNamesEl.appendChild(el);
+        bSum += m.score || 0; bCnt++;
+        bCountEl.textContent = bCnt;
+        bAvgEl.textContent = `평균 ${(bSum/bCnt).toFixed(1)}`;
+      } else {
+        rNamesEl.appendChild(el);
+        rSum += m.score || 0; rCnt++;
+        rCountEl.textContent = rCnt;
+        rAvgEl.textContent = `평균 ${(rSum/rCnt).toFixed(1)}`;
+      }
 
-      // 카드 등장 → 날아감
-      requestAnimationFrame(() => {
-        card.style.transition = 'none';
-        card.style.opacity = '1';
-        card.style.transform = 'scale(1.05) rotate(0deg)';
-
-        requestAnimationFrame(() => {
-          const tX = isBlue ? -120 : 120;
-          const rot = isBlue
-            ? (-8 + Math.random()*16)
-            : (-8 + Math.random()*16);
-          card.style.transition = `transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.45s ease, left 0.45s cubic-bezier(0.25,0.46,0.45,0.94), top 0.45s ease`;
-          card.style.left = isBlue ? '6px' : 'calc(100% - 78px)';
-          card.style.top  = `${18 + (isBlue ? blueCount : redCount) * 2}px`;
-          card.style.transform = `scale(0.92) rotate(${rot}deg)`;
-        });
-      });
-
-      // 카운터 업데이트
-      if (isBlue) { blueCount++; cntBlue.textContent = blueCount; }
-      else        { redCount++;  cntRed.textContent  = redCount; }
-
-    }, INTERVAL * seq + 150);
+      const diff = bSum - rSum;
+      const tilt = Math.max(-22, Math.min(22, diff * 2.5));
+      beamG.style.transform = `rotate(${-tilt}deg)`;
+    }, INTERVAL * idx + 500);
   });
 
-  setTimeout(onDone, TOTAL_MS);
+  setTimeout(() => { beamG.style.transform = 'rotate(0deg)'; }, TOTAL - 900);
+  setTimeout(onDone, TOTAL);
 }
 
-function startAnim(flipId, dealId, cntBlueId, cntRedId, progId, progTxtId, btnId, members, resEl, rerollFn, showScore, withRole) {
+// ── 버블 애니메이션 (올랜덤 팀만 — 현재 미사용, 플립으로 통합) ──
+function runBubbleAnimation(stageId, divId, lblBlueId, lblRedId, cntBlueId, cntRedId, members, onDone) {
+  setTimeout(onDone, 10000);
+}
+
+let _animDoneCallback = null;
+let _animSkipData    = null;
+
+function openModal(sectionId, title) {
+  document.querySelectorAll('.modal-section').forEach(s => s.classList.remove('active'));
+  document.getElementById(sectionId).classList.add('active');
+  document.getElementById('animModalTitle').textContent = title;
+  document.getElementById('animSections').style.display = 'block';
+  document.getElementById('animSkipBtn').style.display  = 'block';
+  document.getElementById('modalResultSection').classList.remove('active');
+  document.getElementById('animModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('animModal').classList.remove('open');
+  _animSkipData = null;
+}
+
+function closeModalAndReset() {
+  closeModal();
+}
+
+// 모달 안에 결과 표시 (애니 완료 후)
+function showResultInModal(t1, t2, rerollFn, showScore) {
+  // 애니 영역 숨기고 결과 영역 표시
+  document.getElementById('animSections').style.display = 'none';
+  document.getElementById('animSkipBtn').style.display  = 'none';
+  document.getElementById('animModalTitle').textContent = '▸ 팀 배정 완료';
+
+  const row = document.getElementById('modalTeamsRow');
+  row.innerHTML = '';
+  row.appendChild(makeCard('블루팀','blue',t1,showScore));
+  row.appendChild(makeCard('레드팀','red',t2,showScore));
+
+  document.getElementById('btnModalReroll').onclick = () => {
+    closeModal();
+    rerollFn();
+  };
+
+  const resSection = document.getElementById('modalResultSection');
+  resSection.classList.add('active');
+}
+
+function skipAnim() {
+  if (!_animSkipData) return;
+  const { t1, t2, rerollFn, showScore, btnId } = _animSkipData;
+  document.getElementById(btnId).disabled = false;
+  _animDoneCallback = null;
+  _animSkipData = null;
+  showResultInModal(t1, t2, rerollFn, showScore);
+}
+
+function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
   const btn = document.getElementById(btnId);
   resEl.style.display = 'none';
   btn.disabled = true;
 
-  const t1 = members.slice(0,5);
+  const t1 = members.slice(0, 5);
   const t2 = members.slice(5);
 
-  if (withRole) {
-    // 카드 플립 애니메이션
-    const flipEl = document.getElementById(flipId);
-    flipEl.classList.add('active');
-    flipEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
-    runFlipAnimation(flipId.replace('flip','flipGrid'), progId, progTxtId, members, () => {
-      flipEl.classList.remove('active');
-      btn.disabled = false;
-      showResult(resEl, t1, t2, rerollFn, showScore);
-    });
-  } else {
-    // 카드 딜 애니메이션
-    const dealEl = document.getElementById(dealId);
-    // 카운터 리셋
-    document.getElementById(cntBlueId).textContent = '0';
-    document.getElementById(cntRedId).textContent  = '0';
-    // 기존 flying-card 제거
-    document.querySelectorAll(`#${dealId} .flying-card`).forEach(e=>e.remove());
+  _animSkipData = { t1, t2, rerollFn, showScore, btnId };
 
-    dealEl.classList.add('active');
-    dealEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  function done() {
+    btn.disabled = false;
+    _animDoneCallback = null;
+    _animSkipData = null;
+    showResultInModal(t1, t2, rerollFn, showScore);
+  }
 
-    // members에 team 정보 추가 (t1=blue, t2=red)
-    const dealMembers = [
-      ...t1.map(m=>({...m, team:'blue'})),
-      ...t2.map(m=>({...m, team:'red'})),
-    ];
-    runDealAnimation(
-      dealId.replace('deal','dealStage'),
-      cntBlueId, cntRedId,
-      dealMembers,
-      () => {
-        dealEl.classList.remove('active');
-        btn.disabled = false;
-        showResult(resEl, t1, t2, rerollFn, showScore);
-      }
-    );
+  if (mode === 'pos-reveal') {
+    openModal('modalDrum', '▸ 팀 배정 공개 중...');
+    _animDoneCallback = done;
+    runRevealAnimation(t1, t2, done);
+
+  } else if (mode === 'rand-flip') {
+    openModal('modalFlip', '▸ 카드를 뽑는 중...');
+    _animDoneCallback = done;
+    runFlipAnimation('flipGridRand', 'progRand', 'progTxtRand', members, done);
+
+  } else if (mode === 'ability-scale') {
+    openModal('modalScale', '▸ 능력치 균형 배정 중...');
+    _animDoneCallback = done;
+    runScaleAnimation(t1, t2, done);
   }
 }
+
 function makeCard(teamName, cls, members, showScore) {
   const rawAvg = showScore ? members.reduce((s,m)=>s+(m.score||0),0)/members.length : null;
   const avg = rawAvg !== null ? parseFloat(rawAvg.toFixed(2)).toString() : null;
@@ -1117,12 +1367,13 @@ function doRandom() {
   if (withRole) {
     const r1 = shuffle([...ROLES]), r2 = shuffle([...ROLES]);
     t1 = players.slice(0,5).map((n,i)=>({role:r1[i],name:n})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
-    t2 = players.slice(5).map((n,i) =>({role:r2[i],name:n})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
+    t2 = players.slice(5).map((n,i)=>({role:r2[i],name:n})).sort((a,b)=>ROLES.indexOf(a.role)-ROLES.indexOf(b.role));
   } else {
     t1 = players.slice(0,5).map(n=>({name:n}));
     t2 = players.slice(5).map(n=>({name:n}));
   }
-  startAnim('flipRand','dealRand','dealCntBlueRand','dealCntRedRand','progRand','progTxtRand','btnRand',[...t1,...t2],document.getElementById('resRand'),doRandom,false,withRole);
+  // 포지션 없는 경우: members 배열을 [t1[0],t1[1],...,t2[0],t2[1],...] 순으로
+  startAnim('rand-flip','btnRand',[...t1,...t2],document.getElementById('resRand'),doRandom,false);
 }
 
 function doPos() {
@@ -1134,24 +1385,20 @@ function doPos() {
   });
   if (ROLES.some(r => data[r].some(n=>!n))) { err.textContent = '모든 포지션의 이름을 입력해 주세요! (총 10칸)'; return; }
   err.textContent = '';
-
   const t1=[], t2=[];
   ROLES.forEach(role => {
     const row = document.querySelector(`.pos-row[data-role="${role}"]`);
     const isLocked = row && row.classList.contains('locked-row');
-
     if (isLocked) {
-      // 고정: 후보 A → 블루, 후보 B → 레드 (입력 순서 그대로)
       t1.push({ role, name: data[role][0] });
       t2.push({ role, name: data[role][1] });
     } else {
-      // 랜덤: 50% 확률로 A/B 뒤집기
-      const [a, b] = Math.random() < 0.5 ? data[role] : [data[role][1], data[role][0]];
+      const [a,b] = Math.random()<0.5 ? data[role] : [data[role][1],data[role][0]];
       t1.push({ role, name: a });
       t2.push({ role, name: b });
     }
   });
-  startAnim('flipPos','dealPos','dealCntBluePos','dealCntRedPos','progPos','progTxtPos','btnPos',[...t1,...t2],document.getElementById('resPos'),doPos,false,true);
+  startAnim('pos-reveal','btnPos',[...t1,...t2],document.getElementById('resPos'),doPos,false);
 }
 
 function doAbility() {
@@ -1176,7 +1423,7 @@ function doAbility() {
     t1 = g1.map(pi=>({name:players[pi].name,score:players[pi].score}));
     t2 = g2.map(pi=>({name:players[pi].name,score:players[pi].score}));
   }
-  startAnim('flipAbility','dealAbility','dealCntBlueAbility','dealCntRedAbility','progAbility','progTxtAbility','btnAbility',[...t1,...t2],document.getElementById('resAbility'),doAbility,true,withRole);
+  startAnim('ability-scale','btnAbility',[...t1,...t2],document.getElementById('resAbility'),doAbility,true);
 }
 </script>
 </body>
