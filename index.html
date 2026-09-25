@@ -537,8 +537,22 @@
     }
     .anim-modal-skip:hover { color: var(--text); }
     /* 모달 내 팀 결과 카드 */
-    .modal-teams-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .modal-teams-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
     @media (max-width: 500px) { .modal-teams-row { grid-template-columns: 1fr; } }
+    /* 복사 버튼 행 */
+    .modal-copy-row {
+      display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 12px;
+    }
+    .btn-copy {
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 12px; border-radius: 6px; cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif; font-size: 0.72rem; font-weight: 500;
+      border: 1px solid var(--border); background: var(--panel2);
+      color: var(--muted); transition: all 0.18s; white-space: nowrap;
+    }
+    .btn-copy:hover { border-color: var(--gold); color: var(--gold2); background: var(--gold-dim); }
+    .btn-copy.copied { border-color: #48bb78; color: #48bb78; background: rgba(72,187,120,0.1); }
+    .btn-copy-icon { font-size: 0.85rem; }
   </style>
 </head>
 <body>
@@ -762,6 +776,15 @@
     <!-- 결과 섹션 (애니 완료 후 교체) -->
     <div class="modal-result-section" id="modalResultSection">
       <div class="modal-teams-row" id="modalTeamsRow"></div>
+      <!-- 복사 버튼 -->
+      <div class="modal-copy-row">
+        <button class="btn-copy" id="btnCopyImg" onclick="copyAsImage()">
+          <span class="btn-copy-icon">🖼️</span> 캡처 복사
+        </button>
+        <button class="btn-copy" id="btnCopyTxt" onclick="copyAsText()">
+          <span class="btn-copy-icon">📋</span> 텍스트 복사
+        </button>
+      </div>
       <div class="modal-action-row">
         <button class="btn-modal-reroll" id="btnModalReroll">↺ 다시 배정하기</button>
         <button class="btn-modal-close" onclick="closeModalAndReset()">✕ 닫기</button>
@@ -1219,6 +1242,144 @@ function runBubbleAnimation(stageId, divId, lblBlueId, lblRedId, cntBlueId, cntR
 
 let _animDoneCallback = null;
 let _animSkipData    = null;
+let _lastResult      = null; // { t1, t2, showScore }
+
+// ── 텍스트 복사 ──
+function copyAsText() {
+  if (!_lastResult) return;
+  const { t1, t2, showScore } = _lastResult;
+  const ROLE_KO = { TOP:'탑', JGL:'정글', MID:'미드', BOT:'봇', SPT:'서폿' };
+
+  const hasRole = t1[0] && t1[0].role;
+  let lines = ['[블루팀 / 레드팀]'];
+
+  if (hasRole) {
+    // 포지션 있는 경우: 라인별로
+    ROLES.forEach(role => {
+      const bm = t1.find(m => m.role === role);
+      const rm = t2.find(m => m.role === role);
+      const bName = bm ? (showScore ? `${bm.name}(${bm.score})` : bm.name) : '-';
+      const rName = rm ? (showScore ? `${rm.name}(${rm.score})` : rm.name) : '-';
+      const label = ROLE_KO[role] || role;
+      lines.push(`${label.padEnd(3, '\u3000')}  ${bName} / ${rName}`);
+    });
+    if (showScore) {
+      const bAvg = (t1.reduce((s,m)=>s+(m.score||0),0)/t1.length).toFixed(1);
+      const rAvg = (t2.reduce((s,m)=>s+(m.score||0),0)/t2.length).toFixed(1);
+      lines.push(`평균   ${bAvg} / ${rAvg}`);
+    }
+  } else {
+    // 포지션 없는 경우: 번호별로
+    for (let i = 0; i < 5; i++) {
+      const bName = t1[i] ? (showScore ? `${t1[i].name}(${t1[i].score})` : t1[i].name) : '-';
+      const rName = t2[i] ? (showScore ? `${t2[i].name}(${t2[i].score})` : t2[i].name) : '-';
+      lines.push(`${i+1}번   ${bName} / ${rName}`);
+    }
+    if (showScore) {
+      const bAvg = (t1.reduce((s,m)=>s+(m.score||0),0)/t1.length).toFixed(1);
+      const rAvg = (t2.reduce((s,m)=>s+(m.score||0),0)/t2.length).toFixed(1);
+      lines.push(`평균   ${bAvg} / ${rAvg}`);
+    }
+  }
+
+  const text = lines.join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('btnCopyTxt');
+    btn.classList.add('copied');
+    btn.innerHTML = '<span class="btn-copy-icon">✅</span> 복사됨!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<span class="btn-copy-icon">📋</span> 텍스트 복사';
+    }, 2000);
+  });
+}
+
+// ── 이미지 캡처 복사 ──
+async function copyAsImage() {
+  const target = document.getElementById('modalTeamsRow');
+  if (!target) return;
+  const btn = document.getElementById('btnCopyImg');
+
+  try {
+    // html2canvas 없이 SVG 방식으로 PNG 생성
+    const w = target.offsetWidth;
+    const h = target.offsetHeight;
+    const html = target.outerHTML;
+
+    // 현재 CSS 변수값 추출
+    const cs = getComputedStyle(document.documentElement);
+    const cssVars = `
+      :root {
+        --bg:${cs.getPropertyValue('--bg')};
+        --panel:${cs.getPropertyValue('--panel')};
+        --panel2:${cs.getPropertyValue('--panel2')};
+        --border:${cs.getPropertyValue('--border')};
+        --gold:${cs.getPropertyValue('--gold')};
+        --gold2:${cs.getPropertyValue('--gold2')};
+        --blue-team:${cs.getPropertyValue('--blue-team')};
+        --red-team:${cs.getPropertyValue('--red-team')};
+        --text:${cs.getPropertyValue('--text')};
+        --text-bright:${cs.getPropertyValue('--text-bright')};
+        --muted:${cs.getPropertyValue('--muted')};
+      }
+    `;
+
+    // 페이지 스타일 수집
+    const styles = [...document.styleSheets].map(ss => {
+      try { return [...ss.cssRules].map(r=>r.cssText).join(''); }
+      catch(e) { return ''; }
+    }).join('');
+
+    const svgContent = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="${w+40}" height="${h+40}">
+        <foreignObject x="20" y="20" width="${w}" height="${h}">
+          <div xmlns="http://www.w3.org/1999/xhtml">
+            <style>${cssVars}${styles}</style>
+            <div style="background:#0d1520;padding:16px;border-radius:12px;font-family:sans-serif;">
+              ${html}
+            </div>
+          </div>
+        </foreignObject>
+      </svg>`;
+
+    const blob = new Blob([svgContent], {type:'image/svg+xml'});
+    const url  = URL.createObjectURL(blob);
+    const img  = new Image();
+    img.onload = async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width  = w + 40;
+      canvas.height = h + 40;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#0d1520';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+
+      canvas.toBlob(async pngBlob => {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({'image/png': pngBlob})]);
+          btn.classList.add('copied');
+          btn.innerHTML = '<span class="btn-copy-icon">✅</span> 복사됨!';
+        } catch(e) {
+          // 클립보드 이미지 권한 없는 경우 다운로드로 대체
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(pngBlob);
+          a.download = 'lol_teams.png';
+          a.click();
+          btn.innerHTML = '<span class="btn-copy-icon">💾</span> 저장됨!';
+        }
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<span class="btn-copy-icon">🖼️</span> 캡처 복사';
+        }, 2000);
+      }, 'image/png');
+    };
+    img.src = url;
+  } catch(e) {
+    btn.innerHTML = '<span class="btn-copy-icon">❌</span> 실패';
+    setTimeout(() => { btn.innerHTML = '<span class="btn-copy-icon">🖼️</span> 캡처 복사'; }, 2000);
+  }
+}
 
 function openModal(sectionId, title) {
   document.querySelectorAll('.modal-section').forEach(s => s.classList.remove('active'));
@@ -1241,6 +1402,11 @@ function closeModalAndReset() {
 
 // 모달 안에 결과 표시 (애니 완료 후)
 function showResultInModal(t1, t2, rerollFn, showScore) {
+  _lastResult = { t1, t2, showScore };
+  // 복사 버튼 초기화
+  document.getElementById('btnCopyImg').innerHTML = '<span class="btn-copy-icon">🖼️</span> 캡처 복사';
+  document.getElementById('btnCopyTxt').innerHTML = '<span class="btn-copy-icon">📋</span> 텍스트 복사';
+
   // 애니 영역 숨기고 결과 영역 표시
   document.getElementById('animSections').style.display = 'none';
   document.getElementById('animSkipBtn').style.display  = 'none';
