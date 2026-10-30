@@ -122,7 +122,10 @@
     .member-item:hover { background: var(--panel2); border-color: var(--border); }
     .member-item.used { opacity: 0.35; cursor: default; }
     .member-item.used:hover { background: transparent; border-color: transparent; }
-    .member-icon { width: 22px; flex-shrink: 0; text-align: center; font-size: 1.1rem; line-height: 1; }
+    .member-no { min-width: 16px; flex-shrink: 0; text-align: right; font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.5px; color: rgba(200,155,60,0.6); transition: color 0.15s; }
+    .member-item:not(.used):hover .member-no { color: var(--gold2); }
+    .member-icon { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; line-height: 1; }
+    .member-teemo { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; display: block; }
     .member-name { font-size: 0.88rem; font-weight: 500; color: var(--text); flex: 1; }
     .member-item:not(.used):hover .member-name { color: var(--text-bright); }
     .member-del {
@@ -920,8 +923,9 @@ document.getElementById('heroBg').src =
   SPLASHES[Math.floor(Math.random()*SPLASHES.length)] + '.jpg';
 
 // ── 멤버 리스트 ──
-// 멤버 리스트 공통 아이콘 (소환사 🧙) — 바꾸고 싶으면 이 한 줄만 수정
-const MEMBER_ICON = '🧙';
+// 멤버 리스트 공통 아이콘: 티모 (Riot 공식 Data Dragon 이미지). 불러오지 못하면 🍄(티모 버섯)로 대체
+const TEEMO_ICON_URL = 'https://ddragon.leagueoflegends.com/cdn/11.20.1/img/champion/Teemo.png';
+const MEMBER_ICON_FALLBACK = '🍄';
 
 // 기본 멤버: 코드에 내장되어 있어서 어떤 기기/브라우저에서 열어도 항상 들어 있어요.
 const DEFAULT_MEMBERS = [
@@ -984,7 +988,8 @@ function renderMembers() {
     const item = document.createElement('div');
     item.className = 'member-item' + (isUsed ? ' used' : '');
     item.innerHTML = `
-      <span class="member-icon" aria-hidden="true">${MEMBER_ICON}</span>
+      <span class="member-no">${idx + 1}</span>
+      <span class="member-icon" aria-hidden="true"><img class="member-teemo" src="${TEEMO_ICON_URL}" alt="" onerror="this.parentNode.textContent='${MEMBER_ICON_FALLBACK}'"></span>
       <span class="member-name">${name}</span>
       <button class="member-del" onclick="deleteMember(${idx},event)" title="삭제">✕</button>
     `;
