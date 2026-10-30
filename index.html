@@ -122,10 +122,8 @@
     .member-item:hover { background: var(--panel2); border-color: var(--border); }
     .member-item.used { opacity: 0.35; cursor: default; }
     .member-item.used:hover { background: transparent; border-color: transparent; }
-    .member-no { min-width: 16px; flex-shrink: 0; text-align: right; font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.5px; color: rgba(200,155,60,0.6); transition: color 0.15s; }
+    .member-no { min-width: 18px; flex-shrink: 0; text-align: right; font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.5px; color: rgba(200,155,60,0.6); transition: color 0.15s; }
     .member-item:not(.used):hover .member-no { color: var(--gold2); }
-    .member-icon { width: 24px; height: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; line-height: 1; }
-    .member-teemo { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; display: block; }
     .member-name { font-size: 0.88rem; font-weight: 500; color: var(--text); flex: 1; }
     .member-item:not(.used):hover .member-name { color: var(--text-bright); }
     .member-del {
@@ -154,9 +152,9 @@
       color: var(--muted); font-size: 0.75rem; cursor: pointer; transition: all 0.15s;
     }
     .btn-clear-inputs:hover { border-color: var(--red-team); color: var(--red-team); }
-    .member-restore { padding: 0 12px 10px; text-align: center; }
-    .btn-restore { background: none; border: none; color: var(--muted); font-family: 'Noto Sans KR', sans-serif; font-size: 0.72rem; text-decoration: underline; cursor: pointer; }
-    .btn-restore:hover { color: var(--gold2); }
+    .member-restore { padding: 0 12px 12px; }
+    .btn-restore { width: 100%; padding: 8px; background: transparent; border: 1px solid var(--border); border-radius: 7px; color: var(--muted); font-family: 'Noto Sans KR', sans-serif; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .btn-restore:hover { border-color: var(--gold); color: var(--gold2); background: var(--gold-dim); }
 
     .member-empty {
       text-align: center; padding: 24px 12px;
@@ -445,7 +443,7 @@
     .rp-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:7px 12px; background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:10px; transition:border-color .2s; }
     .rp-row:focus-within { border-color:rgba(200,155,60,.45); }
     .rp-no { font-size:.74rem; font-weight:600; color:var(--muted); min-width:58px; }
-    .rp-row input[type=text] { flex:1 1 180px; width:auto; min-width:0; padding:11px 14px; font-size:1rem; font-weight:500; text-align:left; border-radius:8px; }
+    .rp-row input[type=text] { flex:1 1 180px; width:auto; min-width:0; padding:11px 14px; font-size:1rem; font-weight:500; text-align:center; border-radius:8px; }
     .rand-grid.no-role .rp-row input[type=text] { flex:1 1 140px; }
     .role-chips { display:flex; gap:6px; flex:0 0 auto; }
     .rand-grid.no-role .role-chips { display:none; }
@@ -923,10 +921,6 @@ document.getElementById('heroBg').src =
   SPLASHES[Math.floor(Math.random()*SPLASHES.length)] + '.jpg';
 
 // ── 멤버 리스트 ──
-// 멤버 리스트 공통 아이콘: 티모 (Riot 공식 Data Dragon 이미지). 불러오지 못하면 🍄(티모 버섯)로 대체
-const TEEMO_ICON_URL = 'https://ddragon.leagueoflegends.com/cdn/11.20.1/img/champion/Teemo.png';
-const MEMBER_ICON_FALLBACK = '🍄';
-
 // 기본 멤버: 코드에 내장되어 있어서 어떤 기기/브라우저에서 열어도 항상 들어 있어요.
 const DEFAULT_MEMBERS = [
   '챱츄챱챱츄', '오늘의꼬순이', '황금도토리', '조지훈', '민식박프레이룰러',
@@ -989,7 +983,6 @@ function renderMembers() {
     item.className = 'member-item' + (isUsed ? ' used' : '');
     item.innerHTML = `
       <span class="member-no">${idx + 1}</span>
-      <span class="member-icon" aria-hidden="true"><img class="member-teemo" src="${TEEMO_ICON_URL}" alt="" onerror="this.parentNode.textContent='${MEMBER_ICON_FALLBACK}'"></span>
       <span class="member-name">${name}</span>
       <button class="member-del" onclick="deleteMember(${idx},event)" title="삭제">✕</button>
     `;
@@ -1034,28 +1027,16 @@ function clickMember(name, itemEl) {
   renderMembers(); // used 상태 갱신
 }
 
-// 랜덤 전체 채우기: 아직 안 쓴 멤버를 무작위로 골라 빈 칸에 무작위 순서로 채우기
+// 랜덤 전체 채우기: 누를 때마다 이 탭의 기존 입력을 모두 비우고, 멤버를 무작위로 다시 배정
+// (이름이 바뀌므로 이름에 딸린 능력치 / 라인 고정·제외 칩도 함께 초기화)
 function fillAll() {
-  const inputs = getActiveInputs();
-  const used = getUsedNames();
-  const available = shuffle(members.filter(m => !used.has(m)));
-  let ai = 0;
-  inputs.forEach(inp => {
-    if (!inp.value.trim() && ai < available.length) {
-      inp.value = available[ai++];
-    }
-  });
-  renderMembers();
-}
-
-// 입력칸 초기화 (멤버 리스트는 유지)
-function clearInputs() {
+  const panel = document.querySelector('.panel.active');
+  if (!panel) return;
   getActiveInputs().forEach(inp => { inp.value = ''; });
-  // 능력치 탭이면 숫자칸도 초기화
-  const activePanel = document.querySelector('.panel.active');
-  if (activePanel) {
-    activePanel.querySelectorAll('input[type=number]').forEach(inp => { inp.value = ''; });
-  }
+  panel.querySelectorAll('input[type=number]').forEach(inp => { inp.value = ''; });
+  panel.querySelectorAll('.role-chip').forEach(c => setChipState(c, 0));
+  const picked = shuffle(members);
+  getActiveInputs().forEach((inp, i) => { if (i < picked.length) inp.value = picked[i]; });
   renderMembers();
 }
 
@@ -1160,22 +1141,24 @@ function clearMemberList() {
   renderMembers();
 }
 
-// 기본 멤버 복원: 지웠던 기본 멤버를 다시 채움 (직접 추가한 멤버는 그대로)
+// 기본 멤버 복원: 리스트를 비우지 않아도 언제든 사용 가능
+//  - 지운 기본 멤버를 다시 채우고, 기본 멤버는 원래 순서로 정렬 (직접 추가한 멤버는 그 뒤에 그대로 유지)
 function restoreDefaultMembers() {
+  const before = members.slice();
+  const missing = DEFAULT_MEMBERS.filter(n => !members.includes(n));
+  const custom = members.filter(n => !DEFAULT_MEMBERS.includes(n));
   removedDefaults = [];
-  DEFAULT_MEMBERS.forEach(n => { if (!members.includes(n)) members.push(n); });
+  members = [...DEFAULT_MEMBERS, ...custom];
   saveMembers();
   renderMembers();
-}
-
-// 입력칸만 초기화 (fillAll용 내부 함수)
-function clearInputs() {
-  getActiveInputs().forEach(inp => { inp.value = ''; });
-  const activePanel = document.querySelector('.panel.active');
-  if (activePanel) {
-    activePanel.querySelectorAll('input[type=number]').forEach(inp => { inp.value = ''; });
+  const msg = missing.length ? `✓ ${missing.length}명 복원했어요`
+            : (JSON.stringify(before) !== JSON.stringify(members) ? '✓ 기본 순서로 정리했어요' : '이미 모두 들어 있어요');
+  const btn = document.querySelector('.btn-restore');
+  if (btn) {
+    btn.textContent = msg;
+    clearTimeout(btn._t);
+    btn._t = setTimeout(() => { btn.textContent = '기본 멤버 복원'; }, 1800);
   }
-  renderMembers();
 }
 
 function switchTab(id, btn) {
