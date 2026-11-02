@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>LOL 내전 팀 배정기</title>
+  <title>LOL 내전 도우미</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Rajdhani:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -22,49 +23,75 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; overflow-x: hidden; }
 
-    /* ── HERO ── */
-    .hero {
-      position: relative; width: 100%; height: 240px;
-      overflow: hidden; display: flex; align-items: center; justify-content: center;
+    /* ── 전체 틀: 왼쪽 사이드바 + 오른쪽 본문 ── */
+    .app { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 220px; flex-shrink: 0;
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+      background: var(--panel); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
     }
-    .hero-img {
+    /* 사이드바 상단: 챔피언 일러스트 배경 + 타이틀 (기존 상단 배너 느낌) */
+    .side-brand {
+      position: relative; height: 190px; flex-shrink: 0; overflow: hidden;
+      display: flex; align-items: flex-end;
+    }
+    .side-brand-img {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; object-position: center 22%;
+      object-fit: cover; object-position: 50% 20%;
       filter: brightness(0.62) saturate(1.1);
-      transition: opacity 0.6s;
     }
-    /* 좌우 그라데이션 + 하단 페이드 */
-    .hero-overlay {
+    .side-brand-overlay {
       position: absolute; inset: 0;
-      background:
-        linear-gradient(to bottom, rgba(5,9,16,0) 40%, var(--bg) 100%),
-        linear-gradient(to right, rgba(5,9,16,0.55) 0%, transparent 30%, transparent 70%, rgba(5,9,16,0.55) 100%);
+      background: linear-gradient(to bottom, rgba(5,9,16,0.05) 0%, rgba(5,9,16,0.35) 45%, var(--panel) 100%);
     }
-    /* 하단 경계선 광채 */
-    .hero-shine {
+    .side-brand-shine {
       position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(to right, transparent 0%, var(--gold) 30%, var(--gold2) 50%, var(--gold) 70%, transparent 100%);
       opacity: 0.7;
     }
-    .hero-content { position: relative; z-index: 2; text-align: center; padding: 0 20px; }
-    .hero-title {
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
-      font-size: 3.8rem;
-      letter-spacing: 10px;
-      line-height: 1;
-      margin-bottom: 10px;
-      color: var(--gold2);
-      text-shadow:
-        0 0 30px rgba(200,155,60,0.9),
-        0 0 80px rgba(200,155,60,0.4),
-        0 3px 12px rgba(0,0,0,1);
+    .side-brand-text { position: relative; z-index: 2; padding: 0 18px 16px; }
+    .side-brand-en {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap;
+      color: var(--gold); text-shadow: 0 1px 4px rgba(0,0,0,0.9);
     }
-    .hero-sub {
-      font-size: 0.8rem; letter-spacing: 5px;
-      text-transform: uppercase; color: var(--gold);
-      opacity: 0.85;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    .side-brand-ko {
+      font-family: 'Rajdhani', sans-serif; font-weight: 700;
+      font-size: 2.3rem; letter-spacing: 6px; line-height: 1.1;
+      color: var(--gold2);
+      text-shadow: 0 0 24px rgba(200,155,60,0.85), 0 0 60px rgba(200,155,60,0.35), 0 3px 10px rgba(0,0,0,1);
+    }
+    /* 메뉴 (나중에 계속 추가) */
+    .side-nav { display: flex; flex-direction: column; gap: 2px; padding: 14px 10px; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 11px 14px; border-radius: 8px;
+      background: none; border: none; border-left: 3px solid transparent;
+      color: var(--muted); font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.88rem; font-weight: 700; text-align: left;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .nav-btn .nav-ico { width: 18px; text-align: center; font-size: 0.95rem; }
+    .nav-btn:hover:not(.active):not(:disabled) { color: var(--text); background: var(--panel2); }
+    .nav-btn.active { color: var(--gold2); background: var(--gold-dim); border-left-color: var(--gold); }
+    .nav-btn:disabled { opacity: 0.35; cursor: default; }
+    .main { flex: 1; min-width: 0; }
+
+    /* 메뉴별 화면 */
+    .page-view { display: none; }
+    .page-view.active { display: block; }
+
+    /* 화면이 좁으면 사이드바를 위쪽 가로 막대로 */
+    @media (max-width: 820px) {
+      .app { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; overflow: visible; border-right: none; border-bottom: 1px solid var(--border); }
+      .side-brand { height: 120px; }
+      .side-brand-img { object-position: 50% 22%; }
+      .side-brand-ko { font-size: 1.9rem; }
+      .side-nav { flex-direction: row; overflow-x: auto; padding: 8px 10px; }
+      .nav-btn { width: auto; border-left: none; border-bottom: 2px solid transparent; border-radius: 6px 6px 0 0; }
+      .nav-btn.active { border-bottom-color: var(--gold); }
     }
 
     /* PAGE — 2컬럼 레이아웃 */
@@ -437,8 +464,6 @@
       .member-list { max-height: 200px; }
     }
     @media (max-width: 620px) {
-      .hero { height: 200px; }
-      .hero-title { font-size: 2.4rem; letter-spacing: 6px; }
       .rand-grid, .ability-grid { grid-template-columns: repeat(2, 1fr); }
       .ability-wrap:nth-child(n+6) { margin-top: 0; }
       .flip-grid { grid-template-columns: repeat(5, 1fr); }
@@ -624,6 +649,8 @@
     .btn-copy:hover { border-color: var(--gold); color: var(--gold2); background: var(--gold-dim); }
     .btn-copy.copied { border-color: #48bb78; color: #48bb78; background: rgba(72,187,120,0.1); }
     .btn-copy-icon { font-size: 0.85rem; }
+    .btn-copy:disabled { opacity: .45; cursor: default; }
+    .btn-copy:disabled:hover { border-color: var(--border); color: var(--muted); background: var(--panel2); }
     @media (max-width: 620px) {
       .rand-grid, .rand-grid.no-role { grid-template-columns:1fr; }
       .rp-row { flex-wrap:wrap; }
@@ -636,17 +663,33 @@
 </head>
 <body>
 
-<div class="hero">
-  <img class="hero-img" id="heroBg" src="" alt="">
-  <div class="hero-overlay"></div>
-  <div class="hero-shine"></div>
-  <div class="hero-content">
-    <div class="hero-title">LOL 내전 팀 배정기</div>
-    <div class="hero-sub">League of Legends · 10인 · 2팀 랜덤</div>
-  </div>
-</div>
+<div class="app">
 
+<!-- ══ 왼쪽 사이드바 ══ -->
+<aside class="sidebar">
+  <div class="side-brand">
+    <img class="side-brand-img" id="heroBg" src="" alt="">
+    <div class="side-brand-overlay"></div>
+    <div class="side-brand-shine"></div>
+    <div class="side-brand-text">
+      <div class="side-brand-en">League of Legends</div>
+      <div class="side-brand-ko">내전</div>
+    </div>
+  </div>
+  <!-- 메뉴를 추가할 때는 아래 두 곳에 한 쌍씩 넣으면 돼요
+       (1) 여기에  <button class="nav-btn" onclick="switchPage('기능이름',this)"><span class="nav-ico">아이콘</span>메뉴명</button>
+       (2) 오른쪽 .page 안에  <div class="page-view" id="view-기능이름"> ... 내용 ... </div>   -->
+  <nav class="side-nav">
+    <button class="nav-btn active" onclick="switchPage('assign',this)"><span class="nav-ico">⚔</span>팀 배정</button>
+  </nav>
+</aside>
+
+<!-- ══ 오른쪽 본문 ══ -->
+<main class="main">
 <div class="page">
+
+<!-- ▣ 팀 배정 -->
+<div class="page-view active" id="view-assign">
 <div class="layout">
 <div class="layout-main">
   <div class="tabs">
@@ -655,7 +698,7 @@
       <span class="t-sub">팀 + 포지션 모두 랜덤</span>
     </button>
     <button class="tab-btn" onclick="switchTab('ability',this)">
-      <span class="t-main">⚖️ 올 랜덤 (능력치)</span>
+      <span class="t-main">⚖️ 증바람 능력치 랜덤</span>
       <span class="t-sub">평균 능력치 균형 배정</span>
     </button>
   </div>
@@ -689,7 +732,7 @@
     <div class="result-wrap" id="resRand"></div>
   </div>
 
-  <!-- 올 랜덤 (능력치) -->
+  <!-- 증바람 능력치 랜덤 -->
   <div class="panel" id="panel-ability">
     <div class="card">
       <div class="card-title"><span>▸ 참가자 이름 + 능력치 입력 (1~10)</span><button class="btn-tab-reset" onclick="resetTab('ability')">↺ 초기화</button></div>
@@ -740,7 +783,17 @@
 </div>
 
 </div><!-- layout -->
+</div><!-- /view-assign -->
+
+<!-- ▣ 메뉴를 추가하면 이 자리에 화면을 넣어요
+<div class="page-view" id="view-새기능">
+  ... 내용 ...
+</div>
+-->
+
 </div><!-- page -->
+</main>
+</div><!-- app -->
 
 <!-- ══ 배정 모달 ══ -->
 <div class="anim-modal" id="animModal">
@@ -858,6 +911,9 @@
         </button>
         <button class="btn-copy" id="btnCopyTxt" onclick="copyAsText()">
           <span class="btn-copy-icon">📋</span> 텍스트 복사
+        </button>
+        <button class="btn-copy" id="btnCopyImg" onclick="copyAsImage()">
+          <span class="btn-copy-icon">📸</span> 캡쳐
         </button>
       </div>
       <div class="modal-action-row">
@@ -1095,6 +1151,16 @@ function restoreDefaultMembers() {
     clearTimeout(btn._t);
     btn._t = setTimeout(() => { btn.textContent = '기본 멤버 복원'; }, 1800);
   }
+}
+
+// ── 상단 메뉴 전환 ──
+function switchPage(id, btn) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const view = document.getElementById('view-' + id);
+  if (view) view.classList.add('active');
+  setTimeout(renderMembers, 50);
 }
 
 function switchTab(id, btn) {
@@ -1531,37 +1597,53 @@ function copyAsText() {
   const { t1, t2, showScore } = _lastResult;
   const ROLE_KO = { TOP:'탑', JGL:'정글', MID:'미드', BOT:'봇', SPT:'서폿' };
 
+  // 한글은 영문보다 두 칸 넓어서, 글자 폭을 계산해 공백을 채워야 ' / '가 한 줄로 맞아요
+  const isWide = ch => {
+    const c = ch.codePointAt(0);
+    return (c >= 0x1100 && c <= 0x115F) || (c >= 0x2E80 && c <= 0xA4CF) ||
+           (c >= 0xAC00 && c <= 0xD7A3) || (c >= 0xF900 && c <= 0xFAFF) ||
+           (c >= 0xFE30 && c <= 0xFE6F) || (c >= 0xFF00 && c <= 0xFF60) ||
+           (c >= 0xFFE0 && c <= 0xFFE6);
+  };
+  const W    = str => Array.from(String(str)).reduce((n, ch) => n + (isWide(ch) ? 2 : 1), 0);
+  const padL = (str, n) => ' '.repeat(Math.max(0, n - W(str))) + str;   // 오른쪽 정렬
+  const padR = (str, n) => str + ' '.repeat(Math.max(0, n - W(str)));   // 왼쪽 정렬
+
+  const nameOf = m => m ? (showScore ? `${m.name}(${m.score})` : m.name) : '-';
+  const rows = [];
   const hasRole = t1[0] && t1[0].role;
-  let lines = ['[블루팀 / 레드팀]'];
 
   if (hasRole) {
     // 포지션 있는 경우: 라인별로
-    ROLES.forEach(role => {
-      const bm = t1.find(m => m.role === role);
-      const rm = t2.find(m => m.role === role);
-      const bName = bm ? (showScore ? `${bm.name}(${bm.score})` : bm.name) : '-';
-      const rName = rm ? (showScore ? `${rm.name}(${rm.score})` : rm.name) : '-';
-      const label = ROLE_KO[role] || role;
-      lines.push(`${label.padEnd(3, '\u3000')}  ${bName} / ${rName}`);
-    });
-    if (showScore) {
-      const bAvg = (t1.reduce((s,m)=>s+(m.score||0),0)/t1.length).toFixed(1);
-      const rAvg = (t2.reduce((s,m)=>s+(m.score||0),0)/t2.length).toFixed(1);
-      lines.push(`평균   ${bAvg} / ${rAvg}`);
-    }
+    ROLES.forEach(role => rows.push({
+      label: ROLE_KO[role] || role,
+      blue:  nameOf(t1.find(m => m.role === role)),
+      red:   nameOf(t2.find(m => m.role === role))
+    }));
   } else {
     // 포지션 없는 경우: 번호별로
     for (let i = 0; i < 5; i++) {
-      const bName = t1[i] ? (showScore ? `${t1[i].name}(${t1[i].score})` : t1[i].name) : '-';
-      const rName = t2[i] ? (showScore ? `${t2[i].name}(${t2[i].score})` : t2[i].name) : '-';
-      lines.push(`${i+1}번   ${bName} / ${rName}`);
-    }
-    if (showScore) {
-      const bAvg = (t1.reduce((s,m)=>s+(m.score||0),0)/t1.length).toFixed(1);
-      const rAvg = (t2.reduce((s,m)=>s+(m.score||0),0)/t2.length).toFixed(1);
-      lines.push(`평균   ${bAvg} / ${rAvg}`);
+      rows.push({ label: `${i + 1}번`, blue: nameOf(t1[i]), red: nameOf(t2[i]) });
     }
   }
+  if (showScore) {
+    const avg = t => (t.reduce((sum, m) => sum + (m.score || 0), 0) / t.length).toFixed(1);
+    rows.push({ label: '평균', blue: avg(t1), red: avg(t2) });
+  }
+
+  // 각 칸의 최대 폭을 구해서, 블루는 오른쪽 / 레드는 왼쪽으로 붙여 ' / '를 가운데 세워요
+  const wLabel = Math.max(...rows.map(r => W(r.label)));
+  const wBlue  = Math.max(W('블루팀'), ...rows.map(r => W(r.blue)));
+  const wRed   = Math.max(W('레드팀'), ...rows.map(r => W(r.red)));
+
+  const build = (label, blue, red) =>
+    (padR(label, wLabel) + '  ' + padL(blue, wBlue) + ' / ' + padR(red, wRed)).replace(/\s+$/, '');
+
+  const lines = [
+    build('', '블루팀', '레드팀'),
+    '-'.repeat(wLabel + 2 + wBlue + 3 + wRed),
+    ...rows.map(r => build(r.label, r.blue, r.red))
+  ];
 
   const text = lines.join('\n');
   navigator.clipboard.writeText(text).then(() => {
@@ -1573,6 +1655,70 @@ function copyAsText() {
       btn.innerHTML = '<span class="btn-copy-icon">📋</span> 텍스트 복사';
     }, 2000);
   });
+}
+
+// ── 캡쳐: 배정 완료 카드(블루/레드) 화면을 그대로 이미지로 클립보드에 복사 → 디스코드·카톡에 붙여넣기 ──
+const CAP_LABEL = { icon: '📸', text: '캡쳐' };
+function setCapBtn(icon, text, state) {
+  const btn = document.getElementById('btnCopyImg');
+  if (!btn) return;
+  btn.classList.toggle('copied', state === 'ok');
+  btn.innerHTML = `<span class="btn-copy-icon">${icon}</span> ${text}`;
+}
+function captureResultBlob() {
+  return new Promise((resolve, reject) => {
+    if (typeof html2canvas !== 'function') { reject(new Error('html2canvas 로드 실패')); return; }
+    const target = document.getElementById('modalTeamsRow');
+    html2canvas(target, {
+      backgroundColor: '#050910',
+      scale: Math.max(2, window.devicePixelRatio || 1),   // 선명하게
+      useCORS: true,                                       // 챔피언 일러스트/라인 아이콘 포함
+      logging: false,
+      onclone: doc => {
+        // 복제된 화면에서 등장 애니메이션을 꺼야 글자가 투명하게 찍히지 않아요
+        const st = doc.createElement('style');
+        st.textContent = '*{animation:none!important;transition:none!important}' +
+                         '#modalTeamsRow{padding:12px;margin:0!important}';
+        doc.head.appendChild(st);
+        doc.querySelectorAll('#modalTeamsRow .role-row').forEach(r => r.classList.remove('dragging','drop-target','swapped'));
+      }
+    }).then(canvas => canvas.toBlob(b => b ? resolve(b) : reject(new Error('이미지 변환 실패')), 'image/png'))
+      .catch(reject);
+  });
+}
+function downloadBlob(blob) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '내전_팀배정.png';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+function copyAsImage() {
+  if (!_lastResult) return;
+  const btn = document.getElementById('btnCopyImg');
+  if (btn.disabled) return;
+  btn.disabled = true;
+  setCapBtn('⏳', '캡쳐 중...', '');
+  const done = (icon, text, state) => {
+    setCapBtn(icon, text, state);
+    btn.disabled = false;
+    clearTimeout(btn._t);
+    btn._t = setTimeout(() => setCapBtn(CAP_LABEL.icon, CAP_LABEL.text, ''), 2200);
+  };
+  const blobP = captureResultBlob();
+  let clipP;
+  try {
+    // 이미지를 만드는 중에도 '클릭 직후' 권한이 유지되도록 Promise를 바로 넘겨요 (Safari 대응)
+    clipP = navigator.clipboard.write([new ClipboardItem({ 'image/png': blobP })]);
+  } catch (e) {
+    clipP = Promise.reject(e);
+  }
+  clipP.then(() => done('✅', '복사됨! 붙여넣기 하세요', 'ok'))
+    .catch(() => {
+      // 클립보드 이미지 복사를 못 하는 브라우저면 PNG 파일로 저장
+      blobP.then(b => { downloadBlob(b); done('💾', '이미지 저장됨', 'ok'); })
+           .catch(() => done('⚠️', '캡쳐 실패', ''));
+    });
 }
 
 function openModal(sectionId, title) {
@@ -1607,6 +1753,7 @@ function showResultInModal(t1, t2, rerollFn, showScore) {
                   orig: { t1: t1.map(m => ({ ...m })), t2: t2.map(m => ({ ...m })) } };   // 원복용 처음 배정
   // 복사 버튼 초기화
   document.getElementById('btnCopyTxt').innerHTML = '<span class="btn-copy-icon">📋</span> 텍스트 복사';
+  setCapBtn('📸', '캡쳐', '');
 
   // 애니 영역 숨기고 결과 영역 표시
   document.getElementById('animSections').style.display = 'none';
