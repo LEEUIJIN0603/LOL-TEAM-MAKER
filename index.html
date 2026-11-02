@@ -162,7 +162,7 @@
     }
 
     /* TABS */
-    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
+    .tabs { display: grid; grid-template-columns: repeat(2, 1fr); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
     .tab-btn { padding: 14px 10px; background: var(--panel); border: none; border-right: 1px solid var(--border); color: var(--muted); font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
     .tab-btn:last-child { border-right: none; }
     .tab-btn .t-main { font-size: 0.88rem; font-weight: 700; }
@@ -199,36 +199,6 @@
     input[type=number] { background: #06101a; border: 1px solid var(--border); border-radius: 7px; color: var(--gold2); font-family: 'Bebas Neue', sans-serif; font-size: 1rem; padding: 9px 4px; text-align: center; width: 100%; transition: border-color 0.2s; -moz-appearance: textfield; }
     input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
     input[type=number]:focus { outline: none; border-color: var(--gold); }
-
-    /* POSITION GRID */
-    .pos-col-labels { display: grid; grid-template-columns: 96px 1fr 1fr; gap: 10px; margin-bottom: 6px; }
-    .pos-col-labels span { font-size: 0.68rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); text-align: center; }
-    .pos-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
-    .pos-row { display: grid; grid-template-columns: 96px 1fr 1fr 56px; gap: 10px; align-items: center; }
-    .pos-badge { display: flex; align-items: center; justify-content: center; gap: 5px; background: #06101a; border: 1px solid var(--border); border-radius: 8px; padding: 9px 6px; }
-    .pos-icon { width: 20px; height: 20px; object-fit: contain; filter: brightness(1.3) saturate(0.8); }
-    .pos-emoji { font-size: 14px; line-height: 1; }
-    .pos-name { font-family: 'Bebas Neue', sans-serif; font-size: 0.88rem; letter-spacing: 2px; color: var(--gold); }
-
-    /* 포지션 고정 버튼 */
-    .lock-btn {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-      background: #06101a; border: 1px solid var(--border); border-radius: 8px;
-      padding: 7px 4px; cursor: pointer; transition: all 0.2s; width: 100%; height: 100%;
-      color: var(--muted); font-size: 0.58rem; letter-spacing: 0.5px;
-    }
-    .lock-btn .lock-icon { font-size: 1rem; line-height: 1; transition: all 0.2s; }
-    .lock-btn:hover { border-color: var(--gold); color: var(--gold); }
-    .lock-btn.locked {
-      background: rgba(200,155,60,0.1); border-color: var(--gold);
-      color: var(--gold2);
-    }
-    .lock-btn.locked .lock-icon { filter: drop-shadow(0 0 4px rgba(200,155,60,0.6)); }
-    /* 고정된 행 입력칸 시각적 표시 */
-    .pos-row.locked-row input[type=text] {
-      border-color: rgba(200,155,60,0.4);
-      background: rgba(200,155,60,0.05);
-    }
 
     /* ABILITY GRID — 2열 레이아웃: 왼쪽 라벨+힌트, 오른쪽 입력칸들 */
     .ability-grid {
@@ -362,30 +332,6 @@
     .deal-names-row { display: flex; gap: 8px; justify-content: space-between; font-size: 0.72rem; color: var(--muted); min-height: 18px; }
     .deal-names-row span { transition: color 0.2s; }
 
-    /* ── REVEAL 애니메이션 (포지션 고정) ── */
-    .reveal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
-    .reveal-team-col { display: flex; flex-direction: column; gap: 7px; }
-    .reveal-team-head { font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 4px; padding: 7px 10px; border-radius: 7px; text-align: center; margin-bottom: 2px; }
-    .reveal-team-head.blue { color: var(--blue-team); background: rgba(74,158,255,0.1); border: 1px solid rgba(74,158,255,0.25); }
-    .reveal-team-head.red  { color: var(--red-team);  background: rgba(232,64,64,0.1);  border: 1px solid rgba(232,64,64,0.25); }
-    .reveal-card {
-      display: flex; align-items: center; gap: 10px;
-      background: #06101a; border: 1px solid var(--border);
-      border-radius: 9px; padding: 10px 12px;
-      opacity: 0; transform: translateX(-10px) scale(0.96);
-      transition: opacity 0.45s ease, transform 0.45s ease, border-color 0.3s;
-    }
-    .reveal-card.show { opacity: 1; transform: translateX(0) scale(1); }
-    .reveal-card.blue-card { border-color: rgba(74,158,255,0.45); background: rgba(74,158,255,0.07); }
-    .reveal-card.red-card  { border-color: rgba(232,64,64,0.45);  background: rgba(232,64,64,0.07); }
-    .reveal-role-icon { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
-    .reveal-role-emoji { font-size: 14px; flex-shrink: 0; }
-    .reveal-role-name { font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 1.5px; min-width: 32px; }
-    .reveal-card.blue-card .reveal-role-name { color: var(--blue-team); }
-    .reveal-card.red-card  .reveal-role-name { color: var(--red-team); }
-    .reveal-player-name { font-size: 0.95rem; font-weight: 700; color: var(--text-bright); flex: 1; }
-    .reveal-progress { text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 0.8rem; letter-spacing: 2px; color: var(--muted); }
-
     /* ── FLIP 애니메이션 (올랜덤 — 포지션 순서대로) ── */
     .flip-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
     .flip-col  { display: flex; flex-direction: column; align-items: center; gap: 6px; }
@@ -497,8 +443,6 @@
       .ability-wrap:nth-child(n+6) { margin-top: 0; }
       .flip-grid { grid-template-columns: repeat(5, 1fr); }
       .teams-row { grid-template-columns: 1fr; }
-      .pos-row { grid-template-columns: 70px 1fr 1fr 48px; }
-      .pos-col-labels { grid-template-columns: 70px 1fr 1fr 48px; }
       .tabs { grid-template-columns: 1fr; }
       .tab-btn { border-right: none; border-bottom: 1px solid var(--border); }
     }
@@ -617,6 +561,43 @@
     /* 모달 내 팀 결과 카드 */
     .modal-teams-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
     @media (max-width: 500px) { .modal-teams-row { grid-template-columns: 1fr; } }
+    /* ── 팀 결과 카드: 진영 배너(챔피언 스플래시 + 미니맵) + 인게임 스코어보드 줄 ── */
+    .team-card.blue { border-color:rgba(74,158,255,.4); box-shadow:0 0 22px rgba(74,158,255,.1); }
+    .team-card.red  { border-color:rgba(232,64,64,.4);  box-shadow:0 0 22px rgba(232,64,64,.1); }
+    .team-head.banner { position:relative; min-height:80px; padding:12px 14px; gap:10px; flex-wrap:wrap; overflow:hidden; background-color:#0a1220; background-size:cover; background-position:center 22%; border-bottom:2px solid transparent; }
+    .team-head.banner::before { content:''; position:absolute; inset:0; z-index:0; pointer-events:none; }
+    .team-head.banner > * { position:relative; z-index:1; }
+    .blue .team-head.banner { background-color:#071426; border-bottom-color:var(--blue-team); }
+    .red  .team-head.banner { background-color:#210a0c; border-bottom-color:var(--red-team); }
+    .blue .team-head.banner::before { background:linear-gradient(90deg, rgba(4,10,24,.95) 0%, rgba(8,28,66,.82) 45%, rgba(24,70,150,.22) 100%); }
+    .red  .team-head.banner::before { background:linear-gradient(90deg, rgba(24,5,7,.95) 0%, rgba(66,12,16,.82) 45%, rgba(150,30,34,.22) 100%); }
+    .side-left { display:flex; align-items:center; gap:12px; }
+    .sidemap { flex-shrink:0; filter:drop-shadow(0 2px 6px rgba(0,0,0,.6)); }
+    .side-text { display:flex; flex-direction:column; gap:3px; }
+    .side-en { font-family:'Bebas Neue',sans-serif; font-size:1.55rem; letter-spacing:4px; line-height:1; text-shadow:0 2px 10px rgba(0,0,0,.85); }
+    .blue .side-en { color:#7db8ff; }
+    .red  .side-en { color:#ff7b7b; }
+    .side-ko { font-family:'Noto Sans KR',sans-serif; font-size:.78rem; font-weight:500; letter-spacing:2px; color:rgba(255,255,255,.78); text-shadow:0 1px 6px rgba(0,0,0,.9); }
+    .team-head.banner .team-avg { opacity:1; padding:3px 10px; border-radius:999px; background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.18); color:#fff; font-size:.72rem; letter-spacing:0; }
+    .team-card .role-list { padding:10px 12px 12px; display:flex; flex-direction:column; gap:6px; }
+    .team-card .div { display:none; }
+    .team-card .role-row { padding:9px 10px; border-left:3px solid transparent; border-radius:8px; }
+    .team-card.blue .role-row { border-left-color:var(--blue-team); background:linear-gradient(90deg, rgba(74,158,255,.15), rgba(74,158,255,0) 78%); }
+    .team-card.red  .role-row { border-left-color:var(--red-team);  background:linear-gradient(90deg, rgba(232,64,64,.15), rgba(232,64,64,0) 78%); }
+    .team-card.blue .role-row:hover { background:linear-gradient(90deg, rgba(74,158,255,.26), rgba(74,158,255,0) 82%); }
+    .team-card.red  .role-row:hover { background:linear-gradient(90deg, rgba(232,64,64,.26), rgba(232,64,64,0) 82%); }
+    .team-card .role-tag { min-width:92px; gap:7px; }
+    .team-card .ri { width:26px; height:26px; }
+    .team-card .rn { font-size:.95rem; letter-spacing:2px; }
+    .team-card .pname { font-size:1rem; font-weight:700; }
+
+    /* 결과 화면: 교체 표시 + 원복 버튼 */
+    .pname-wrap { flex:1; display:flex; align-items:center; gap:6px; min-width:0; }
+    .pname-wrap .pname { flex:0 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .swap-mark { flex-shrink:0; font-size:.9rem; line-height:1; filter:drop-shadow(0 0 4px rgba(240,208,112,.7)); }
+    .btn-copy:disabled { opacity:.4; cursor:not-allowed; }
+    .btn-copy:disabled:hover { border-color:var(--border); color:var(--muted); background:var(--panel2); }
+
     /* 결과 화면: 이름을 끌어서 교체 */
     .modal-hint { text-align:center; font-size:.74rem; color:var(--muted); margin:-4px 0 12px; }
     #modalTeamsRow .role-row { cursor:grab; user-select:none; -webkit-user-select:none; touch-action:none; }
@@ -669,11 +650,7 @@
 <div class="layout">
 <div class="layout-main">
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('pos',this)">
-      <span class="t-main">🎯 포지션 고정</span>
-      <span class="t-sub">포지션 지정 후 팀만 랜덤</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('random',this)">
+    <button class="tab-btn active" onclick="switchTab('random',this)">
       <span class="t-main">🎲 올 랜덤</span>
       <span class="t-sub">팀 + 포지션 모두 랜덤</span>
     </button>
@@ -683,20 +660,8 @@
     </button>
   </div>
 
-  <!-- 포지션 고정 -->
-  <div class="panel active" id="panel-pos">
-    <div class="card">
-      <div class="card-title"><span>▸ 포지션별 2명 입력</span><button class="btn-tab-reset" onclick="resetTab('pos')">↺ 초기화</button></div>
-      <div class="pos-col-labels" style="grid-template-columns: 96px 1fr 1fr 56px;"><span>포지션</span><span>후보 A</span><span>후보 B</span><span>고정</span></div>
-      <div class="pos-rows" id="posRows"></div>
-      <button class="btn-main" id="btnPos" onclick="doPos()">⚔&nbsp; 팀 배정 시작</button>
-      <div class="error-msg" id="errPos"></div>
-    </div>
-    <div class="result-wrap" id="resPos"></div>
-  </div>
-
   <!-- 올 랜덤 -->
-  <div class="panel" id="panel-random">
+  <div class="panel active" id="panel-random">
     <div class="card">
       <div class="card-title"><span>▸ 참가자 10명 입력</span><button class="btn-tab-reset" onclick="resetTab('random')">↺ 초기화</button></div>
       <div class="fix-hint" id="randFixHint">라인 칩을 누르면 <b>보통 → 📌고정 → 🚫제외</b> 순으로 바뀌어요. 고정은 1개, 제외는 여러 개 가능해요. 같은 라인을 2명이 고정하면 그 라인은 팀만 랜덤으로 갈려요.</div>
@@ -784,19 +749,6 @@
 
     <!-- 애니메이션 영역 -->
     <div id="animSections">
-
-      <!-- 리빌 (포지션 고정) -->
-      <div class="modal-section" id="modalDrum">
-        <div class="reveal-grid">
-          <div class="reveal-team-col" id="revealBlue">
-            <div class="reveal-team-head blue">🔵 블루팀</div>
-          </div>
-          <div class="reveal-team-col" id="revealRed">
-            <div class="reveal-team-head red">🔴 레드팀</div>
-          </div>
-        </div>
-        <div class="reveal-progress" id="revealProgress">0 / 5</div>
-      </div>
 
       <!-- 카드 플립 (올랜덤) -->
       <div class="modal-section" id="modalFlip">
@@ -897,10 +849,13 @@
 
     <!-- 결과 섹션 (애니 완료 후 교체) -->
     <div class="modal-result-section" id="modalResultSection">
-      <div class="modal-hint">이름을 끌어서 다른 이름 위에 놓으면 서로 바뀌어요 (라인은 그대로)</div>
+      <div class="modal-hint">이름을 끌어서 다른 이름 위에 놓으면 서로 바뀌어요 (라인은 그대로). 바뀐 닉네임에는 🔄가 표시돼요</div>
       <div class="modal-teams-row" id="modalTeamsRow"></div>
       <!-- 복사 버튼 -->
       <div class="modal-copy-row">
+        <button class="btn-copy" id="btnModalRestore" onclick="restoreAssignment()" disabled>
+          <span class="btn-copy-icon">↩</span> 배정 원복하기
+        </button>
         <button class="btn-copy" id="btnCopyTxt" onclick="copyAsText()">
           <span class="btn-copy-icon">📋</span> 텍스트 복사
         </button>
@@ -1080,28 +1035,6 @@ rg.addEventListener('click', e => {
   if (chip) cycleChip(chip);
 });
 
-// 포지션 고정 입력칸
-const pr = document.getElementById('posRows');
-ROLES.forEach(role => {
-  const row = document.createElement('div');
-  row.className = 'pos-row';
-  row.setAttribute('data-role', role);
-  row.innerHTML = `
-    <div class="pos-badge">
-      <img class="pos-icon" src="${ICONS[role]}" alt="${role}" onerror="this.style.display='none'">
-      <span class="pos-emoji">${ROLE_EMOJI[role]}</span>
-      <span class="pos-name">${role}</span>
-    </div>
-    <input type="text" placeholder="이름" maxlength="12" data-role="${role}" data-slot="0">
-    <input type="text" placeholder="이름" maxlength="12" data-role="${role}" data-slot="1">
-    <button class="lock-btn" onclick="toggleLock(this)" title="이 포지션 고정">
-      <span class="lock-icon">🔓</span>
-      <span>고정</span>
-    </button>
-  `;
-  pr.appendChild(row);
-});
-
 // 능력치 입력칸 — 한 줄: [참가자 N  능력치 1~10] [이름 입력] [숫자]
 const ag = document.getElementById('abilityGrid');
 for (let i = 0; i < 10; i++) {
@@ -1118,15 +1051,6 @@ for (let i = 0; i < 10; i++) {
   ag.appendChild(d);
 }
 
-// 포지션 고정 토글
-function toggleLock(btn) {
-  const isLocked = btn.classList.toggle('locked');
-  const row = btn.closest('.pos-row');
-  row.classList.toggle('locked-row', isLocked);
-  btn.querySelector('.lock-icon').textContent = isLocked ? '🔒' : '🔓';
-  btn.querySelector('span:last-child').textContent = isLocked ? '고정됨' : '고정';
-}
-
 // 탭 초기화 — 해당 패널의 입력칸 + 결과 모두 리셋
 function resetTab(id) {
   const panel = document.getElementById('panel-' + id);
@@ -1135,10 +1059,9 @@ function resetTab(id) {
   panel.querySelectorAll('.role-chip').forEach(c => setChipState(c, 0));
   panel.querySelectorAll('input[type=number]').forEach(inp => { inp.value = ''; });
   panel.querySelectorAll('.result-wrap').forEach(el => { el.style.display = 'none'; });
-  if (id === 'pos') panel.querySelectorAll('.lock-btn.locked').forEach(btn => toggleLock(btn));
   // 모달이 열려있으면 닫기
   closeModal();
-  ['btnPos','btnRand','btnAbility'].forEach(id => {
+  ['btnRand','btnAbility'].forEach(id => {
     const b = document.getElementById(id); if(b) b.disabled = false;
   });
   renderMembers();
@@ -1220,51 +1143,6 @@ function balancedSplit(players) {
     if (diff < 0.01) break;
   }
   return best;
-}
-
-// ── REVEAL 애니메이션 (포지션 고정) ──
-// TOP→SPT 순서로 블루/레드 카드를 양쪽에 동시 슬라이드인
-function runRevealAnimation(t1, t2, onDone) {
-  const TOTAL    = 10000;
-  const INTERVAL = (TOTAL - 2000) / ROLES.length;
-
-  const blueCol = document.getElementById('revealBlue');
-  const redCol  = document.getElementById('revealRed');
-  const progEl  = document.getElementById('revealProgress');
-
-  blueCol.innerHTML = '<div class="reveal-team-head blue">🔵 블루팀</div>';
-  redCol.innerHTML  = '<div class="reveal-team-head red">🔴 레드팀</div>';
-  progEl.textContent = '0 / 5';
-
-  ROLES.forEach((role, i) => {
-    const bm = t1.find(m => m.role === role);
-    const rm = t2.find(m => m.role === role);
-
-    const mkCard = (member, team) => {
-      const card = document.createElement('div');
-      card.className = `reveal-card ${team}-card`;
-      card.innerHTML = `
-        <img class="reveal-role-icon" src="${ICONS[role]}" onerror="this.style.display='none'">
-        <span class="reveal-role-emoji">${ROLE_EMOJI[role]}</span>
-        <span class="reveal-role-name">${role}</span>
-        <span class="reveal-player-name">${member.name}</span>
-      `;
-      return card;
-    };
-
-    const bc = mkCard(bm, 'blue');
-    const rc = mkCard(rm, 'red');
-    blueCol.appendChild(bc);
-    redCol.appendChild(rc);
-
-    setTimeout(() => {
-      bc.classList.add('show');
-      rc.classList.add('show');
-      progEl.textContent = `${i+1} / 5`;
-    }, INTERVAL * i + 800);
-  });
-
-  setTimeout(onDone, TOTAL);
 }
 
 // ── FLIP 애니메이션 (올랜덤) ──
@@ -1614,6 +1492,37 @@ let _animDoneCallback = null;
 let _animSkipData    = null;
 let _lastResult      = null; // { t1, t2, showScore }
 let _animToken       = 0;
+let _lastRandMode    = null;   // 올 랜덤 탭에서 직전에 나온 모션
+let _pendingSplash   = null;   // 이번 배정 결과 카드에 쓸 챔피언 배너 (모션 중에 미리 불러둠)
+
+// 결과 카드 배너용 챔피언 (블루 진영 = 푸른 계열, 레드 진영 = 붉은 계열). Riot 공식 Data Dragon 이미지
+const TEAM_SPLASH = {
+  blue: ['Ashe', 'Orianna', 'Lissandra', 'Anivia', 'Braum', 'Galio'],
+  red:  ['Darius', 'Katarina', 'Draven', 'Samira', 'Vladimir', 'Swain'],
+};
+const splashUrl = id => `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${id}_0.jpg`;
+function pickSplash() {
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  return { blue: pick(TEAM_SPLASH.blue), red: pick(TEAM_SPLASH.red) };
+}
+function prepareSplash() {                       // 모션이 도는 동안 이미지를 미리 받아 두면 결과가 뜰 때 바로 보여요
+  _pendingSplash = pickSplash();
+  [_pendingSplash.blue, _pendingSplash.red].forEach(id => { const im = new Image(); im.src = splashUrl(id); });
+}
+
+// 소환사의 협곡 미니맵: 블루 진영은 왼쪽 아래, 레드 진영은 오른쪽 위. 해당 진영 기지만 밝게 표시
+function miniMapSVG(side) {
+  const col = { blue: '#4a9eff', red: '#e84040' };
+  const base = (cx, cy, who) => who === side
+    ? `<circle class="base-${who} lit" cx="${cx}" cy="${cy}" r="8" fill="${col[who]}" opacity=".28"/><circle class="base-${who} lit" cx="${cx}" cy="${cy}" r="4.6" fill="${col[who]}"/>`
+    : `<circle class="base-${who}" cx="${cx}" cy="${cy}" r="3.4" fill="#2c3d57"/>`;
+  return `<svg class="sidemap" data-side="${side}" viewBox="0 0 48 48" width="46" height="46" aria-hidden="true">
+    <rect x="1" y="1" width="46" height="46" rx="9" fill="#08111e" stroke="${col[side]}" stroke-opacity=".6" stroke-width="1.5"/>
+    <path d="M7 7 L41 41" stroke="#6fa8ff" stroke-opacity=".28" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M9 39 L9 9 L39 9 M9 39 L39 39 L39 9 M9 39 L39 9" fill="none" stroke="#2c3d57" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${base(9, 39, 'blue')}${base(39, 9, 'red')}
+  </svg>`;
+}
 const RESULT_HOLD_MS = 2000;   // 모션이 끝난 뒤 최종 화면을 보여주는 시간
 
 // ── 텍스트 복사 ──
@@ -1687,7 +1596,15 @@ function closeModalAndReset() {
 
 // 모달 안에 결과 표시 (애니 완료 후)
 function showResultInModal(t1, t2, rerollFn, showScore) {
-  _lastResult = { t1, t2, showScore };
+  const splash = _pendingSplash || pickSplash();
+  _pendingSplash = null;
+  const home = {};   // 사람(pid) → 처음 배정된 자리. 나중에 자리가 바뀌었는지 비교하는 기준
+  [['blue', t1], ['red', t2]].forEach(([team, list]) => list.forEach((m, i) => {
+    m.pid = (team === 'blue' ? 0 : 5) + i;
+    home[m.pid] = { team, idx: i };
+  }));
+  _lastResult = { t1, t2, showScore, splash, home,
+                  orig: { t1: t1.map(m => ({ ...m })), t2: t2.map(m => ({ ...m })) } };   // 원복용 처음 배정
   // 복사 버튼 초기화
   document.getElementById('btnCopyTxt').innerHTML = '<span class="btn-copy-icon">📋</span> 텍스트 복사';
 
@@ -1710,20 +1627,48 @@ function showResultInModal(t1, t2, rerollFn, showScore) {
 
 // 결과 카드(블루/레드) 그리기
 function renderResultCards() {
-  const { t1, t2, showScore } = _lastResult;
+  const { t1, t2, showScore, home } = _lastResult;
+  let changed = 0;
+  [['blue', t1], ['red', t2]].forEach(([team, list]) => list.forEach((m, i) => {
+    const h = home[m.pid];
+    m.moved = !!h && (h.team !== team || h.idx !== i);   // 처음 자리와 다르면 교체된 것
+    if (m.moved) changed++;
+  }));
+  _lastResult.changed = changed;
+  const restoreBtn = document.getElementById('btnModalRestore');
+  if (restoreBtn) restoreBtn.disabled = changed === 0;      // 바꾼 게 없으면 원복 버튼 비활성
   const row = document.getElementById('modalTeamsRow');
   row.innerHTML = '';
-  row.appendChild(makeCard('블루팀','blue',t1,showScore));
-  row.appendChild(makeCard('레드팀','red',t2,showScore));
+  const sp = _lastResult.splash || {};
+  row.appendChild(makeCard('블루팀','blue',t1,showScore,sp.blue));
+  row.appendChild(makeCard('레드팀','red',t2,showScore,sp.red));
 }
 
 // ── 결과 화면: 이름을 끌어서 다른 사람과 교체 ──
 // 라인(포지션)은 그대로 두고 사람(이름, 능력치 탭이면 능력치까지)만 맞바꿔요. 텍스트 복사에도 바뀐 결과가 반영돼요.
+// 배정 원복하기: 직접 바꾼 자리를 모두 취소하고 처음 배정으로 되돌림
+function restoreAssignment() {
+  if (!_lastResult || !_lastResult.changed) return;
+  const movedRows = [];
+  [['blue', _lastResult.t1], ['red', _lastResult.t2]].forEach(([team, list]) =>
+    list.forEach((m, i) => { if (m.moved) movedRows.push({ team, idx: i }); }));
+  _lastResult.t1 = _lastResult.orig.t1.map(m => ({ ...m }));
+  _lastResult.t2 = _lastResult.orig.t2.map(m => ({ ...m }));
+  const box = document.getElementById('modalTeamsRow');
+  box.classList.add('no-anim');
+  renderResultCards();
+  movedRows.forEach(k => {                                   // 되돌아온 줄은 잠깐 반짝
+    const r = box.querySelector(`.role-row[data-team="${k.team}"][data-idx="${k.idx}"]`);
+    if (r) r.classList.add('swapped');
+  });
+}
+
 let _drag = null;
 function swapPeople(a, b) {
   const list = k => (k === 'blue' ? _lastResult.t1 : _lastResult.t2);
   const A = list(a.team)[a.idx], B = list(b.team)[b.idx];
   const name = A.name; A.name = B.name; B.name = name;
+  const pid = A.pid; A.pid = B.pid; B.pid = pid;          // 사람 번호도 함께 이동
   if (_lastResult.showScore) { const sc = A.score; A.score = B.score; B.score = sc; }
 }
 function cleanupDrag() {
@@ -1804,6 +1749,7 @@ function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
   const btn = document.getElementById(btnId);
   resEl.style.display = 'none';
   btn.disabled = true;
+  prepareSplash();
 
   const t1 = members.slice(0, 5);
   const t2 = members.slice(5);
@@ -1823,15 +1769,11 @@ function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
     }, RESULT_HOLD_MS);
   }
 
-  if (mode === 'pos-reveal') {
-    openModal('modalDrum', '▸ 팀 배정 공개 중...');
-    _animDoneCallback = done;
-    runRevealAnimation(t1, t2, done);
-
-  } else if (mode === 'rand-flip') {
-    // 4가지 모션 중 매번 랜덤 선택
-    const RAND_MODES = ['flip', 'slot', 'versus', 'shuffle'];
+  if (mode === 'rand-flip') {
+    // 4가지 모션 중 랜덤 선택 (직전에 나온 모션은 빼서, 다시 배정해도 같은 모션이 연속으로 안 나옴)
+    const RAND_MODES = ['flip', 'slot', 'versus', 'shuffle'].filter(m => m !== _lastRandMode);
     const picked = RAND_MODES[Math.floor(Math.random() * RAND_MODES.length)];
+    _lastRandMode = picked;
     _animDoneCallback = done;
 
     if (picked === 'flip') {
@@ -1859,15 +1801,21 @@ function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 }
 
-function makeCard(teamName, cls, members, showScore) {
+function makeCard(teamName, cls, members, showScore, splashId) {
   const rawAvg = showScore ? members.reduce((s,m)=>s+(m.score||0),0)/members.length : null;
   const avg = rawAvg !== null ? parseFloat(rawAvg.toFixed(2)).toString() : null;
   const hasRole = members[0] && members[0].role;
   const c = document.createElement('div');
   c.className = 'team-card ' + cls;
   c.innerHTML = `
-    <div class="team-head">
-      <div class="team-head-left"><span class="tdot"></span>${teamName}</div>
+    <div class="team-head banner"${splashId ? ` style="background-image:url('${splashUrl(splashId)}')"` : ''}>
+      <div class="side-left">
+        ${miniMapSVG(cls)}
+        <div class="side-text">
+          <span class="side-en">${cls === 'blue' ? 'BLUE SIDE' : 'RED SIDE'}</span>
+          <span class="side-ko">${teamName}</span>
+        </div>
+      </div>
       ${avg ? `<span class="team-avg">평균 능력치 ${avg}</span>` : ''}
     </div>
     <div class="role-list">
@@ -1880,7 +1828,7 @@ function makeCard(teamName, cls, members, showScore) {
             <span class="role-emoji-sm">${ROLE_EMOJI[m.role]}</span>
             <span class="rn">${m.role}</span>
           </div>` : `<span style="font-size:0.8rem;color:var(--muted);min-width:24px;text-align:center">${i+1}</span>`}
-          <span class="pname">${escapeHtml(m.name)}</span>
+          <span class="pname-wrap"><span class="pname">${escapeHtml(m.name)}</span>${m.moved ? '<span class="swap-mark" title="자리가 바뀐 닉네임">🔄</span>' : ''}</span>
           ${showScore && m.score ? `
             <div class="score-bar-wrap"><div class="score-bar" style="width:${m.score*10}%"></div></div>
             <span class="pscore">${m.score}</span>
@@ -2030,31 +1978,6 @@ function doRandom() {
   }
   err.textContent = '';
   startAnim('rand-flip','btnRand',[...t1,...t2],document.getElementById('resRand'),doRandom,false);
-}
-
-function doPos() {
-  const err  = document.getElementById('errPos');
-  const data = {};
-  ROLES.forEach(role => {
-    const ins = [...document.querySelectorAll(`.pos-row[data-role="${role}"] input[type=text]`)];
-    data[role] = ins.map(i => i.value.trim());
-  });
-  if (ROLES.some(r => data[r].some(n=>!n))) { err.textContent = '모든 포지션의 이름을 입력해 주세요! (총 10칸)'; return; }
-  err.textContent = '';
-  const t1=[], t2=[];
-  ROLES.forEach(role => {
-    const row = document.querySelector(`.pos-row[data-role="${role}"]`);
-    const isLocked = row && row.classList.contains('locked-row');
-    if (isLocked) {
-      t1.push({ role, name: data[role][0] });
-      t2.push({ role, name: data[role][1] });
-    } else {
-      const [a,b] = Math.random()<0.5 ? data[role] : [data[role][1],data[role][0]];
-      t1.push({ role, name: a });
-      t2.push({ role, name: b });
-    }
-  });
-  startAnim('pos-reveal','btnPos',[...t1,...t2],document.getElementById('resPos'),doPos,false);
 }
 
 function doAbility() {
