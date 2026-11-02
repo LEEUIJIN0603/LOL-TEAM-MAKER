@@ -575,7 +575,7 @@
     .anim-modal-box {
       background: var(--panel); border: 1px solid var(--border);
       border-radius: 16px; padding: 32px 28px 24px;
-      width: min(720px, 94vw); max-height: 88vh; overflow-y: auto;
+      width: min(720px, 94vw); max-height: 88vh; overflow-x: hidden; overflow-y: auto;
       box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(200,155,60,0.15);
       position: relative;
     }
@@ -617,6 +617,18 @@
     /* 모달 내 팀 결과 카드 */
     .modal-teams-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
     @media (max-width: 500px) { .modal-teams-row { grid-template-columns: 1fr; } }
+    /* 결과 화면: 이름을 끌어서 교체 */
+    .modal-hint { text-align:center; font-size:.74rem; color:var(--muted); margin:-4px 0 12px; }
+    #modalTeamsRow .role-row { cursor:grab; user-select:none; -webkit-user-select:none; touch-action:none; }
+    #modalTeamsRow.no-anim .role-row { animation:none; }
+    #modalTeamsRow .role-row.dragging { opacity:.35; cursor:grabbing; }
+    #modalTeamsRow .role-row.drop-target { background:rgba(200,155,60,.16); box-shadow:inset 0 0 0 1.5px var(--gold); }
+    #modalTeamsRow .role-row.swapped { animation:swapFlash .9s ease; }
+    @keyframes swapFlash { 0% { background:rgba(200,155,60,.4); } 100% { background:transparent; } }
+    .drag-ghost { position:fixed; left:0; top:0; z-index:2000; pointer-events:none; padding:8px 16px; border-radius:9px; background:var(--panel2); border:1.5px solid var(--gold); color:var(--text-bright); font-weight:700; font-size:.95rem; white-space:nowrap; box-shadow:0 10px 30px rgba(0,0,0,.6); will-change:transform; }
+    .drag-ghost.blue { border-color:var(--blue-team); color:var(--blue-team); }
+    .drag-ghost.red  { border-color:var(--red-team);  color:var(--red-team); }
+
     /* 복사 버튼 행 */
     .modal-copy-row {
       display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 12px;
@@ -885,6 +897,7 @@
 
     <!-- 결과 섹션 (애니 완료 후 교체) -->
     <div class="modal-result-section" id="modalResultSection">
+      <div class="modal-hint">이름을 끌어서 다른 이름 위에 놓으면 서로 바뀌어요 (라인은 그대로)</div>
       <div class="modal-teams-row" id="modalTeamsRow"></div>
       <!-- 복사 버튼 -->
       <div class="modal-copy-row">
@@ -1601,6 +1614,7 @@ let _animDoneCallback = null;
 let _animSkipData    = null;
 let _lastResult      = null; // { t1, t2, showScore }
 let _animToken       = 0;
+const RESULT_HOLD_MS = 2000;   // 모션이 끝난 뒤 최종 화면을 보여주는 시간
 
 // ── 텍스트 복사 ──
 function copyAsText() {
@@ -1682,10 +1696,8 @@ function showResultInModal(t1, t2, rerollFn, showScore) {
   document.getElementById('animSkipBtn').style.display  = 'none';
   document.getElementById('animModalTitle').textContent = '▸ 팀 배정 완료';
 
-  const row = document.getElementById('modalTeamsRow');
-  row.innerHTML = '';
-  row.appendChild(makeCard('블루팀','blue',t1,showScore));
-  row.appendChild(makeCard('레드팀','red',t2,showScore));
+  document.getElementById('modalTeamsRow').classList.remove('no-anim');
+  renderResultCards();
 
   document.getElementById('btnModalReroll').onclick = () => {
     closeModal();
@@ -1695,6 +1707,88 @@ function showResultInModal(t1, t2, rerollFn, showScore) {
   const resSection = document.getElementById('modalResultSection');
   resSection.classList.add('active');
 }
+
+// 결과 카드(블루/레드) 그리기
+function renderResultCards() {
+  const { t1, t2, showScore } = _lastResult;
+  const row = document.getElementById('modalTeamsRow');
+  row.innerHTML = '';
+  row.appendChild(makeCard('블루팀','blue',t1,showScore));
+  row.appendChild(makeCard('레드팀','red',t2,showScore));
+}
+
+// ── 결과 화면: 이름을 끌어서 다른 사람과 교체 ──
+// 라인(포지션)은 그대로 두고 사람(이름, 능력치 탭이면 능력치까지)만 맞바꿔요. 텍스트 복사에도 바뀐 결과가 반영돼요.
+let _drag = null;
+function swapPeople(a, b) {
+  const list = k => (k === 'blue' ? _lastResult.t1 : _lastResult.t2);
+  const A = list(a.team)[a.idx], B = list(b.team)[b.idx];
+  const name = A.name; A.name = B.name; B.name = name;
+  if (_lastResult.showScore) { const sc = A.score; A.score = B.score; B.score = sc; }
+}
+function cleanupDrag() {
+  if (!_drag) return;
+  if (_drag.ghost) _drag.ghost.remove();
+  _drag.row.classList.remove('dragging');
+  if (_drag.over) _drag.over.classList.remove('drop-target');
+  try { if (_drag.box.releasePointerCapture) _drag.box.releasePointerCapture(_drag.pointerId); } catch (e) {}
+  _drag = null;
+}
+function rowUnder(x, y) {
+  const el = document.elementFromPoint ? document.elementFromPoint(x, y) : null;
+  return el && el.closest ? el.closest('#modalTeamsRow .role-row') : null;
+}
+(function initResultDrag() {
+  const box = document.getElementById('modalTeamsRow');
+  box.addEventListener('pointerdown', e => {
+    if (e.button) return;                               // 왼쪽 버튼(터치 포함)만
+    const row = e.target.closest('.role-row');
+    if (!row) return;
+    e.preventDefault();                                 // 글자 선택 방지
+    _drag = { box, row, team: row.dataset.team, idx: Number(row.dataset.idx), pointerId: e.pointerId,
+              x0: e.clientX, y0: e.clientY, started: false, ghost: null, over: null };
+    try { if (box.setPointerCapture) box.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  box.addEventListener('pointermove', e => {
+    if (!_drag || e.pointerId !== _drag.pointerId) return;
+    if (!_drag.started) {
+      if (Math.hypot(e.clientX - _drag.x0, e.clientY - _drag.y0) < 5) return;   // 살짝 클릭만 한 건 무시
+      _drag.started = true;
+      const m = (_drag.team === 'blue' ? _lastResult.t1 : _lastResult.t2)[_drag.idx];
+      const g = document.createElement('div');
+      g.className = 'drag-ghost ' + _drag.team;
+      g.textContent = (_lastResult.showScore && m.score) ? `${m.name} (${m.score})` : m.name;
+      document.body.appendChild(g);
+      _drag.ghost = g;
+      _drag.row.classList.add('dragging');
+    }
+    const g = _drag.ghost;
+    g.style.transform = `translate3d(${e.clientX - g.offsetWidth / 2}px, ${e.clientY - g.offsetHeight / 2}px, 0)`;
+    const r = rowUnder(e.clientX, e.clientY);
+    const target = r && r !== _drag.row ? r : null;
+    if (target !== _drag.over) {
+      if (_drag.over) _drag.over.classList.remove('drop-target');
+      if (target) target.classList.add('drop-target');
+      _drag.over = target;
+    }
+  });
+  box.addEventListener('pointerup', e => {
+    if (!_drag || e.pointerId !== _drag.pointerId) return;
+    const { started, over, team, idx } = _drag;
+    cleanupDrag();
+    if (!started || !over) return;                      // 빈 곳에 놓으면 취소
+    const to = { team: over.dataset.team, idx: Number(over.dataset.idx) };
+    swapPeople({ team, idx }, to);
+    box.classList.add('no-anim');                       // 다시 그릴 때 등장 애니메이션 생략
+    renderResultCards();
+    [{ team, idx }, to].forEach(k => {
+      const r = box.querySelector(`.role-row[data-team="${k.team}"][data-idx="${k.idx}"]`);
+      if (r) r.classList.add('swapped');
+    });
+  });
+  box.addEventListener('pointercancel', cleanupDrag);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && _drag) cleanupDrag(); });
+})();
 
 function skipAnim() {
   if (!_animSkipData) return;
@@ -1719,10 +1813,14 @@ function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
 
   function done() {
     if (myToken !== _animToken) return; // 건너뛰기/재시작된 이전 애니메이션이면 무시
-    btn.disabled = false;
-    _animDoneCallback = null;
-    _animSkipData = null;
-    showResultInModal(t1, t2, rerollFn, showScore);
+    // 모션이 끝난 최종 화면을 잠깐 보여준 뒤 결과 화면으로 (이 사이에도 건너뛰기 가능)
+    setTimeout(() => {
+      if (myToken !== _animToken) return;
+      btn.disabled = false;
+      _animDoneCallback = null;
+      _animSkipData = null;
+      showResultInModal(t1, t2, rerollFn, showScore);
+    }, RESULT_HOLD_MS);
   }
 
   if (mode === 'pos-reveal') {
@@ -1757,6 +1855,10 @@ function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
   }
 }
 
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
 function makeCard(teamName, cls, members, showScore) {
   const rawAvg = showScore ? members.reduce((s,m)=>s+(m.score||0),0)/members.length : null;
   const avg = rawAvg !== null ? parseFloat(rawAvg.toFixed(2)).toString() : null;
@@ -1771,14 +1873,14 @@ function makeCard(teamName, cls, members, showScore) {
     <div class="role-list">
       ${members.map((m,i)=>`
         ${i>0?'<div class="div"></div>':''}
-        <div class="role-row" style="animation-delay:${i*0.07}s">
+        <div class="role-row" data-team="${cls}" data-idx="${i}" style="animation-delay:${i*0.07}s">
           ${hasRole ? `
           <div class="role-tag">
             <img class="ri" src="${ICONS[m.role]}" alt="" onerror="this.style.display='none'">
             <span class="role-emoji-sm">${ROLE_EMOJI[m.role]}</span>
             <span class="rn">${m.role}</span>
           </div>` : `<span style="font-size:0.8rem;color:var(--muted);min-width:24px;text-align:center">${i+1}</span>`}
-          <span class="pname">${m.name}</span>
+          <span class="pname">${escapeHtml(m.name)}</span>
           ${showScore && m.score ? `
             <div class="score-bar-wrap"><div class="score-bar" style="width:${m.score*10}%"></div></div>
             <span class="pscore">${m.score}</span>
