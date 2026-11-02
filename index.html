@@ -685,7 +685,7 @@
 
     /* ══ 내전 전적 ══ */
     .rec-drop {
-      border: 1.5px dashed #2a4262; border-radius: 10px; padding: 26px 16px;
+      border: 1.5px dashed #2a4262; border-radius: 10px; padding: 18px 16px;
       text-align: center; cursor: pointer; transition: all .2s; background: var(--panel2);
     }
     .rec-drop:hover, .rec-drop.over { border-color: var(--gold); background: var(--gold-dim); }
@@ -697,7 +697,7 @@
     .rec-msg { font-size: .78rem; margin-top: 10px; min-height: 1.1em; color: var(--gold2); text-align: center; }
     .rec-msg.err { color: #ff7a7a; }
 
-    .rec-sum { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+    .rec-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
     .rec-sum-box { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
     .rec-sum-lbl { font-size: .68rem; color: var(--muted); letter-spacing: 1px; }
     .rec-sum-val { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.55rem; color: var(--text-bright); line-height: 1.2; }
@@ -706,6 +706,32 @@
     .rec-panel { display: none; } .rec-panel.active { display: block; animation: fadeUp .3s ease; }
     .rec-empty { text-align: center; color: var(--muted); padding: 40px 10px; font-size: .85rem; line-height: 1.8;
                  background: var(--panel); border: 1px dashed var(--border); border-radius: 12px; }
+
+    .rec-list-title { font-family: 'Bebas Neue', 'Noto Sans KR', sans-serif; font-size: 1.05rem; letter-spacing: 3px; color: var(--gold); margin: 4px 0 12px; }
+
+    /* 연승 / 연패 카드 */
+    .streak-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+    .streak-col { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px; position: relative; overflow: hidden; }
+    .streak-col.win  { border-color: rgba(240,160,60,.45); background: linear-gradient(160deg, rgba(240,140,40,.13), var(--panel) 55%); }
+    .streak-col.lose { border-color: rgba(120,150,210,.4); background: linear-gradient(160deg, rgba(90,130,210,.12), var(--panel) 55%); }
+    .streak-head { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: .92rem; margin-bottom: 10px; }
+    .streak-col.win .streak-head { color: #ffb45a; } .streak-col.lose .streak-head { color: #9db8ec; }
+    .streak-head small { font-weight: 400; font-size: .68rem; color: var(--muted); }
+    .stk-list { display: flex; flex-direction: column; gap: 8px; }
+    .stk-card { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.05); animation: fadeUp .35s ease both; }
+    .stk-card .ch-box { width: 44px; height: 44px; border-radius: 10px; }
+    .stk-name { font-weight: 700; color: var(--text-bright); font-size: .9rem; }
+    .stk-name small { color: var(--muted); font-weight: 400; margin-left: 3px; font-size: .68rem; }
+    .stk-quote { font-size: .74rem; color: #b7c0cf; margin-top: 3px; line-height: 1.45; }
+    .stk-dots { display: flex; gap: 3px; margin-top: 5px; }
+    .stk-dots i { width: 14px; height: 14px; border-radius: 4px; font-style: normal; font-size: .52rem; line-height: 14px; text-align: center; color: #fff; }
+    .stk-dots i.w { background: #3a6fd8; } .stk-dots i.l { background: #c24040; }
+    .stk-num { text-align: right; font-family: 'Rajdhani', sans-serif; font-weight: 700; line-height: 1; white-space: nowrap; }
+    .stk-num b { font-size: 2rem; }
+    .stk-num span { display: block; font-family: 'Noto Sans KR', sans-serif; font-size: .7rem; margin-top: 2px; }
+    .streak-col.win .stk-num { color: #ffb45a; } .streak-col.lose .stk-num { color: #9db8ec; }
+    .streak-col.win .stk-card.hot { border-color: rgba(255,170,60,.5); box-shadow: 0 0 18px rgba(255,140,40,.18); }
+    .stk-empty { font-size: .78rem; color: var(--muted); padding: 16px 6px; text-align: center; line-height: 1.7; }
 
     /* 경기 카드 */
     .mt-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
@@ -718,6 +744,10 @@
     .mt-win.blue { color: var(--blue-team); } .mt-win.red { color: var(--red-team); }
     .mt-vs { display: flex; align-items: center; justify-content: center; gap: 14px; min-width: 0; }
     .mt-champs { display: flex; gap: 3px; }
+    .mt-side { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .mt-tkda { font-size: .7rem; color: var(--muted); white-space: nowrap; }
+    .mt-tkda b { color: var(--text); font-weight: 700; } .mt-tkda .dd { color: #ff7a7a; }
+    .mt-side.blue .mt-tkda em { color: var(--blue-team); font-style: normal; } .mt-side.red .mt-tkda em { color: var(--red-team); font-style: normal; }
     .mt-kills { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--muted); white-space: nowrap; }
     .mt-kills .b { color: var(--blue-team); } .mt-kills .r { color: var(--red-team); }
     .mt-act { display: flex; align-items: center; gap: 10px; }
@@ -743,6 +773,7 @@
     .mt-table th.team { font-size: .82rem; font-weight: 700; text-align: left; letter-spacing: .5px; }
     .mt-table th.team.blue { color: var(--blue-team); } .mt-table th.team.red { color: var(--red-team); }
     .mt-table th.team span { color: var(--muted); font-weight: 500; font-size: .72rem; margin-left: 8px; }
+    .mt-table th.team span b { color: var(--text); } .mt-table th.team span b.dd { color: #ff7a7a; }
     .mt-table td { padding: 6px; text-align: center; white-space: nowrap; color: var(--text); }
     .mt-table tr.pr.blue td { background: rgba(74,158,255,.07); } .mt-table tr.pr.red td { background: rgba(232,64,64,.07); }
     .mt-table tr.pr.win.blue td { background: rgba(74,158,255,.13); } .mt-table tr.pr.win.red td { background: rgba(232,64,64,.13); }
@@ -805,7 +836,8 @@
     .rk-pos img { width: 20px; height: 20px; opacity: .85; vertical-align: middle; }
 
     @media (max-width: 760px) {
-      .rec-sum { grid-template-columns: repeat(2, 1fr); }
+      .rec-sum { grid-template-columns: repeat(3, 1fr); }
+      .streak-row { grid-template-columns: 1fr; }
       .mt-head { grid-template-columns: 1fr auto; }
       .mt-vs { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; gap: 6px; }
       .mt-champs .ch-box.sm { width: 20px; height: 20px; }
@@ -837,6 +869,7 @@
     <div class="side-nav-title">MENU</div>
     <button class="nav-btn active" onclick="switchPage('assign',this)"><span class="nav-ico">⚔</span>팀 배정</button>
     <button class="nav-btn" onclick="switchPage('record',this)"><span class="nav-ico">📊</span>내전 전적</button>
+    <button class="nav-btn" onclick="switchPage('rank',this)"><span class="nav-ico">🏆</span>개인 순위</button>
   </nav>
 </aside>
 
@@ -943,6 +976,8 @@
 
 <!-- ▣ 내전 전적 -->
 <div class="page-view" id="view-record">
+  <div class="streak-row" id="recStreak"></div>
+  <div class="rec-sum" id="recSum"></div>
   <div class="card">
     <div class="card-title"><span>▸ 리플레이 파일 올리기</span></div>
     <div class="rec-drop" id="recDrop" onclick="document.getElementById('recFile').click()">
@@ -961,24 +996,18 @@
     </div>
   </div>
 
-  <div class="rec-sum" id="recSum"></div>
+  <div class="rec-list-title">▸ 경기 기록</div>
+  <div id="recMatchList"></div>
+</div><!-- /view-record -->
 
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchRecTab('matches',this)">
-      <span class="t-main">📜 경기 기록</span>
-      <span class="t-sub">경기별 상세 스코어보드</span>
-    </button>
-    <button class="tab-btn" onclick="switchRecTab('rank',this)">
-      <span class="t-main">🏆 개인 순위</span>
-      <span class="t-sub">승률 · KDA · 모스트 챔피언</span>
-    </button>
-  </div>
-  <div class="rec-panel active" id="rec-matches"><div id="recMatchList"></div></div>
-  <div class="rec-panel" id="rec-rank">
+<!-- ▣ 개인 순위 -->
+<div class="page-view" id="view-rank">
+  <div class="card">
+    <div class="card-title"><span>▸ 개인 순위</span></div>
     <div class="rk-sort" id="rkSort"></div>
     <div id="recRank"></div>
   </div>
-</div><!-- /view-record -->
+</div><!-- /view-rank -->
 
 <!-- ▣ 메뉴를 추가하면 이 자리에 화면을 넣어요
 <div class="page-view" id="view-새기능">
@@ -2603,13 +2632,8 @@ function matchBadges(m) {
 const MULTI = { 2: '더블킬', 3: '트리플킬', 4: '쿼드라킬', 5: '펜타킬' };
 
 // ── 화면 그리기 ──
-function switchRecTab(id, btn) {
-  btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.rec-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('rec-' + id).classList.add('active');
-}
 function renderRecord() {
+  renderStreaks();
   renderRecSummary();
   renderMatchList();
   renderRank();
@@ -2618,14 +2642,71 @@ function renderRecSummary() {
   const box = document.getElementById('recSum');
   if (!box) return;
   const total = matches.length;
-  const bw = matches.filter(m => winnerOf(m) === 'blue').length;
   const people = new Set(matches.flatMap(m => m.players.map(p => p.puuid || p.name))).size;
   const avgLen = total ? Math.round(matches.reduce((s, m) => s + m.len, 0) / total) : 0;
   box.innerHTML = `
     <div class="rec-sum-box"><div class="rec-sum-lbl">총 경기</div><div class="rec-sum-val">${total}<small> 판</small></div></div>
-    <div class="rec-sum-box"><div class="rec-sum-lbl">진영 승리 (블루 : 레드)</div><div class="rec-sum-val"><span class="b">${bw}</span> : <span class="r">${total - bw}</span></div></div>
     <div class="rec-sum-box"><div class="rec-sum-lbl">참여 인원</div><div class="rec-sum-val">${people}<small> 명</small></div></div>
     <div class="rec-sum-box"><div class="rec-sum-lbl">평균 게임 시간</div><div class="rec-sum-val">${total ? Math.floor(avgLen / 60) : 0}<small> 분</small> ${total ? String(avgLen % 60).padStart(2, '0') : '00'}<small> 초</small></div></div>`;
+}
+
+// ── 연승 / 연패 ──
+const STREAK_QUOTES = {
+  win: {
+    2: ['슬슬 손이 풀리기 시작했다', '어? 오늘 좀 되는 날인가?', '감 잡았다. 이제 시작이다'],
+    3: ['오늘 폼 미쳤다 🔥', '이 정도면 실력이라고 봐야지', '3연승… 팀원들이 줄 서는 중'],
+    4: ['누가 좀 말려봐요', '상대팀 단톡방에 비상 걸림', '이쯤 되면 밴 카드 써야 함'],
+    5: ['내전 파괴자 등장. 밴 요청 접수 중', '전설은 이렇게 시작된다', '이 사람이랑 같은 팀 되는 법 아시는 분?']
+  },
+  lose: {
+    2: ['아직 몸 푸는 중이에요', '잠깐 컨디션 조절 중', '다음 판은 진짜 다를 거임'],
+    3: ['팀운이 없었을 뿐…', '혹시 키보드 연결 확인해 보셨어요?', '오늘은 서폿 버스 태워주세요'],
+    4: ['물 한 잔 마시고 오세요', '마우스 탓일 확률 87%', '다음 판 이기면 역대급 반전 서사'],
+    5: ['이 정도면 다음 판은 무조건 이긴다 (아마도)', '오늘 일진이 좀… 내일 다시 오세요', '연패도 기록이다. 레전드 갱신 중']
+  }
+};
+function hashStr(t) { let h = 0; for (const ch of t) h = (h * 31 + ch.codePointAt(0)) | 0; return Math.abs(h); }
+function streakQuote(kind, n, name) {
+  const list = STREAK_QUOTES[kind][Math.min(5, n)];
+  return list[hashStr(name + n) % list.length];        // 같은 사람·같은 연승 수면 문구가 바뀌지 않게
+}
+function calcStreaks() {
+  const P = {};
+  matches.slice().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => m.players.forEach(p => {
+    const key = p.puuid || p.name;
+    const s = P[key] || (P[key] = { name: p.name, tag: p.tag, res: [], champ: p.champ, m });
+    s.name = p.name; s.tag = p.tag; s.champ = p.champ; s.m = m;
+    s.res.push(p.win);
+  }));
+  return Object.values(P).map(s => {
+    const last = s.res[s.res.length - 1];
+    let n = 0;
+    for (let i = s.res.length - 1; i >= 0 && s.res[i] === last; i--) n++;
+    return { ...s, kind: last ? 'win' : 'lose', n };
+  });
+}
+function renderStreaks() {
+  const box = document.getElementById('recStreak');
+  if (!box) return;
+  const all = calcStreaks();
+  const col = kind => {
+    const list = all.filter(s => s.kind === kind && s.n >= 2).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name)).slice(0, 3);
+    const title = kind === 'win' ? '🔥 연승 중' : '🧊 연패 중';
+    const body = list.length ? list.map(s => `
+      <div class="stk-card${kind === 'win' && s.n >= 3 ? ' hot' : ''}">
+        ${champIcon(s.m, s.champ)}
+        <div>
+          <div class="stk-name">${escapeHtml(s.name)}<small>#${escapeHtml(s.tag)}</small></div>
+          <div class="stk-quote">${streakQuote(kind, s.n, s.name)}</div>
+          <div class="stk-dots">${s.res.slice(-5).map(w => `<i class="${w ? 'w' : 'l'}">${w ? '승' : '패'}</i>`).join('')}</div>
+        </div>
+        <div class="stk-num"><b>${s.n}</b><span>${kind === 'win' ? '연승' : '연패'}</span></div>
+      </div>`).join('')
+      : `<div class="stk-empty">${!matches.length ? '경기를 올리면 여기에 나와요'
+          : kind === 'win' ? '아직 2연승 이상인 사람이 없어요<br>다음 판 주인공은 누구?' : '2연패 이상인 사람이 없어요<br>다들 선방 중 👏'}</div>`;
+    return `<div class="streak-col ${kind}"><div class="streak-head">${title}<small>2판 이상 연속 · 최근 경기 기준</small></div><div class="stk-list">${body}</div></div>`;
+  };
+  box.innerHTML = col('win') + col('lose');
 }
 function toggleMatch(id) {
   if (recOpen.has(id)) recOpen.delete(id); else recOpen.add(id);
@@ -2651,6 +2732,9 @@ function matchCard(m) {
   const maxDmg = Math.max(1, ...m.players.map(p => p.dmg));
   const mins = Math.max(1, m.len / 60);
   const tKills = { blue: kills('blue'), red: kills('red') };
+  const tSum = t => team(t).reduce((s, p) => ({ k: s.k + p.k, d: s.d + p.d, a: s.a + p.a }), { k: 0, d: 0, a: 0 });
+  const tKda = { blue: tSum('blue'), red: tSum('red') };
+  const kdaLine = t => `<b>${tKda[t].k}</b> / <b class="dd">${tKda[t].d}</b> / <b>${tKda[t].a}</b>`;
 
   const row = (p, i) => {
     const ratio = kdaRatio(p.k, p.d, p.a);
@@ -2677,7 +2761,7 @@ function matchCard(m) {
     const ps = team(t);
     const isWin = ps.some(p => p.win);
     const gold = ps.reduce((s, p) => s + p.gold, 0);
-    return `<tr><th class="team ${t}" colspan="3">${t === 'blue' ? '블루팀' : '레드팀'} · ${isWin ? '승리' : '패배'}<span>${tKills[t]}킬 · 골드 ${fmtK(gold)}</span></th>
+    return `<tr><th class="team ${t}" colspan="3">${t === 'blue' ? '블루팀' : '레드팀'} · ${isWin ? '승리' : '패배'}<span>K/D/A ${kdaLine(t)} · 골드 ${fmtK(gold)}</span></th>
       <th>K / D / A</th><th>챔피언 피해량</th><th>CS</th><th>골드</th><th>시야</th><th>아이템</th></tr>
       ${m.players.map((p, i) => p.team === t ? row(p, i) : '').join('')}`;
   };
@@ -2690,9 +2774,15 @@ function matchCard(m) {
         <span>${fmtLen(m.len)}${m.surrender ? ' · 항복' : ''}${m.ver ? ' · ' + m.ver : ''}</span>
       </div>
       <div class="mt-vs">
-        <div class="mt-champs">${team('blue').map(p => champIcon(m, p.champ, 'sm blue')).join('')}</div>
+        <div class="mt-side blue">
+          <div class="mt-champs">${team('blue').map(p => champIcon(m, p.champ, 'sm blue')).join('')}</div>
+          <div class="mt-tkda"><em>블루</em> ${kdaLine('blue')}</div>
+        </div>
         <div class="mt-kills"><span class="b">${tKills.blue}</span> : <span class="r">${tKills.red}</span></div>
-        <div class="mt-champs">${team('red').map(p => champIcon(m, p.champ, 'sm red')).join('')}</div>
+        <div class="mt-side red">
+          <div class="mt-champs">${team('red').map(p => champIcon(m, p.champ, 'sm red')).join('')}</div>
+          <div class="mt-tkda"><em>레드</em> ${kdaLine('red')}</div>
+        </div>
       </div>
       <div class="mt-act">
         <button class="mt-del" onclick="event.stopPropagation(); deleteMatch('${escapeHtml(m.id)}')">삭제</button>
@@ -2713,7 +2803,7 @@ function renderRank() {
   if (!box) return;
   sortBox.innerHTML = '<span>정렬</span>' + RK_SORTS.map(([k, t]) =>
     `<button class="rk-btn${recSort === k ? ' active' : ''}" onclick="setRankSort('${k}')">${t}</button>`).join('');
-  if (!matches.length) { box.innerHTML = '<div class="rec-empty">경기를 올리면 개인 순위가 여기에 나와요.</div>'; return; }
+  if (!matches.length) { box.innerHTML = '<div class="rec-empty">아직 경기 기록이 없어요.<br>왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.</div>'; return; }
 
   const P = {};
   matches.slice().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => {
