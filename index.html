@@ -936,7 +936,28 @@
                  background: linear-gradient(90deg, #ffd27a, #ff6a1f 42%, #6fa4ff 58%, #d6e6ff);
                  -webkit-background-clip: text; background-clip: text; color: transparent; }
     .hot-sub { font-size: .7rem; color: var(--muted); }
-    .hot-row { display: flex; gap: 14px; overflow-x: auto; padding: 10px 4px 16px; align-items: stretch; }
+    .hot-row { display: flex; gap: 14px; padding: 10px 4px 16px; align-items: stretch; }
+    /* 카드가 적으면 가로로 넓은 카드(가로 일러스트), 많으면 세로 카드 */
+    .hot-row.c2 .tcard { height: 300px; } .hot-row.c3 .tcard { height: 290px; } .hot-row.c4 .tcard { height: 280px; }
+    .hot-row.wide .tc-art { background-position: center 22%; }
+    .hot-row.wide .tc-num b { font-size: 5rem; }
+    .hot-row.wide .tc-num span { font-size: .8rem; }
+    .hot-row.wide .tc-ribbon { font-size: .82rem; padding: 3px 10px 2px; }
+    .hot-row.wide .tc-name { font-size: 1.35rem; }
+    .hot-row.wide .tc-champ { font-size: .72rem; }
+    .hot-row.wide .tc-quote { font-size: .86rem; -webkit-line-clamp: 2; }
+    .hot-row.wide .tc-tag { font-size: .68rem; padding: 2px 9px; }
+    .hot-row.wide .tc-body { padding: 14px 18px 16px; }
+    .hot-row.wide .tc-num { top: 40px; right: 18px; }
+    .hot-row.wide .tc-ribbon { top: 14px; left: 16px; }
+    .hot-row.wide .tcard.win .tc-shade  { background: linear-gradient(180deg, rgba(30,10,0,.2) 0%, rgba(30,10,0,0) 25%, rgba(26,8,2,.88) 62%, #170701 100%), linear-gradient(90deg, rgba(23,7,1,.55), transparent 60%); }
+    .hot-row.wide .tcard.lose .tc-shade { background: linear-gradient(180deg, rgba(4,10,24,.25) 0%, rgba(4,10,24,0) 25%, rgba(6,14,32,.9) 62%, #040b1a 100%), linear-gradient(90deg, rgba(4,11,26,.55), transparent 60%); }
+    @media (max-width: 760px) {
+      .hot-row { flex-wrap: wrap; }
+      .hot-row .tcard { flex: 1 1 calc(50% - 14px); height: 250px; }
+      .hot-row.c2 .tcard, .hot-row.c3 .tcard { flex-basis: 100%; height: 230px; }
+      .hot-vs { display: none; }
+    }
     .hot-row::-webkit-scrollbar { height: 6px; } .hot-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
     .hot-vs { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 0 2px; }
     .hot-vs::before, .hot-vs::after { content: ''; width: 1px; flex: 1; background: linear-gradient(to bottom, transparent, var(--border), transparent); }
@@ -944,7 +965,7 @@
     .hot-none { font-size: .8rem; color: var(--muted); padding: 16px 0; text-align: center;
                 border-top: 1px dashed var(--border); border-bottom: 1px dashed var(--border); }
 
-    .tcard { flex: 0 0 168px; height: 262px; position: relative; border-radius: 16px; padding: 2px; overflow: hidden;
+    .tcard { flex: 1 1 0; min-width: 0; height: 262px; position: relative; border-radius: 16px; padding: 2px; overflow: hidden;
              animation: tcDeal .75s cubic-bezier(.2,.9,.3,1.2) both; transition: transform .25s ease, box-shadow .25s ease; }
     .tcard.win  { box-shadow: 0 8px 26px rgba(255,110,30,.22); }
     .tcard.lose { box-shadow: 0 8px 26px rgba(80,130,230,.2); }
@@ -1158,8 +1179,8 @@
       <span class="t-sub">칼바람 나락 · 증강 칼바람</span>
     </button>
   </div>
-  <div class="hot-sec" id="recStreak"></div>
   <div class="rec-sum" id="recSum"></div>
+  <div class="hot-sec" id="recStreak"></div>
 
   <div class="rec-bar">
     <div class="rec-list-title">▸ 경기 기록</div>
@@ -1352,27 +1373,13 @@ const DEFAULT_MEMBERS = [
   '겨  울', '위염앤비염', 'Monks', '마샬d챤', '비에고',
   '수능왕마킹', 'Art pororo', '머포좀먹자', '부평 그랑힐스', '대운빌라',
 ];
-function readStore(key) {
-  try { const v = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(v) ? v : []; }
-  catch(e) { return []; }
-}
-let removedDefaults = readStore('lol_members_removed');   // 사용자가 직접 지운 기본 멤버
-// 이 브라우저에 저장된 멤버 + 아직 지우지 않은 기본 멤버
-function loadMembers() {
-  const list = readStore('lol_members').filter(n => typeof n === 'string');
-  const removed = readStore('lol_members_removed');
-  DEFAULT_MEMBERS.forEach(n => { if (!list.includes(n) && !removed.includes(n)) list.push(n); });
-  return list;
-}
+// 멤버 리스트는 브라우저에 저장하지 않아요. 새로고침하면 항상 위 DEFAULT_MEMBERS(=index.html에 적힌 멤버)로 시작해요.
+//   화면에서 추가/삭제한 멤버는 새로고침 전까지만 유지돼요.
+try { localStorage.removeItem('lol_members'); localStorage.removeItem('lol_members_removed'); } catch (e) {}   // 예전 버전이 저장한 기록 정리
+let removedDefaults = [];
+function loadMembers() { return DEFAULT_MEMBERS.slice(); }
 let members = loadMembers();
-
-function saveMembers() {
-  try {
-    localStorage.setItem('lol_members', JSON.stringify(members));
-    localStorage.setItem('lol_members_removed', JSON.stringify(removedDefaults));
-  } catch(e) {}
-}
-saveMembers();
+function saveMembers() { /* 저장 안 함 */ }
 
 // 현재 활성 탭의 모든 text 입력칸 반환
 function getActiveInputs() {
@@ -2561,7 +2568,7 @@ const REC_MODE_KEY = 'lol_matches_mode_v1';        // 공유 경기를 다른 �
 // 공유 방식: GitHub에 올린 matches.json = 모두가 보는 기준.
 //   각 브라우저에는 '내가 직접 올렸는데 아직 공유 파일에 없는 경기'만 저장해요.
 //   그래서 공유 파일에서 경기를 빼고 다시 올리면, 모든 사람 화면에서도 빠져요.
-let sharedIds = new Set(), sharedState = 'none', modeOverride = {};   // sharedState: none | ok | missing
+let sharedIds = new Set(), sharedState = 'none', modeOverride = {}, dateFixed = {};   // sharedState: none | ok | missing
 let matches = [], recDeleted = [], recOpen = new Set(), recSort = 'games';
 let recMode = 'rift';                                 // 'rift' 소환사 협곡 / 'aram' 칼바람 증바람
 const MODE_NAME = { rift: '소환사 협곡', aram: '칼바람 증바람' };
@@ -2589,7 +2596,7 @@ function loadRec() {
 const isLocalOnly = m => !sharedIds.has(m.id);
 function saveRec() { /* 저장 안 함: 공유 파일만 기준 */ }
 // 공유 파일에 아직 반영 안 된 변경이 있는지
-const hasUnshared = () => matches.some(isLocalOnly) || recDeleted.some(id => sharedIds.has(id)) || Object.keys(modeOverride).length > 0;
+const hasUnshared = () => matches.some(isLocalOnly) || recDeleted.some(id => sharedIds.has(id)) || Object.keys(modeOverride).length > 0 || Object.keys(dateFixed).length > 0;
 // 반영 안 된 상태로 새로고침/창 닫기 하면 확인 창 띄우기
 window.addEventListener('beforeunload', e => {
   if (!hasUnshared()) return;
@@ -2659,8 +2666,22 @@ async function parseRofl(file) {
   const id = idm ? `${idm[1]}-${idm[2]}`
                  : 'G' + Math.round(meta.gameLength) + '-' + players.map(p => p.puuid.slice(0, 4)).sort().join('');
   const aram = players.some(p => p.sp.includes(32)) || players.every(p => !p.pos);
+  // 파일 이름 = 날짜_순번_게임번호 (예: 20261103_2_KR-8440553569.rofl)
+  //   날짜 = 내전한 날, 순번 = 그날 몇 번째 판. 순번대로 정렬해요 (화면에는 날짜 + 몇 번째 판만 표시)
+  //   순번이 없으면 파일 시각으로 순서를 맞춰요
+  let date = file.lastModified || Date.now(), dayOnly = false, seq = 0;
+  const dm = file.name.match(/^(\d{4})(\d{2})(\d{2})(?:[_\-\s]+(\d{1,3})(?=[_\-\s.]))?/);
+  if (dm) {
+    const y = +dm[1], mo = +dm[2], d = +dm[3];
+    const day = new Date(y, mo - 1, d);
+    if (day.getFullYear() === y && day.getMonth() === mo - 1 && day.getDate() === d) {
+      if (dm[4]) { seq = +dm[4]; day.setHours(0, seq, 0, 0); }          // 순번 1, 2, 3… 순서 그대로
+      else { const t = new Date(date); day.setHours(t.getHours(), t.getMinutes(), t.getSeconds()); }
+      date = day.getTime(); dayOnly = true;
+    }
+  }
   return {
-    id, date: file.lastModified || Date.now(), len: Math.round(N(meta.gameLength) / 1000),
+    id, date, dayOnly, seq, len: Math.round(N(meta.gameLength) / 1000),
     mode: aram ? 'aram' : 'rift',
     ver: vm ? `${vm[1]}.${vm[2]}` : '',
     surrender: stats.some(p => p.GAME_ENDED_IN_SURRENDER === '1' || p.GAME_ENDED_IN_EARLY_SURRENDER === '1'),
@@ -2679,7 +2700,7 @@ async function handleRecFiles(fileList) {
   if (!files.length) return;
   const msg = document.getElementById('recMsg');
   msg.className = 'rec-msg';
-  let added = 0, dup = 0; const fail = [], cnt = { rift: 0, aram: 0 };
+  let added = 0, dup = 0, fixed = 0, noDate = 0; const fail = [], cnt = { rift: 0, aram: 0 };
   for (let i = 0; i < files.length; i++) {
     const f = files[i];
     msg.textContent = `⏳ 읽는 중... (${i + 1}/${files.length}) ${f.name}`;
@@ -2694,7 +2715,15 @@ async function handleRecFiles(fileList) {
         const m = await parseRofl(f);                        // 협곡/칼바람은 파일 내용으로 자동 구분
         recDeleted = recDeleted.filter(x => x !== m.id);
         const r = addMatch(m);
-        if (r === 'ok') { added++; cnt[m.mode]++; recOpen.add(m.id); } else if (r === 'dup') dup++;
+        if (r === 'ok') { added++; cnt[m.mode]++; recOpen.add(m.id); }
+        else if (r === 'dup') {
+          const ex = matches.find(x => x.id === m.id);
+          if (m.dayOnly && ex && (!ex.dayOnly || ex.date !== m.date || (ex.seq || 0) !== m.seq)) {
+            ex.date = m.date; ex.dayOnly = true; ex.seq = m.seq; fixed++;
+            if (sharedIds.has(ex.id)) dateFixed[ex.id] = true;
+          } else dup++;
+        }
+        if (!m.dayOnly) noDate++;
       }
     } catch (e) { fail.push(f.name); }
   }
@@ -2707,7 +2736,9 @@ async function handleRecFiles(fileList) {
   if (cnt.rift) parts.push(`✅ 소환사 협곡 ${cnt.rift}경기`);
   if (cnt.aram) parts.push(`✅ 칼바람 증바람 ${cnt.aram}경기`);
   if (added) parts[parts.length - 1] += ' 추가했어요';
+  if (fixed) parts.push(`📅 이미 있던 ${fixed}경기의 날짜·순번을 파일 이름대로 고쳤어요`);
   if (dup) parts.push(`이미 있는 경기 ${dup}개는 건너뛰었어요`);
+  if (noDate) parts.push(`파일 이름 앞에 날짜(예: 20261103_1_)가 없는 ${noDate}개는 파일 시각으로 저장했어요`);
   if (fail.length) parts.push(`⚠️ 읽지 못한 파일: ${fail.join(', ')}`);
   msg.textContent = parts.join(' · ') || '추가된 경기가 없어요';
   msg.className = 'rec-msg' + (fail.length && !added ? ' err' : '');
@@ -2791,7 +2822,9 @@ function renderShareInfo() {
   if (localCnt) parts.push(`📌 방금 올린 경기 <b>${localCnt}</b>개 (공유 전)`);
   if (hidden) parts.push(`🗑 방금 지운 경기 <b>${hidden}</b>개`);
   if (moved) parts.push(`↔ 탭을 옮긴 경기 <b>${moved}</b>개`);
-  const needUpload = localCnt || hidden || moved;
+  const fixedCnt = Object.keys(dateFixed).length;
+  if (fixedCnt) parts.push(`📅 날짜·순번을 고친 경기 <b>${fixedCnt}</b>개`);
+  const needUpload = localCnt || hidden || moved || fixedCnt;
   el.innerHTML = parts.join(' · ') + (needUpload ? '<br><span class="need">→ 📤 공유용 파일 내보내기 후 GitHub에 올려야 반영돼요. 그 전에 새로고침하면 이 변경은 사라져요</span>' : '');
   el.className = 'rec-share' + (needUpload ? ' warn' : '');
 }
@@ -2991,6 +3024,7 @@ function pickStreakTag(s, used) {
   used.add(t);
   return t;
 }
+const splashOf = c => `${DD_BASE}img/champion/splash/${encodeURIComponent(champInfo(c).id)}_0.jpg`;
 const loadingArtOf = c => `${DD_BASE}img/champion/loading/${encodeURIComponent(champInfo(c).id)}_0.jpg`;
 function renderStreaks() {
   const box = document.getElementById('recStreak');
@@ -3002,6 +3036,7 @@ function renderStreaks() {
   const pick = kind => all.filter(s => s.kind === kind && s.n >= 2)
     .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name)).slice(0, 3);
   const wins = pick('win'), loses = pick('lose');
+  const isWide = Math.max(1, wins.length) + Math.max(1, loses.length) <= 3;
   let delay = 0;
   const card = s => {
     const kind = s.kind, tag = pickStreakTag(s, usedTag), line = pickStreakLine(s, usedLine);
@@ -3009,7 +3044,7 @@ function renderStreaks() {
     return `<div class="tcard ${kind}" style="animation-delay:${d}s">
       <div class="tc-spin"></div>
       <div class="tc-in">
-        <div class="tc-art" style="background-image:url('${loadingArtOf(s.last.p.champ)}')"></div>
+        <div class="tc-art" style="background-image:url('${isWide ? splashOf(s.last.p.champ) : loadingArtOf(s.last.p.champ)}')"></div>
         <div class="tc-shade"></div>
         ${fx(kind)}
         <div class="tc-ribbon">${kind === 'win' ? 'WIN STREAK' : 'LOSE STREAK'}</div>
@@ -3030,7 +3065,9 @@ function renderStreaks() {
   const head = `<div class="hot-head"><span class="hot-title">HOT &amp; COLD</span><span class="hot-sub">최근 경기 기준 2판 이상 연승 · 연패 중인 소환사</span></div>`;
   if (!modeMatches().length) { box.innerHTML = head + '<div class="hot-none">경기 기록이 올라오면 연승·연패 카드가 여기에 나와요</div>'; return; }
   if (!wins.length && !loses.length) { box.innerHTML = head + '<div class="hot-none">아직 2연승·2연패 이상인 사람이 없어요. 다음 판 주인공은 누구? 🔥🧊</div>'; return; }
-  box.innerHTML = head + `<div class="hot-row">
+  const count = Math.max(1, wins.length) + Math.max(1, loses.length);    // 빈 카드 포함 실제 카드 수
+  const wide = count <= 3;                                                // 3장 이하면 넓은 카드
+  box.innerHTML = head + `<div class="hot-row c${count}${wide ? ' wide' : ''}">
     ${wins.length ? wins.map(card).join('') : ghost('win')}
     <div class="hot-vs"><span>VS</span></div>
     ${loses.length ? loses.map(card).join('') : ghost('lose')}
@@ -3111,7 +3148,7 @@ function matchCard(m) {
     <div class="mt-head" onclick="toggleMatch('${escapeHtml(m.id)}')">
       <div class="mt-meta">
         <span class="mt-win ${win}">${win === 'blue' ? '블루팀 승리' : win === 'red' ? '레드팀 승리' : '결과 없음'}</span>
-        <span>${fmtDate(m.date)}</span>
+        <span>${m.dayOnly ? fmtDate(m.date).slice(0, 10) + (m.seq ? ` · ${m.seq}번째 판` : '') : fmtDate(m.date)}</span>
         <span>${fmtLen(m.len)}${m.surrender ? ' · 항복' : ''}${m.ver ? ' · ' + m.ver : ''}</span>
         ${sharedState !== 'none' && isLocalOnly(m) ? '<span class="mt-local" title="공유용 파일 내보내기 후 GitHub에 올리면 모두에게 보여요. 그 전에 새로고침하면 사라져요">📌 공유 전 · 새로고침하면 사라져요</span>' : ''}
       </div>
