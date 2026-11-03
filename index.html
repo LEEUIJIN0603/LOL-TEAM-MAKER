@@ -694,7 +694,7 @@
     .rec-drop-sub { font-size: .72rem; color: #6b7a90; margin-top: 6px; line-height: 1.7; }
     .rec-drop-sub code { color: var(--gold); background: rgba(0,0,0,.35); padding: 1px 6px; border-radius: 4px; font-size: .7rem; }
     .rec-tools { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 12px; }
-    .rec-msg { font-size: .78rem; margin-top: 10px; min-height: 1.1em; color: var(--gold2); text-align: center; }
+    .rec-msg { font-size: .78rem; margin: 8px 0 10px; min-height: 1.1em; color: var(--gold2); text-align: center; }
     .rec-msg.err { color: #ff7a7a; }
 
     .rec-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
@@ -707,6 +707,19 @@
     .rec-empty { text-align: center; color: var(--muted); padding: 40px 10px; font-size: .85rem; line-height: 1.8;
                  background: var(--panel); border: 1px dashed var(--border); border-radius: 12px; }
 
+    .rec-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+    .rec-bar .rec-tools { margin-top: 0; align-items: center; }
+    .rec-bar .rec-list-title { margin: 0; }
+    .btn-upload {
+      display: flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 7px; cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif; font-size: .8rem; font-weight: 700;
+      background: linear-gradient(135deg, #c89b3c, #f0d070); color: #1a1205; border: none;
+      box-shadow: 0 2px 12px rgba(200,155,60,.3); transition: all .18s;
+    }
+    .btn-upload:hover { transform: translateY(-1px); box-shadow: 0 4px 18px rgba(200,155,60,.45); }
+    #view-record.drag-over { outline: 2px dashed var(--gold); outline-offset: 6px; border-radius: 12px; }
+    .mt-move { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; font-size: .68rem; padding: 3px 8px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+    .mt-move:hover { border-color: var(--gold); color: var(--gold2); }
     .rec-list-title { font-family: 'Bebas Neue', 'Noto Sans KR', sans-serif; font-size: 1.05rem; letter-spacing: 3px; color: var(--gold); margin: 4px 0 12px; }
 
     /* 연승 / 연패 카드 */
@@ -976,32 +989,45 @@
 
 <!-- ▣ 내전 전적 -->
 <div class="page-view" id="view-record">
+  <div class="tabs mode-tabs">
+    <button class="tab-btn active" data-mode="rift" onclick="switchRecMode('rift')">
+      <span class="t-main">🌲 소환사 협곡</span>
+      <span class="t-sub">5 : 5 협곡 내전</span>
+    </button>
+    <button class="tab-btn" data-mode="aram" onclick="switchRecMode('aram')">
+      <span class="t-main">❄️ 칼바람 증바람</span>
+      <span class="t-sub">칼바람 나락 · 증강 칼바람</span>
+    </button>
+  </div>
   <div class="streak-row" id="recStreak"></div>
   <div class="rec-sum" id="recSum"></div>
-  <div class="card">
-    <div class="card-title"><span>▸ 리플레이 파일 올리기</span></div>
-    <div class="rec-drop" id="recDrop" onclick="document.getElementById('recFile').click()">
-      <div class="rec-drop-ico">📂</div>
-      <div class="rec-drop-main">리플레이 파일(.rofl)을 여기에 끌어다 놓거나 클릭해서 선택하세요</div>
-      <div class="rec-drop-sub">
-        여러 개를 한 번에 올려도 돼요 · 같은 경기는 한 번만 저장돼요<br>
-        롤 클라이언트에서 경기 기록 → 리플레이 다운로드 후, <code>문서\League of Legends\Replays</code> 폴더에 있어요
-      </div>
-    </div>
-    <input type="file" id="recFile" accept=".rofl,.json" multiple hidden onchange="handleRecFiles(this.files); this.value='';">
-    <div class="rec-msg" id="recMsg"></div>
+
+  <div class="rec-bar">
+    <div class="rec-list-title">▸ 경기 기록</div>
     <div class="rec-tools">
+      <button class="btn-upload" onclick="document.getElementById('recFile').click()"
+              title="리플레이 위치: 문서\League of Legends\Replays">📂 리플레이 올리기</button>
       <button class="btn-copy" onclick="exportMatches()"><span class="btn-copy-icon">📤</span> 공유용 파일 내보내기</button>
-      <button class="btn-copy" onclick="clearMatches()"><span class="btn-copy-icon">🗑</span> 전적 전체 삭제</button>
+      <button class="btn-copy" onclick="clearMatches()"><span class="btn-copy-icon">🗑</span> 이 탭 전적 삭제</button>
     </div>
   </div>
-
-  <div class="rec-list-title">▸ 경기 기록</div>
+  <input type="file" id="recFile" accept=".rofl,.json" multiple hidden onchange="handleRecFiles(this.files); this.value='';">
+  <div class="rec-msg" id="recMsg"></div>
   <div id="recMatchList"></div>
 </div><!-- /view-record -->
 
 <!-- ▣ 개인 순위 -->
 <div class="page-view" id="view-rank">
+  <div class="tabs mode-tabs">
+    <button class="tab-btn active" data-mode="rift" onclick="switchRecMode('rift')">
+      <span class="t-main">🌲 소환사 협곡</span>
+      <span class="t-sub">5 : 5 협곡 내전</span>
+    </button>
+    <button class="tab-btn" data-mode="aram" onclick="switchRecMode('aram')">
+      <span class="t-main">❄️ 칼바람 증바람</span>
+      <span class="t-sub">칼바람 나락 · 증강 칼바람</span>
+    </button>
+  </div>
   <div class="card">
     <div class="card-title"><span>▸ 개인 순위</span></div>
     <div class="rk-sort" id="rkSort"></div>
@@ -2381,6 +2407,16 @@ function doAbility() {
 const REC_KEY = 'lol_matches_v1';
 const REC_DEL_KEY = 'lol_matches_deleted_v1';      // 지운 경기 (공유 파일에 남아 있어도 다시 안 보이게)
 let matches = [], recDeleted = [], recOpen = new Set(), recSort = 'games';
+let recMode = 'rift';                                 // 'rift' 소환사 협곡 / 'aram' 칼바람 증바람
+const MODE_NAME = { rift: '소환사 협곡', aram: '칼바람 증바람' };
+const modeOf = m => m.mode === 'aram' ? 'aram' : 'rift';
+const modeMatches = () => matches.filter(m => modeOf(m) === recMode);
+function switchRecMode(mode) {
+  recMode = mode;
+  document.querySelectorAll('.mode-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  const msg = document.getElementById('recMsg'); if (msg) msg.textContent = '';
+  renderRecord();
+}
 const POS_MAP = { TOP:'TOP', JUNGLE:'JGL', MIDDLE:'MID', BOTTOM:'BOT', UTILITY:'SPT' };
 const POS_KO  = { TOP:'탑', JGL:'정글', MID:'미드', BOT:'원딜', SPT:'서폿' };
 const SPELLS = { 1:['SummonerBoost','정화'], 3:['SummonerExhaust','탈진'], 4:['SummonerFlash','점멸'], 6:['SummonerHaste','유체화'],
@@ -2462,8 +2498,10 @@ async function parseRofl(file) {
   const idm = file.name.match(/([A-Z]{2,4}\d?)-(\d{6,})/);
   const id = idm ? `${idm[1]}-${idm[2]}`
                  : 'G' + Math.round(meta.gameLength) + '-' + players.map(p => p.puuid.slice(0, 4)).sort().join('');
+  const aram = players.some(p => p.sp.includes(32)) || players.every(p => !p.pos);
   return {
     id, date: file.lastModified || Date.now(), len: Math.round(N(meta.gameLength) / 1000),
+    mode: aram ? 'aram' : 'rift',
     ver: vm ? `${vm[1]}.${vm[2]}` : '',
     surrender: stats.some(p => p.GAME_ENDED_IN_SURRENDER === '1' || p.GAME_ENDED_IN_EARLY_SURRENDER === '1'),
     players
@@ -2481,7 +2519,7 @@ async function handleRecFiles(fileList) {
   if (!files.length) return;
   const msg = document.getElementById('recMsg');
   msg.className = 'rec-msg';
-  let added = 0, dup = 0; const fail = [];
+  let added = 0, dup = 0; const fail = [], cnt = { rift: 0, aram: 0 };
   for (let i = 0; i < files.length; i++) {
     const f = files[i];
     msg.textContent = `⏳ 읽는 중... (${i + 1}/${files.length}) ${f.name}`;
@@ -2490,34 +2528,48 @@ async function handleRecFiles(fileList) {
         const data = JSON.parse(await f.text());
         (Array.isArray(data) ? data : data.matches || []).forEach(m => {
           recDeleted = recDeleted.filter(x => x !== m.id);
-          const r = addMatch(m); if (r === 'ok') added++; else if (r === 'dup') dup++;
+          const r = addMatch(m); if (r === 'ok') { added++; cnt[modeOf(m)]++; } else if (r === 'dup') dup++;
         });
       } else {
-        const m = await parseRofl(f);
+        const m = await parseRofl(f);                        // 협곡/칼바람은 파일 내용으로 자동 구분
         recDeleted = recDeleted.filter(x => x !== m.id);
         const r = addMatch(m);
-        if (r === 'ok') { added++; recOpen.add(m.id); } else if (r === 'dup') dup++;
+        if (r === 'ok') { added++; cnt[m.mode]++; recOpen.add(m.id); } else if (r === 'dup') dup++;
       }
     } catch (e) { fail.push(f.name); }
   }
+  const other = recMode === 'rift' ? 'aram' : 'rift';
+  if (added && cnt[other] === added) switchRecMode(other);    // 전부 다른 모드 경기면 그 탭으로 이동
   saveRec();
   renderRecord();
   loadDD();
   const parts = [];
-  if (added) parts.push(`✅ ${added}경기 추가했어요`);
+  if (cnt.rift) parts.push(`✅ 소환사 협곡 ${cnt.rift}경기`);
+  if (cnt.aram) parts.push(`✅ 칼바람 증바람 ${cnt.aram}경기`);
+  if (added) parts[parts.length - 1] += ' 추가했어요';
   if (dup) parts.push(`이미 있는 경기 ${dup}개는 건너뛰었어요`);
   if (fail.length) parts.push(`⚠️ 읽지 못한 파일: ${fail.join(', ')}`);
   msg.textContent = parts.join(' · ') || '추가된 경기가 없어요';
   msg.className = 'rec-msg' + (fail.length && !added ? ' err' : '');
 }
+// 내전 전적 화면 아무 곳에나 파일을 끌어다 놓아도 올라가요
 (function initRecDrop() {
-  const drop = document.getElementById('recDrop');
-  if (!drop) return;
-  ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
-  ['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
-  drop.addEventListener('drop', e => handleRecFiles(e.dataTransfer.files));
+  const view = document.getElementById('view-record');
+  if (!view) return;
+  ['dragenter','dragover'].forEach(ev => view.addEventListener(ev, e => { e.preventDefault(); view.classList.add('drag-over'); }));
+  view.addEventListener('dragleave', e => { if (!view.contains(e.relatedTarget)) view.classList.remove('drag-over'); });
+  view.addEventListener('drop', e => { e.preventDefault(); view.classList.remove('drag-over'); handleRecFiles(e.dataTransfer.files); });
 })();
-
+// 잘못 들어간 경기를 다른 탭으로 옮기기
+function moveMatch(id) {
+  const m = matches.find(x => x.id === id);
+  if (!m) return;
+  m.mode = modeOf(m) === 'rift' ? 'aram' : 'rift';
+  saveRec(); renderRecord();
+  const msg = document.getElementById('recMsg');
+  msg.className = 'rec-msg';
+  msg.textContent = `↔ ${MODE_NAME[m.mode]} 탭으로 옮겼어요`;
+}
 function deleteMatch(id) {
   if (!confirm('이 경기 기록을 삭제할까요?')) return;
   matches = matches.filter(m => m.id !== id);
@@ -2525,10 +2577,11 @@ function deleteMatch(id) {
   saveRec(); renderRecord();
 }
 function clearMatches() {
-  if (!matches.length) return;
-  if (!confirm(`저장된 ${matches.length}경기를 모두 삭제할까요?`)) return;
-  matches.forEach(m => { if (!recDeleted.includes(m.id)) recDeleted.push(m.id); });
-  matches = [];
+  const list = modeMatches();
+  if (!list.length) return;
+  if (!confirm(`${MODE_NAME[recMode]} 전적 ${list.length}경기를 모두 삭제할까요?`)) return;
+  list.forEach(m => { if (!recDeleted.includes(m.id)) recDeleted.push(m.id); });
+  matches = matches.filter(m => modeOf(m) !== recMode);
   saveRec(); renderRecord();
 }
 function exportMatches() {
@@ -2641,9 +2694,10 @@ function renderRecord() {
 function renderRecSummary() {
   const box = document.getElementById('recSum');
   if (!box) return;
-  const total = matches.length;
-  const people = new Set(matches.flatMap(m => m.players.map(p => p.puuid || p.name))).size;
-  const avgLen = total ? Math.round(matches.reduce((s, m) => s + m.len, 0) / total) : 0;
+  const list = modeMatches();
+  const total = list.length;
+  const people = new Set(list.flatMap(m => m.players.map(p => p.puuid || p.name))).size;
+  const avgLen = total ? Math.round(list.reduce((s, m) => s + m.len, 0) / total) : 0;
   box.innerHTML = `
     <div class="rec-sum-box"><div class="rec-sum-lbl">총 경기</div><div class="rec-sum-val">${total}<small> 판</small></div></div>
     <div class="rec-sum-box"><div class="rec-sum-lbl">참여 인원</div><div class="rec-sum-val">${people}<small> 명</small></div></div>
@@ -2672,7 +2726,7 @@ function streakQuote(kind, n, name) {
 }
 function calcStreaks() {
   const P = {};
-  matches.slice().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => m.players.forEach(p => {
+  modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => m.players.forEach(p => {
     const key = p.puuid || p.name;
     const s = P[key] || (P[key] = { name: p.name, tag: p.tag, res: [], champ: p.champ, m });
     s.name = p.name; s.tag = p.tag; s.champ = p.champ; s.m = m;
@@ -2702,7 +2756,7 @@ function renderStreaks() {
         </div>
         <div class="stk-num"><b>${s.n}</b><span>${kind === 'win' ? '연승' : '연패'}</span></div>
       </div>`).join('')
-      : `<div class="stk-empty">${!matches.length ? '경기를 올리면 여기에 나와요'
+      : `<div class="stk-empty">${!modeMatches().length ? '경기를 올리면 여기에 나와요'
           : kind === 'win' ? '아직 2연승 이상인 사람이 없어요<br>다음 판 주인공은 누구?' : '2연패 이상인 사람이 없어요<br>다들 선방 중 👏'}</div>`;
     return `<div class="streak-col ${kind}"><div class="streak-head">${title}<small>2판 이상 연속 · 최근 경기 기준</small></div><div class="stk-list">${body}</div></div>`;
   };
@@ -2716,12 +2770,14 @@ function toggleMatch(id) {
 function renderMatchList() {
   const box = document.getElementById('recMatchList');
   if (!box) return;
-  if (!matches.length) {
-    box.innerHTML = '<div class="rec-empty">아직 저장된 경기가 없어요.<br>위에 리플레이 파일(.rofl)을 올려 주세요.</div>';
+  const list = modeMatches().sort((a, b) => (b.date || 0) - (a.date || 0));
+  if (!list.length) {
+    box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기가 없어요.<br>
+      <b>📂 리플레이 올리기</b> 버튼을 누르거나, 리플레이 파일(.rofl)을 이 화면에 끌어다 놓으세요.<br>
+      <small>롤 클라이언트 경기 기록에서 리플레이를 받으면 <b>문서\\League of Legends\\Replays</b> 폴더에 저장돼요</small></div>`;
     return;
   }
-  const list = matches.slice().sort((a, b) => (b.date || 0) - (a.date || 0));
-  if (!recOpen.size) recOpen.add(list[0].id);            // 처음엔 가장 최근 경기를 펼쳐 둬요
+  if (!list.some(m => recOpen.has(m.id))) recOpen.add(list[0].id);   // 처음엔 가장 최근 경기를 펼쳐 둬요
   box.innerHTML = list.map(m => matchCard(m)).join('');
 }
 function matchCard(m) {
@@ -2785,6 +2841,7 @@ function matchCard(m) {
         </div>
       </div>
       <div class="mt-act">
+        <button class="mt-move" title="다른 탭으로 옮기기" onclick="event.stopPropagation(); moveMatch('${escapeHtml(m.id)}')">${modeOf(m) === 'rift' ? '→ 칼바람' : '→ 협곡'}</button>
         <button class="mt-del" onclick="event.stopPropagation(); deleteMatch('${escapeHtml(m.id)}')">삭제</button>
         <span class="mt-arrow">▾</span>
       </div>
@@ -2803,10 +2860,10 @@ function renderRank() {
   if (!box) return;
   sortBox.innerHTML = '<span>정렬</span>' + RK_SORTS.map(([k, t]) =>
     `<button class="rk-btn${recSort === k ? ' active' : ''}" onclick="setRankSort('${k}')">${t}</button>`).join('');
-  if (!matches.length) { box.innerHTML = '<div class="rec-empty">아직 경기 기록이 없어요.<br>왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.</div>'; return; }
+  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.</div>`; return; }
 
   const P = {};
-  matches.slice().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => {
+  modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => {
     const badges = matchBadges(m);
     m.players.forEach((p, i) => {
       const key = p.puuid || p.name;
@@ -2827,7 +2884,7 @@ function renderRank() {
   rows.sort((a, b) => keyOf[recSort](b) - keyOf[recSort](a) || b.g - a.g || b.wr - a.wr);
 
   box.innerHTML = `<div class="rk-wrap"><table class="rk-table">
-    <tr><th>#</th><th class="l">플레이어</th><th>판수</th><th>승률</th><th>평균 K / D / A</th><th>평균 딜량</th><th>분당 CS</th><th>MVP·ACE</th><th>주 라인</th><th class="l">모스트 챔피언</th></tr>
+    <tr><th>#</th><th class="l">플레이어</th><th>판수</th><th>승률</th><th>평균 K / D / A</th><th>평균 딜량</th><th>분당 CS</th><th>MVP·ACE</th>${recMode === 'rift' ? '<th>주 라인</th>' : ''}<th class="l">모스트 챔피언</th></tr>
     ${rows.map((r, i) => {
       const wrp = Math.round(r.wr * 100);
       const mainPos = Object.entries(r.pos).sort((a, b) => b[1] - a[1])[0];
@@ -2843,7 +2900,7 @@ function renderRank() {
         <td>${fmtNum(Math.round(r.avgDmg))}</td>
         <td>${r.mins ? (r.cs / r.mins).toFixed(1) : '-'}</td>
         <td>${r.mvp || '-'}</td>
-        <td class="rk-pos">${mainPos && ICONS[mainPos[0]] ? `<img src="${ICONS[mainPos[0]]}" title="${POS_KO[mainPos[0]]} ${mainPos[1]}판" alt="" onerror="this.remove()">` : '-'}</td>
+        ${recMode !== 'rift' ? '' : `<td class="rk-pos">${mainPos && ICONS[mainPos[0]] ? `<img src="${ICONS[mainPos[0]]}" title="${POS_KO[mainPos[0]]} ${mainPos[1]}판" alt="" onerror="this.remove()">` : '-'}</td>`}
         <td><div class="rk-most">${most.map(([c, v]) => `<div>${champIcon(v.m, c, 'sm')}<span>${v.g}판 ${Math.round(v.w / v.g * 100)}%</span></div>`).join('')}</div></td>
       </tr>`;
     }).join('')}
