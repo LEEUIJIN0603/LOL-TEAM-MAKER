@@ -720,6 +720,11 @@
     #view-record.drag-over { outline: 2px dashed var(--gold); outline-offset: 6px; border-radius: 12px; }
     .mt-move { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; font-size: .68rem; padding: 3px 8px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
     .mt-move:hover { border-color: var(--gold); color: var(--gold2); }
+    .rec-share { font-size: .74rem; color: #6b7a90; margin-top: 8px; line-height: 1.7; }
+    .rec-share b { color: var(--text); }
+    .rec-share.warn { background: rgba(200,155,60,.07); border: 1px solid rgba(200,155,60,.25); border-radius: 8px; padding: 8px 12px; }
+    .rec-share .need { color: var(--gold2); }
+    .mt-local { display: inline-block; margin-top: 2px; font-size: .64rem; color: var(--gold2); background: rgba(200,155,60,.1); border: 1px solid rgba(200,155,60,.3); border-radius: 999px; padding: 1px 7px; width: fit-content; }
     .rec-list-title { font-family: 'Bebas Neue', 'Noto Sans KR', sans-serif; font-size: 1.05rem; letter-spacing: 3px; color: var(--gold); margin: 4px 0 12px; }
 
     /* 연승 / 연패 카드 */
@@ -1012,6 +1017,7 @@
     </div>
   </div>
   <input type="file" id="recFile" accept=".rofl,.json" multiple hidden onchange="handleRecFiles(this.files); this.value='';">
+  <div class="rec-share" id="recShare"></div>
   <div class="rec-msg" id="recMsg"></div>
   <div id="recMatchList"></div>
 </div><!-- /view-record -->
@@ -2405,7 +2411,12 @@ function doAbility() {
 // ══════════════════ 내전 전적 ══════════════════
 // 리플레이(.rofl) 파일 끝부분에 들어 있는 경기 통계(JSON)를 읽어서 보여줘요. 서버 없이 브라우저 안에서만 처리돼요.
 const REC_KEY = 'lol_matches_v1';
-const REC_DEL_KEY = 'lol_matches_deleted_v1';      // 지운 경기 (공유 파일에 남아 있어도 다시 안 보이게)
+const REC_DEL_KEY = 'lol_matches_deleted_v1';      // 이 브라우저에서 숨긴 공유 경기
+const REC_MODE_KEY = 'lol_matches_mode_v1';        // 공유 경기를 다른 탭으로 옮긴 기록
+// 공유 방식: GitHub에 올린 matches.json = 모두가 보는 기준.
+//   각 브라우저에는 '내가 직접 올렸는데 아직 공유 파일에 없는 경기'만 저장해요.
+//   그래서 공유 파일에서 경기를 빼고 다시 올리면, 모든 사람 화면에서도 빠져요.
+let sharedIds = new Set(), sharedState = 'none', modeOverride = {};   // sharedState: none | ok | missing
 let matches = [], recDeleted = [], recOpen = new Set(), recSort = 'games';
 let recMode = 'rift';                                 // 'rift' 소환사 협곡 / 'aram' 칼바람 증바람
 const MODE_NAME = { rift: '소환사 협곡', aram: '칼바람 증바람' };
@@ -2426,16 +2437,20 @@ const DD_BASE = 'https://ddragon.leagueoflegends.com/cdn/';
 const DD = { ver: null, champ: {}, rune: {} };     // 챔피언 한글 이름 / 룬 아이콘 (라이엇 Data Dragon)
 
 function loadRec() {
-  try { matches = JSON.parse(localStorage.getItem(REC_KEY) || '[]'); } catch (e) { matches = []; }
-  try { recDeleted = JSON.parse(localStorage.getItem(REC_DEL_KEY) || '[]'); } catch (e) { recDeleted = []; }
-  if (!Array.isArray(matches)) matches = [];
+  // 전적은 브라우저에 저장하지 않아요. 새로고침하면 항상 GitHub 공유 파일(matches.json) 내용만 보여요.
+  try { [REC_KEY, REC_DEL_KEY, REC_MODE_KEY].forEach(k => localStorage.removeItem(k)); } catch (e) {}   // 예전 버전이 남긴 기록 정리
+  matches = []; recDeleted = []; modeOverride = {};
 }
-function saveRec() {
-  try {
-    localStorage.setItem(REC_KEY, JSON.stringify(matches));
-    localStorage.setItem(REC_DEL_KEY, JSON.stringify(recDeleted));
-  } catch (e) {}
-}
+const isLocalOnly = m => !sharedIds.has(m.id);
+function saveRec() { /* 저장 안 함: 공유 파일만 기준 */ }
+// 공유 파일에 아직 반영 안 된 변경이 있는지
+const hasUnshared = () => matches.some(isLocalOnly) || recDeleted.some(id => sharedIds.has(id)) || Object.keys(modeOverride).length > 0;
+// 반영 안 된 상태로 새로고침/창 닫기 하면 확인 창 띄우기
+window.addEventListener('beforeunload', e => {
+  if (!hasUnshared()) return;
+  e.preventDefault();
+  e.returnValue = '';
+});
 
 // ── .rofl 읽기 ──
 const META_KEY = new TextEncoder().encode('{"gameLength"');
@@ -2511,7 +2526,7 @@ async function parseRofl(file) {
 function addMatch(m) {
   if (!m || !m.id || !Array.isArray(m.players)) return 'bad';
   if (matches.some(x => x.id === m.id)) return 'dup';
-  matches.push(m);
+  matches.push({ ...m, src: 'local' });
   return 'ok';
 }
 async function handleRecFiles(fileList) {
@@ -2565,6 +2580,7 @@ function moveMatch(id) {
   const m = matches.find(x => x.id === id);
   if (!m) return;
   m.mode = modeOf(m) === 'rift' ? 'aram' : 'rift';
+  if (sharedIds.has(id)) modeOverride[id] = m.mode;
   saveRec(); renderRecord();
   const msg = document.getElementById('recMsg');
   msg.className = 'rec-msg';
@@ -2573,39 +2589,66 @@ function moveMatch(id) {
 function deleteMatch(id) {
   if (!confirm('이 경기 기록을 삭제할까요?')) return;
   matches = matches.filter(m => m.id !== id);
-  if (!recDeleted.includes(id)) recDeleted.push(id);
+  if (sharedIds.has(id) && !recDeleted.includes(id)) recDeleted.push(id);
   saveRec(); renderRecord();
 }
 function clearMatches() {
   const list = modeMatches();
   if (!list.length) return;
   if (!confirm(`${MODE_NAME[recMode]} 전적 ${list.length}경기를 모두 삭제할까요?`)) return;
-  list.forEach(m => { if (!recDeleted.includes(m.id)) recDeleted.push(m.id); });
+  list.forEach(m => { if (sharedIds.has(m.id) && !recDeleted.includes(m.id)) recDeleted.push(m.id); });
   matches = matches.filter(m => modeOf(m) !== recMode);
   saveRec(); renderRecord();
 }
 function exportMatches() {
-  if (!matches.length) { alert('내보낼 경기가 없어요'); return; }
-  const blob = new Blob([JSON.stringify({ version: 1, matches })], { type: 'application/json' });
+  if (!matches.length && !sharedIds.size) { alert('내보낼 경기가 없어요'); return; }   // 공유 경기를 다 지운 경우엔 빈 파일로 내보내기 가능
+  const list = matches.map(({ src, ...m }) => m);            // 지금 화면에 보이는 경기 전부 (지운 경기는 빠짐)
+  const blob = new Blob([JSON.stringify({ version: 1, matches: list })], { type: 'application/json' });
   downloadBlob(blob, 'matches.json');
   const msg = document.getElementById('recMsg');
   msg.className = 'rec-msg';
-  msg.textContent = '📤 matches.json을 저장했어요 · GitHub에 index.html과 같은 위치에 올리면 모두에게 같은 전적이 보여요';
+  msg.textContent = `📤 matches.json (${list.length}경기)을 저장했어요 · GitHub에 index.html과 같은 위치에 올리면 모두에게 똑같이 보여요`;
 }
-// GitHub에 함께 올린 matches.json이 있으면 자동으로 불러오기 (모든 사람이 같은 전적을 보게)
+// GitHub에 함께 올린 matches.json을 불러와 기준으로 삼기
 function loadSharedMatches() {
-  if (!/^https?:$/.test(location.protocol)) return;
+  if (!/^https?:$/.test(location.protocol)) { sharedState = 'missing'; renderShareInfo(); return; }
   fetch('matches.json', { cache: 'no-store' })
-    .then(r => r.ok ? r.json() : null)
+    .then(r => r.ok ? r.json() : Promise.reject('missing'))
     .then(data => {
-      if (!data) return;
-      let added = 0;
-      (Array.isArray(data) ? data : data.matches || []).forEach(m => {
-        if (recDeleted.includes(m.id)) return;
-        if (addMatch(m) === 'ok') added++;
-      });
-      if (added) { saveRec(); renderRecord(); loadDD(); }
-    }).catch(() => {});
+      const shared = (Array.isArray(data) ? data : data.matches || []).filter(m => m && m.id && Array.isArray(m.players));
+      sharedIds = new Set(shared.map(m => m.id));
+      sharedState = 'ok';
+      const localOnly = matches.filter(m => !sharedIds.has(m.id));          // 페이지를 연 뒤 방금 올린 경기만
+      matches = [
+        ...shared.filter(m => !recDeleted.includes(m.id))
+                 .map(m => (modeOverride[m.id] ? { ...m, mode: modeOverride[m.id] } : m)),
+        ...localOnly
+      ];
+      Object.keys(modeOverride).forEach(id => { if (!sharedIds.has(id)) delete modeOverride[id]; });
+      saveRec(); renderRecord(); loadDD();
+    })
+    .catch(() => {
+      sharedState = 'missing';                       // 아직 공유 파일이 없음 → 지금 있는 건 전부 내 기록
+      saveRec(); renderShareInfo();
+    });
+}
+// 공유 상태 안내 한 줄
+function renderShareInfo() {
+  const el = document.getElementById('recShare');
+  if (!el) return;
+  if (sharedState === 'none') { el.innerHTML = ''; el.className = 'rec-share'; return; }
+  const localCnt = matches.filter(isLocalOnly).length;
+  const hidden = recDeleted.filter(id => sharedIds.has(id)).length;
+  const moved = Object.keys(modeOverride).length;
+  const parts = [];
+  if (sharedState === 'ok') parts.push(`🌐 GitHub 공유 파일 <b>${sharedIds.size}</b>경기 (모두에게 보이는 기록)`);
+  else if (sharedState === 'missing') parts.push('🌐 아직 GitHub에 올린 공유 파일(matches.json)이 없어요');
+  if (localCnt) parts.push(`📌 방금 올린 경기 <b>${localCnt}</b>개 (공유 전)`);
+  if (hidden) parts.push(`🗑 방금 지운 경기 <b>${hidden}</b>개`);
+  if (moved) parts.push(`↔ 탭을 옮긴 경기 <b>${moved}</b>개`);
+  const needUpload = localCnt || hidden || moved;
+  el.innerHTML = parts.join(' · ') + (needUpload ? '<br><span class="need">→ 📤 공유용 파일 내보내기 후 GitHub에 올려야 반영돼요. 그 전에 새로고침하면 이 변경은 사라져요</span>' : '');
+  el.className = 'rec-share' + (needUpload ? ' warn' : '');
 }
 
 // ── 라이엇 Data Dragon: 챔피언 한글 이름, 룬 아이콘 ──
@@ -2686,6 +2729,7 @@ const MULTI = { 2: '더블킬', 3: '트리플킬', 4: '쿼드라킬', 5: '펜타
 
 // ── 화면 그리기 ──
 function renderRecord() {
+  renderShareInfo();
   renderStreaks();
   renderRecSummary();
   renderMatchList();
@@ -2828,6 +2872,7 @@ function matchCard(m) {
         <span class="mt-win ${win}">${win === 'blue' ? '블루팀 승리' : win === 'red' ? '레드팀 승리' : '결과 없음'}</span>
         <span>${fmtDate(m.date)}</span>
         <span>${fmtLen(m.len)}${m.surrender ? ' · 항복' : ''}${m.ver ? ' · ' + m.ver : ''}</span>
+        ${sharedState !== 'none' && isLocalOnly(m) ? '<span class="mt-local" title="공유용 파일 내보내기 후 GitHub에 올리면 모두에게 보여요. 그 전에 새로고침하면 사라져요">📌 공유 전 · 새로고침하면 사라져요</span>' : ''}
       </div>
       <div class="mt-vs">
         <div class="mt-side blue">
