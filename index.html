@@ -2,6 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050910">
   <title>오늘의 LOL 내전</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Rajdhani:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -1051,7 +1053,7 @@
     .rk-score b { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; color: var(--text-bright); min-width: 34px; text-align: right; }
     .rk-score .bar { width: 56px; height: 5px; border-radius: 3px; background: #0a1422; overflow: hidden; }
     .rk-score .bar i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #c89b3c, #f0d070); }
-    .rk-note { font-size: .68rem; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+    .rk-note { font-size: .7rem; color: #8a97ab; margin: 0 0 12px; line-height: 1.6; background: var(--panel2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
     .stk-more { background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.18); color: #dfe5ee; font-size: .58rem; border-radius: 999px;
                 padding: 0 7px; height: 14px; line-height: 12px; cursor: pointer; margin-left: 3px; font-family: 'Noto Sans KR', sans-serif; white-space: nowrap; }
     .stk-more:hover { border-color: var(--gold); color: var(--gold2); }
@@ -1096,6 +1098,7 @@
     .sm-name { font-weight: 700; font-size: 1.12rem; color: #fff; line-height: 1.25; word-break: keep-all; }
     .sm-name small { font-weight: 400; color: rgba(255,255,255,.4); font-size: .7rem; margin-left: 3px; }
     .sm-traits { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+    .sm-traits:empty { display: none; }
     .sm-tr { width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: .78rem;
              background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.16); }
     .sm-tr img { width: 16px; height: 16px; }
@@ -1133,10 +1136,12 @@
     .db-h b { font-family: 'Bebas Neue', 'Noto Sans KR', sans-serif; font-size: 1.15rem; letter-spacing: 3px; color: var(--gold); font-weight: 400; }
     .db-h span { font-size: .7rem; color: var(--muted); }
     .db-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-    .kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; position: relative; overflow: hidden; }
-    .kpi::after { content: attr(data-ico); position: absolute; right: 10px; top: 8px; font-size: 1.3rem; opacity: .35; }
-    .kpi-l { font-size: .68rem; color: var(--muted); }
-    .kpi-v { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.7rem; color: var(--text-bright); line-height: 1.15; }
+    .kpi { background: linear-gradient(150deg, rgba(200,155,60,.1), var(--panel) 60%); border: 1px solid rgba(200,155,60,.32); border-top: 2px solid rgba(240,208,112,.7);
+           border-radius: 12px; padding: 12px 14px; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,.3); transition: transform .2s, border-color .2s; }
+    .kpi:hover { transform: translateY(-2px); border-color: rgba(240,208,112,.6); }
+    .kpi::after { content: attr(data-ico); position: absolute; right: 10px; top: 8px; font-size: 1.4rem; opacity: .55; }
+    .kpi-l { font-size: .7rem; color: #c9b27a; font-weight: 700; }
+    .kpi-v { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.95rem; color: var(--gold2); line-height: 1.15; text-shadow: 0 0 12px rgba(240,208,112,.22); }
     .kpi-v small { font-family: 'Noto Sans KR', sans-serif; font-size: .74rem; color: var(--muted); font-weight: 500; margin-left: 2px; }
     .kpi-s { font-size: .66rem; color: #6b7a90; }
     .db-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
@@ -1195,6 +1200,142 @@
     .db-note { font-size: .66rem; color: var(--muted); margin-top: 8px; line-height: 1.6; }
     .db-empty { text-align: center; color: var(--muted); padding: 50px 10px; font-size: .9rem; line-height: 1.9; background: var(--panel); border: 1px dashed var(--border); border-radius: 14px; }
     @media (max-width: 900px) { .db-row, .db-row3 { grid-template-columns: 1fr; } }
+
+    /* ══════════ 모바일 최적화 ══════════ */
+    html { -webkit-text-size-adjust: 100%; }
+    @media (max-width: 820px) {
+      html, body { overflow-x: hidden; }
+      /* 왼쪽 메뉴 → 화면 아래 고정 탭바 (앱처럼) */
+      .sidebar { position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 900; width: 100%; height: auto;
+                 border: none; border-top: 1px solid var(--border); background: rgba(10,16,26,.97);
+                 box-shadow: 0 -6px 20px rgba(0,0,0,.45); padding-bottom: env(safe-area-inset-bottom); }
+      .side-nav { position: static; flex-direction: row; justify-content: space-around; gap: 0; padding: 4px 2px; overflow: visible; }
+      .side-nav-title { display: none; }
+      .nav-btn { flex: 1 1 0; min-width: 0; flex-direction: column; align-items: center; gap: 2px; padding: 7px 2px 6px;
+                 font-size: .62rem; font-weight: 500; border: none; border-top: 2px solid transparent; border-radius: 0; background: none !important;
+                 white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+      .nav-btn .nav-ico { width: auto; font-size: 1.2rem; line-height: 1.1; }
+      .nav-btn.active { border-top-color: var(--gold); color: var(--gold2); font-weight: 700; }
+      .main { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
+      .app { min-height: 0; }
+      /* 팀 배정: 멤버 리스트를 입력칸 위로, 이름은 칩 모양으로 */
+      .layout { display: flex; flex-direction: column; gap: 14px; }
+      .member-panel { order: -1; position: static; }
+      .member-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 168px; padding: 10px; }
+      .member-list .member-item { flex: 0 0 auto; padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--panel2); }
+    }
+    @media (max-width: 760px) {
+      .page { padding: 14px 12px 24px; }
+      .hero { height: 112px; }
+      .hero-title { font-size: 1.85rem; letter-spacing: 4px; margin-bottom: 6px; }
+      .card { padding: 16px 14px; border-radius: 12px; }
+      /* 탭: 두 칸 나란히, 설명 글은 숨김 */
+      .tabs { grid-template-columns: 1fr 1fr !important; margin-bottom: 14px; }
+      .tab-btn { padding: 10px 6px; border-right: 1px solid var(--border) !important; border-bottom: none !important; }
+      .tab-btn:last-child { border-right: none !important; }
+      .tab-btn.active { border-bottom: 2px solid var(--gold) !important; }
+      .tab-btn .t-main { font-size: .8rem; }
+      .tab-btn .t-sub { display: none; }
+      /* 팀 배정 입력 */
+      .rp-row { padding: 8px 10px; gap: 8px; }
+      .role-chips .role-chip { padding: 7px 0; }
+      .option-row { gap: 8px; }
+      .btn-main { padding: 14px; font-size: 1rem; }
+      /* 대시보드 */
+      .db-kpi { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .kpi { padding: 10px 12px; } .kpi-v { font-size: 1.6rem; }
+      .db-box { padding: 12px; }
+      .podium { gap: 6px; }
+      .pd { padding: 10px 4px; } .pd .ch-box { width: 42px; height: 42px; } .pd.p1 .ch-box { width: 50px; height: 50px; }
+      .pd-name { font-size: .78rem; } .pd-score { font-size: 1.2rem; } .pd-meta { font-size: .56rem; }
+      .tt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .tt { grid-template-columns: 1fr; gap: 4px; padding: 9px 10px; }
+      .tt-ico { text-align: left; font-size: 1.25rem; }
+      .tt-who b { font-size: .78rem; }
+      .db-h { flex-wrap: wrap; }
+      /* 내전 전적 */
+      .rec-admin { margin: -6px 0 6px; }
+      .hot-head { flex-wrap: wrap; gap: 2px 10px; }
+      .hot-title { font-size: 1.25rem; }
+      .hot-sub { flex-basis: 100%; }
+      .rec-sum { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .rec-sum-box { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px; }
+      .rec-sum-ico { width: 32px; height: 32px; font-size: 1rem; border-radius: 9px; }
+      .rec-sum-lbl { font-size: .64rem; } .rec-sum-val { font-size: 1.55rem; }
+      .rec-sum-val small { font-size: .66rem; }
+      .day-list { padding-left: 10px; margin-left: 4px; }
+      .mt-head { padding: 10px 12px; gap: 8px; }
+      .mt-act { gap: 6px; }
+      .mt-move, .mt-del { opacity: .6; }
+      .mt-body { padding: 4px 8px 10px; }
+      /* 경기 상세 스코어보드: 가로 스크롤 없이 한 사람당 3줄 */
+      .mt-scroll { overflow: visible; }
+      .mt-table, .mt-table tbody { display: block; min-width: 0; }
+      .mt-table tr { display: block; }
+      .mt-table tr:not(.pr) th { display: none; }
+      .mt-table tr:not(.pr) th.team { display: block; padding: 10px 2px 4px; }
+      .mt-table tr.pr { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "ch pl dmg" "ch kda gold" "it it cs";
+                        gap: 3px 10px; align-items: center; padding: 8px 10px; margin-bottom: 5px; border-radius: 9px; }
+      .mt-table tr.pr td { background: none !important; box-shadow: none !important; padding: 0; text-align: left; white-space: nowrap; }
+      .mt-table tr.pr.blue { background: rgba(74,158,255,.08); box-shadow: inset 3px 0 0 var(--blue-team); }
+      .mt-table tr.pr.red  { background: rgba(232,64,64,.08);  box-shadow: inset 3px 0 0 var(--red-team); }
+      .mt-table tr.pr.win.blue { background: rgba(74,158,255,.14); } .mt-table tr.pr.win.red { background: rgba(232,64,64,.14); }
+      .mt-table tr.pr td:nth-child(1), .mt-table tr.pr td:nth-child(8) { display: none; }
+      .mt-table tr.pr td:nth-child(2) { grid-area: ch; }
+      .mt-table tr.pr td:nth-child(3) { grid-area: pl; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+      .mt-table tr.pr td:nth-child(4) { grid-area: kda; }
+      .mt-table tr.pr td:nth-child(4) .kda-r { display: inline; margin-left: 5px; }
+      .mt-table tr.pr td:nth-child(5) { grid-area: dmg; text-align: right; min-width: 70px; }
+      .mt-table tr.pr td:nth-child(6) { grid-area: cs; text-align: right; font-size: .7rem; }
+      .mt-table tr.pr td:nth-child(6) .sub { display: inline; margin-left: 3px; }
+      .mt-table tr.pr td:nth-child(7) { grid-area: gold; text-align: right; font-size: .72rem; color: #c9b27a; }
+      .mt-table tr.pr td:nth-child(7)::before { content: '💰 '; font-size: .62rem; }
+      .mt-table tr.pr td:nth-child(9) { grid-area: it; }
+      .mt-table tr.pr td:nth-child(9) .mt-items { justify-content: flex-start; }
+      .mt-table .mt-pl .cn { display: inline; margin-left: 4px; }
+      /* 개인 순위: 표 → 카드 */
+      .rk-sort { flex-direction: column; align-items: stretch; gap: 8px; }
+      .rk-group { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+      .rk-btn { flex-shrink: 0; padding: 5px 10px; }
+      .rk-wrap { overflow: visible; background: none; border: none; }
+      .rk-table { min-width: 0; display: block; }
+      .rk-table tbody { display: flex; flex-direction: column; gap: 8px; }
+      .rk-table tr:first-child { display: none; }
+      .rk-table tr { display: flex; flex-wrap: wrap; align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; gap: 6px 0; }
+      .rk-table td { border: none; padding: 0; white-space: normal; text-align: left; }
+      .rk-table td:nth-child(1) { width: 30px; }
+      .rk-table td.rk-name { flex: 1 1 0; min-width: 0; }
+      .rk-table td:nth-child(3) { margin-left: auto; }
+      .rk-table td[data-l] { order: 2; flex: 1 1 30%; font-size: .74rem; padding: 6px 0 0; border-top: 1px solid #132236; }
+      .rk-group > span { flex-shrink: 0; white-space: nowrap; }
+      .rk-table td.rk-name b { font-size: .92rem; }
+      .rk-table td.rk-name small { display: block; margin: 0; }
+      .rk-table .rk-score .bar { width: 40px; }
+      .rk-table td[data-l]::before { content: attr(data-l); display: block; font-size: .6rem; color: var(--muted); margin-bottom: 2px; }
+      .rk-table td.rk-c-wr { flex-basis: 100%; order: 1; }
+      .rk-table td.rk-c-wr .wr { justify-content: flex-start; }
+      .rk-table td.rk-c-wr .wr-bar { width: 140px; }
+      .rk-table td.rk-c-most { flex-basis: 100%; order: 3; padding-top: 6px; }
+      .rk-table td.rk-c-most::before { content: '모스트 챔피언'; display: block; font-size: .6rem; color: var(--muted); margin-bottom: 4px; }
+      .rk-table .kda-r { display: inline; margin-left: 4px; }
+      /* 소환사 정보 */
+      .sm-grid { grid-template-columns: 1fr; gap: 12px; }
+      .sm-in { padding: 14px; }
+      .sm-top { grid-template-columns: 56px 1fr auto; gap: 10px; }
+      .sm-ic { width: 56px; height: 56px; }
+      .sm-wr b { font-size: 2rem; }
+      .sm-rg { gap: 5px; }
+      .sm-g { width: 42px; height: 42px; }
+      /* 팝업 / 모달 */
+      .hp-box { padding: 16px 14px 10px; max-height: 84vh; }
+      .hp-row { grid-template-columns: 52px 28px 62px 1fr; gap: 8px; }
+      .anim-modal-box { width: 100% !important; max-width: 100% !important; padding: 18px 12px !important; }
+    }
+    @media (max-width: 380px) {
+      .hero-title { font-size: 1.6rem; letter-spacing: 3px; }
+      .rec-sum-val { font-size: 1.3rem; }
+      .nav-btn { font-size: .58rem; }
+    }
   </style>
 </head>
 <body>
@@ -1265,7 +1406,7 @@
   <div class="panel active" id="panel-random">
     <div class="card">
       <div class="card-title"><span>▸ 참가자 10명 입력</span><button class="btn-tab-reset" onclick="resetTab('random')">↺ 초기화</button></div>
-      <div class="fix-hint" id="randFixHint">라인 칩을 누르면 <b>보통 → 📌고정 → 🚫제외</b> 순으로 바뀌어요. 고정은 1개, 제외는 여러 개 가능해요. 같은 라인을 2명이 고정하면 그 라인은 팀만 랜덤으로 갈려요.</div>
+      <div class="fix-hint" id="randFixHint">라인 칩을 누르면 <b>보통 → 🚫제외 → 📌고정</b> 순으로 바뀌어요. 고정은 1개, 제외는 여러 개 가능해요. 같은 라인을 2명이 고정하면 그 라인은 팀만 랜덤으로 갈려요.</div>
       <div class="rand-grid" id="randGrid"></div>
       <div class="card-title" style="margin-top:4px">▸ 배정 방식 선택</div>
       <div class="option-row" id="optRand">
@@ -2632,7 +2773,7 @@ function setChipState(chip, st) {
   chip.textContent = st === 1 ? `📌 ${role}` : st === 2 ? `🚫 ${role}` : role;
 }
 function cycleChip(chip) {
-  const next = (Number(chip.dataset.state) + 1) % 3;
+  const next = { 0: 2, 2: 1, 1: 0 }[Number(chip.dataset.state)] ?? 0;   // 보통 → 제외 → 고정 → 보통
   if (next === 1) {                                     // 고정은 한 사람당 1개
     chip.closest('.rp-row').querySelectorAll('.role-chip').forEach(c => {
       if (c !== chip && c.dataset.state === '1') setChipState(c, 0);
@@ -3542,8 +3683,10 @@ function renderRank() {
   rows.forEach((r, i) => { r.rank = i > 0 && kf(r) === kf(rows[i - 1]) ? rows[i - 1].rank : i + 1; });   // 동점 = 같은 순위, 다음은 인원만큼 건너뛰기
 
   const showPos = recMode === 'rift' && lane === 'ALL';
-  box.innerHTML = `<div class="rk-wrap"><table class="rk-table">
-    <tr><th>#</th><th class="l">플레이어</th><th title="아래 설명 참고">종합 점수</th><th>판수</th><th>승률</th><th>평균 K / D / A</th><th>평균 딜량</th><th>${lane === 'SPT' ? '분당 시야' : '분당 CS'}</th><th>MVP·ACE</th>${showPos ? '<th>주 라인</th>' : ''}<th class="l">모스트 챔피언</th></tr>
+  box.innerHTML = `<div class="rk-note">🏅 종합 점수(100점 만점) = ${Object.entries(W).map(([k, w]) => `${SCORE_LABEL[k]} ${w}%`).join(' + ')}<br>
+    지표마다 ${lane === 'ALL' ? '전체' : RK_LANES.find(x => x[0] === lane)[1] + ' 라인'} 참가자 중 가장 낮은 사람 0 ~ 가장 높은 사람 1로 맞춰서 더해요 · 표시된 값이 같으면 같은 순위예요</div>
+  <div class="rk-wrap"><table class="rk-table">
+    <tr><th>#</th><th class="l">플레이어</th><th title="위 설명 참고">종합 점수</th><th>판수</th><th>승률</th><th>평균 K / D / A</th><th>평균 딜량</th><th>${lane === 'SPT' ? '분당 시야' : '분당 CS'}</th><th>MVP·ACE</th>${showPos ? '<th>주 라인</th>' : ''}<th class="l">모스트 챔피언</th></tr>
     ${rows.map(r => {
       const wrp = Math.round(r.wr * 100);
       const mainPos = Object.entries(r.pos).sort((a, b) => b[1] - a[1])[0];
@@ -3552,21 +3695,19 @@ function renderRank() {
         <td><span class="rk-no${r.rank <= 3 ? ' top' + r.rank : ''}">${r.rank}</span></td>
         <td class="rk-name"><b>${escapeHtml(r.name)}</b><small>#${escapeHtml(r.tag)}</small></td>
         <td><div class="rk-score"><b>${r.score.toFixed(1)}</b><div class="bar"><i style="width:${Math.round(r.score)}%"></i></div></div></td>
-        <td>${r.g}</td>
-        <td><div class="wr"><div class="wr-bar"><div class="w" style="width:${wrp}%">${r.w ? r.w + '승' : ''}</div><div class="l">${r.g - r.w ? (r.g - r.w) + '패' : ''}</div></div>
+        <td class="rk-c-g" data-l="판수">${r.g}</td>
+        <td class="rk-c-wr" data-l="승률"><div class="wr"><div class="wr-bar"><div class="w" style="width:${wrp}%">${r.w ? r.w + '승' : ''}</div><div class="l">${r.g - r.w ? (r.g - r.w) + '패' : ''}</div></div>
           <span class="wr-pct${wrp >= 60 ? ' hi' : wrp < 40 ? ' lo' : ''}">${wrp}%</span></div></td>
-        <td class="kda">${(r.k / r.g).toFixed(1)} / <span class="dd">${(r.d / r.g).toFixed(1)}</span> / ${(r.a / r.g).toFixed(1)}
+        <td class="kda rk-c-kda" data-l="평균 K/D/A">${(r.k / r.g).toFixed(1)} / <span class="dd">${(r.d / r.g).toFixed(1)}</span> / ${(r.a / r.g).toFixed(1)}
           <span class="kda-r${r.kda >= 4 ? ' hi' : ''}">${r.d ? r.kda.toFixed(2) + ':1' : 'Perfect'}</span></td>
-        <td>${fmtNum(Math.round(r.avgDmg))}</td>
-        <td>${lane === 'SPT' ? r.f.vpm.toFixed(2) : r.f.cspm.toFixed(1)}</td>
-        <td>${r.mvp || '-'}</td>
-        ${showPos ? `<td class="rk-pos">${mainPos && ICONS[mainPos[0]] ? `<img src="${ICONS[mainPos[0]]}" title="${POS_KO[mainPos[0]]} ${mainPos[1]}판" alt="" onerror="this.remove()">` : '-'}</td>` : ''}
-        <td><div class="rk-most">${most.map(([c, v]) => `<div>${champIcon(v.m, c, 'sm')}<span>${v.g}판 ${Math.round(v.w / v.g * 100)}%</span></div>`).join('')}</div></td>
+        <td data-l="평균 딜량">${fmtNum(Math.round(r.avgDmg))}</td>
+        <td data-l="${lane === 'SPT' ? '분당 시야' : '분당 CS'}">${lane === 'SPT' ? r.f.vpm.toFixed(2) : r.f.cspm.toFixed(1)}</td>
+        <td data-l="MVP·ACE">${r.mvp || '-'}</td>
+        ${showPos ? `<td class="rk-pos" data-l="주 라인">${mainPos && ICONS[mainPos[0]] ? `<img src="${ICONS[mainPos[0]]}" title="${POS_KO[mainPos[0]]} ${mainPos[1]}판" alt="" onerror="this.remove()">` : '-'}</td>` : ''}
+        <td class="rk-c-most"><div class="rk-most">${most.map(([c, v]) => `<div>${champIcon(v.m, c, 'sm')}<span>${v.g}판 ${Math.round(v.w / v.g * 100)}%</span></div>`).join('')}</div></td>
       </tr>`;
     }).join('')}
-  </table></div>
-  <div class="rk-note">🏅 종합 점수(100점 만점) = ${Object.entries(W).map(([k, w]) => `${SCORE_LABEL[k]} ${w}%`).join(' + ')}<br>
-    지표마다 ${lane === 'ALL' ? '전체' : RK_LANES.find(x => x[0] === lane)[1] + ' 라인'} 참가자 중 가장 낮은 사람 0 ~ 가장 높은 사람 1로 맞춰서 더해요 · 표시된 값이 같으면 같은 순위예요</div>`;
+  </table></div>`;
 }
 
 // ══════════════════ 소환사 정보 ══════════════════
@@ -3666,7 +3807,7 @@ function renderSummoners() {
     const mainPos = Object.entries(r.pos).sort((a, b) => b[1] - a[1])[0];
     const traits = [];
     if (recMode === 'rift' && mainPos && ICONS[mainPos[0]])
-      traits.push(`<span class="sm-tr" title="주 라인: ${POS_KO[mainPos[0]]} (${mainPos[1]}판)"><img src="${ICONS[mainPos[0]]}" alt="" onerror="this.remove()"></span>`);
+      traits.push(`<span class="sm-tr" title="주 라인: ${POS_KO[mainPos[0]]} (${mainPos[1]}판)"><img src="${ICONS[mainPos[0]]}" alt="" onerror="this.parentElement.remove()"></span>`);
     SM_TRAITS.forEach(t => { if (top[t.key] && top[t.key].has(r.key)) traits.push(`<span class="sm-tr" title="${t.name} · ${t.desc}">${t.ico}</span>`); });
     const ach = (titleMap[r.key] || []).map(t => [`${t.ico} ${t.name}`, t.desc, true]).concat(summonerAchievements(r, totalDays));
     const achHtml = ach.length
@@ -3682,7 +3823,7 @@ function renderSummoners() {
             ${mainC ? `<img src="${DD_BASE}${ddVer(mainM)}/img/champion/${encodeURIComponent(ci.id)}.png" alt="" onerror="this.remove()">` : ''}</div>
           <div style="min-width:0">
             <div class="sm-name">${escapeHtml(r.name)}<small>#${escapeHtml(r.tag)}</small></div>
-            <div class="sm-traits">${traits.join('')}</div>
+            ${traits.length ? `<div class="sm-traits">${traits.join('')}</div>` : ''}
           </div>
           <div class="sm-wr">
             <b class="${wr >= 60 ? 'hi' : wr < 45 ? 'lo' : ''}">${wr}%</b>
@@ -3715,10 +3856,10 @@ const pctFmt = v => Math.round(v * 100) + '%';
 const TITLES = [
   { k: 'duoBest',  ico: '🤝', name: '최고의 듀오', desc: '같은 팀일 때 승률이 가장 높은 2인', duo: 'best' },
   { k: 'duoWorst', ico: '💣', name: '최악의 듀오', desc: '같은 팀일 때 승률이 가장 낮은 2인', duo: 'worst' },
-  { k: 'cs',     ico: '🧑‍🌾', name: 'CS KING',        desc: '분당 CS 1위', rift: true, v: r => r.cs / r.mins, f: v => v.toFixed(1) + ' CS/분' },
+  { k: 'cs',     ico: '🚜', name: 'CS KING',        desc: '분당 CS 1위', rift: true, v: r => r.cs / r.mins, f: v => v.toFixed(1) + ' CS/분' },
   { k: 'ej',     ico: '🌲', name: '카나비 정신',     desc: '상대 정글 몬스터를 가장 많이 뺏어 먹음 (판당)', rift: true, v: r => r.xg ? r.ej / r.xg : null, f: v => v.toFixed(1) + '마리/판' },
   { k: 'gold',   ico: '💰', name: 'GOLD KING',      desc: '분당 골드 1위', v: r => r.gold / r.mins, f: v => fmtNum(Math.round(v)) + ' 골드/분' },
-  { k: 'eff',    ico: '🪙', name: '가성비 KING',     desc: '골드 1당 챔피언 피해량 1위', v: r => r.gold ? r.dmg / r.gold : null, f: v => v.toFixed(2) + ' 딜/골드' },
+  { k: 'eff',    ico: '🏷️', name: '가성비 KING',     desc: '골드 1당 챔피언 피해량 1위', v: r => r.gold ? r.dmg / r.gold : null, f: v => v.toFixed(2) + ' 딜/골드' },
   { k: 'early',  ico: '🌅', name: '초반 캐리형',     desc: '15분 전 킬관여(킬+어시) 판당 1위', v: r => r.xg ? r.early / r.xg : null, f: v => v.toFixed(1) + '회/판' },
   { k: 'vis',    ico: '👁️', name: '천리안',          desc: '분당 시야점수 1위', v: r => r.vis / r.mins, f: v => v.toFixed(2) + '/분' },
   { k: 'lost',   ico: '🧭', name: '어디로 가야 하오', desc: '킬관여율이 가장 낮음', low: true, v: r => r.tk ? r.ka / r.tk : null, f: v => '킬관여 ' + pctFmt(v) },
@@ -3737,7 +3878,7 @@ const TITLES = [
   { k: 'bus',    ico: '🚌', name: '프로 탑승러',      desc: '이긴 판에서 팀 딜 비중이 가장 낮음 (버스 탑승)', low: true, v: r => r.w ? r.wshare / r.w : null, f: v => '이긴 판 딜 비중 ' + pctFmt(v) },
   { k: 'die',    ico: '⚰️', name: '우물 밖은 위험해', desc: '판당 데스 1위', v: r => r.d / r.g, f: v => v.toFixed(1) + '데스/판' },
   { k: 'tank',   ico: '🛡️', name: '필사즉생 필생즉사', desc: '분당 받은 피해량 1위', v: r => r.taken / r.mins, f: v => fmtNum(Math.round(v)) + '/분' },
-  { k: 'rock',   ico: '🪨', name: '바위처럼 단단하게', desc: '분당 피해 감소량 1위', v: r => r.xmins ? r.mit / r.xmins : null, f: v => fmtNum(Math.round(v)) + '/분' }
+  { k: 'rock',   ico: '🗿', name: '바위처럼 단단하게', desc: '분당 피해 감소량 1위', v: r => r.xmins ? r.mit / r.xmins : null, f: v => fmtNum(Math.round(v)) + '/분' }
 ];
 function titleStats() {
   const P = {};
