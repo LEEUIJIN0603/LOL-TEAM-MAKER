@@ -725,6 +725,19 @@
     .rec-share.warn { background: rgba(200,155,60,.07); border: 1px solid rgba(200,155,60,.25); border-radius: 8px; padding: 8px 12px; }
     .rec-share .need { color: var(--gold2); }
     .mt-local { display: inline-block; margin-top: 2px; font-size: .64rem; color: var(--gold2); background: rgba(200,155,60,.1); border: 1px solid rgba(200,155,60,.3); border-radius: 999px; padding: 1px 7px; width: fit-content; }
+    /* 경기 기록: 같은 날 묶음 */
+    .day-group { position: relative; margin-bottom: 22px; }
+    #recMatchList { margin-top: 14px; }
+    .day-head { display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; padding-left: 2px; flex-wrap: wrap; }
+    .dh-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px rgba(200,155,60,.7); align-self: center; }
+    .dh-date { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.45rem; color: var(--gold2); line-height: 1; }
+    .dh-wd { font-size: .74rem; color: #8a97ab; }
+    .dh-chip { font-size: .68rem; font-weight: 700; color: var(--gold2); background: var(--gold-dim); border: 1px solid rgba(200,155,60,.35); border-radius: 999px; padding: 1px 9px; }
+    .dh-len { font-size: .7rem; color: var(--muted); }
+    .day-list { border-left: 2px solid rgba(200,155,60,.35); margin-left: 6px; padding-left: 16px; }
+    .day-list .mt-card { margin-bottom: 8px; }
+    .day-list .mt-card:last-child { margin-bottom: 0; }
+    .mt-seq { color: var(--text); font-weight: 700; font-size: .78rem; }
     .rec-list-title { font-family: 'Bebas Neue', 'Noto Sans KR', sans-serif; font-size: 1.05rem; letter-spacing: 3px; color: var(--gold); margin: 4px 0 12px; }
 
     /* 연승 / 연패 카드 */
@@ -743,7 +756,7 @@
     .stk-quote { font-size: .74rem; color: #b7c0cf; margin-top: 3px; line-height: 1.45; }
     .stk-dots { display: flex; gap: 3px; margin-top: 5px; }
     .stk-dots i { width: 14px; height: 14px; border-radius: 4px; font-style: normal; font-size: .52rem; line-height: 14px; text-align: center; color: #fff; }
-    .stk-dots i.w { background: #3a6fd8; } .stk-dots i.l { background: #c24040; }
+    .stk-dots i.w { background: #3a6fd8; } .stk-dots i.l { background: #c24040; } .stk-dots i.d { background: #4a5568; }
     .stk-num { text-align: right; font-family: 'Rajdhani', sans-serif; font-weight: 700; line-height: 1; white-space: nowrap; }
     .stk-num b { font-size: 2rem; }
     .stk-num span { display: block; font-family: 'Noto Sans KR', sans-serif; font-size: .7rem; margin-top: 2px; }
@@ -1028,6 +1041,149 @@
     .rk-score .bar { width: 56px; height: 5px; border-radius: 3px; background: #0a1422; overflow: hidden; }
     .rk-score .bar i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #c89b3c, #f0d070); }
     .rk-note { font-size: .68rem; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+    .stk-more { background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.18); color: #dfe5ee; font-size: .58rem; border-radius: 999px;
+                padding: 0 7px; height: 14px; line-height: 12px; cursor: pointer; margin-left: 3px; font-family: 'Noto Sans KR', sans-serif; white-space: nowrap; }
+    .stk-more:hover { border-color: var(--gold); color: var(--gold2); }
+    .stk-dots { align-items: center; }
+    .hot-row.wide .stk-dots i { width: 16px; height: 16px; line-height: 16px; font-size: .58rem; }
+    .hot-row.wide .stk-more { height: 16px; line-height: 14px; font-size: .62rem; }
+    /* 전체 내전 기록 팝업 */
+    .hist-pop { display: none; position: fixed; inset: 0; z-index: 1500; background: rgba(2,5,10,.72); align-items: center; justify-content: center; padding: 20px; }
+    .hist-pop.open { display: flex; animation: fadeUp .25s ease; }
+    .hp-box { position: relative; width: min(520px, 100%); max-height: 80vh; overflow-y: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px 20px 14px; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+    .hp-close { position: absolute; top: 12px; right: 12px; background: none; border: none; color: var(--muted); font-size: 1rem; cursor: pointer; }
+    .hp-close:hover { color: var(--text); }
+    .hp-title { font-weight: 700; font-size: 1.1rem; color: var(--text-bright); }
+    .hp-title small { color: var(--muted); font-weight: 400; font-size: .75rem; margin-left: 4px; }
+    .hp-sub { font-size: .74rem; color: #8a97ab; margin: 4px 0 14px; }
+    .hp-row { display: grid; grid-template-columns: 64px 30px 70px 1fr; align-items: center; gap: 10px; padding: 8px 6px; border-top: 1px solid #132236; }
+    .hp-date { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--text-bright); line-height: 1; }
+    .hp-date small { display: block; font-family: 'Noto Sans KR', sans-serif; font-weight: 400; font-size: .6rem; color: var(--muted); margin-top: 2px; }
+    .hp-res { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700; color: #fff; }
+    .hp-res.w { background: #3a6fd8; } .hp-res.l { background: #c24040; } .hp-res.d { background: #4a5568; }
+    .hp-rec { font-size: .76rem; color: var(--text); }
+    .hp-ch { display: flex; gap: 4px; flex-wrap: wrap; }
+    .hp-g { position: relative; display: inline-flex; border-radius: 6px; }
+    .hp-g::after { content: ''; position: absolute; left: 3px; right: 3px; bottom: -3px; height: 2px; border-radius: 2px; }
+    .hp-g.w::after { background: #3a6fd8; } .hp-g.l::after { background: #c24040; }
+
+    /* ══ 소환사 정보 카드 ══ */
+    .sm-head { display: flex; align-items: baseline; gap: 10px; margin: 2px 0 14px; flex-wrap: wrap; }
+    .sm-sub { font-size: .7rem; color: var(--muted); }
+    .sm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
+    .sm-card { position: relative; border-radius: 16px; overflow: hidden; background: #0a0f18; border: 1px solid #1d2a3d;
+               cursor: pointer; transition: transform .2s, box-shadow .2s, border-color .2s; animation: fadeUp .45s ease both; }
+    .sm-card:hover { transform: translateY(-3px); border-color: #34507a; box-shadow: 0 12px 30px rgba(0,0,0,.5); }
+    .sm-bg { position: absolute; inset: 0; background-size: cover; background-position: 60% 18%; opacity: .32; transition: opacity .3s, transform 6s ease; }
+    .sm-card:hover .sm-bg { opacity: .42; transform: scale(1.05); }
+    .sm-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,11,18,.94) 0%, rgba(8,11,18,.72) 55%, rgba(8,11,18,.5) 100%), linear-gradient(180deg, transparent 50%, rgba(8,11,18,.9) 100%); }
+    .sm-in { position: relative; padding: 16px 18px 14px; }
+    .sm-top { display: grid; grid-template-columns: 66px 1fr auto; gap: 14px; align-items: start; }
+    .sm-ic { width: 66px; height: 66px; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,.18); box-shadow: 0 4px 14px rgba(0,0,0,.6); background: #0b1422; position: relative; }
+    .sm-ic img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); }
+    .sm-ic::before { content: attr(data-i); position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: .8rem; }
+    .sm-name { font-weight: 700; font-size: 1.12rem; color: #fff; line-height: 1.25; word-break: keep-all; }
+    .sm-name small { font-weight: 400; color: rgba(255,255,255,.4); font-size: .7rem; margin-left: 3px; }
+    .sm-traits { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+    .sm-tr { width: 24px; height: 24px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: .78rem;
+             background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.16); }
+    .sm-tr img { width: 16px; height: 16px; }
+    .sm-wr { text-align: right; }
+    .sm-wr b { display: block; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 2.5rem; line-height: .95; color: #4aa3ff; text-shadow: 0 0 18px rgba(74,163,255,.35); }
+    .sm-wr b.lo { color: #8fb7e8; text-shadow: none; }
+    .sm-wr b.hi { color: #5fb6ff; text-shadow: 0 0 22px rgba(74,163,255,.6); }
+    .sm-wl { font-size: .8rem; font-weight: 700; margin-top: 3px; white-space: nowrap; }
+    .sm-wl .w { color: #4aa3ff; } .sm-wl .l { color: #ff5d5d; margin-left: 2px; }
+    .sm-mini { font-size: .66rem; color: rgba(255,255,255,.45); margin-top: 3px; white-space: nowrap; }
+    .sm-ach { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .sm-a { font-size: .68rem; font-weight: 700; color: #f0c45a; border: 1px solid rgba(240,196,90,.55); background: rgba(240,196,90,.08);
+            border-radius: 999px; padding: 2px 10px; white-space: nowrap; }
+    .sm-a.more { cursor: pointer; padding: 2px 8px; }
+    .sm-a.more:hover { background: rgba(240,196,90,.2); }
+    .sm-ach .extra { display: none; }
+    .sm-ach.all .extra { display: inline-block; } .sm-ach.all .more { display: none; }
+    .sm-none { font-size: .68rem; color: rgba(255,255,255,.35); }
+    .sm-recent { border-top: 1px solid rgba(255,255,255,.08); margin-top: 12px; padding-top: 9px; }
+    .sm-rl { font-size: .66rem; color: rgba(255,255,255,.5); margin-bottom: 6px; }
+    .sm-rg { display: flex; gap: 7px; }
+    .sm-g { position: relative; width: 46px; height: 46px; border-radius: 9px; overflow: hidden; border: 2px solid; background: #0b1422; }
+    .sm-g.w { border-color: #3f8cff; box-shadow: 0 0 10px rgba(63,140,255,.35); }
+    .sm-g.l { border-color: #e04848; box-shadow: 0 0 10px rgba(224,72,72,.3); }
+    .sm-g img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); }
+    .sm-g::before { content: attr(data-i); position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: .66rem; }
+    @media (max-width: 420px) { .sm-grid { grid-template-columns: 1fr; } .sm-wr b { font-size: 2rem; } .sm-g { width: 40px; height: 40px; } }
+
+    /* ══ 칭호 칩 (소환사 카드) ══ */
+    .sm-a.title { color: #2a1a02; border-color: transparent; background: linear-gradient(90deg, #f0c45a, #ffe39a); box-shadow: 0 0 10px rgba(240,196,90,.35); }
+
+    /* ══ 대시보드 ══ */
+    .db-sec { margin-bottom: 22px; }
+    .db-h { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+    .db-h b { font-family: 'Bebas Neue', 'Noto Sans KR', sans-serif; font-size: 1.15rem; letter-spacing: 3px; color: var(--gold); font-weight: 400; }
+    .db-h span { font-size: .7rem; color: var(--muted); }
+    .db-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    .kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; position: relative; overflow: hidden; }
+    .kpi::after { content: attr(data-ico); position: absolute; right: 10px; top: 8px; font-size: 1.3rem; opacity: .35; }
+    .kpi-l { font-size: .68rem; color: var(--muted); }
+    .kpi-v { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.7rem; color: var(--text-bright); line-height: 1.15; }
+    .kpi-v small { font-family: 'Noto Sans KR', sans-serif; font-size: .74rem; color: var(--muted); font-weight: 500; margin-left: 2px; }
+    .kpi-s { font-size: .66rem; color: #6b7a90; }
+    .db-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
+    .db-row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .db-box { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+    /* 종합 TOP 3 시상대 */
+    .podium { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 12px; align-items: end; }
+    .pd { position: relative; border-radius: 14px; overflow: hidden; text-align: center; padding: 14px 10px 12px; background: #0b1220; border: 1px solid var(--border); }
+    .pd-bg { position: absolute; inset: 0; background-size: cover; background-position: center 18%; opacity: .3; }
+    .pd-sh { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,12,20,.3), rgba(8,12,20,.95) 70%); }
+    .pd > *:not(.pd-bg):not(.pd-sh) { position: relative; }
+    .pd.p1 { padding-top: 22px; border-color: rgba(240,208,112,.6); box-shadow: 0 0 24px rgba(240,208,112,.18); }
+    .pd.p2 { border-color: rgba(199,209,223,.45); } .pd.p3 { border-color: rgba(201,138,90,.5); }
+    .pd-medal { font-size: 1.6rem; line-height: 1; }
+    .pd .ch-box { width: 54px; height: 54px; border-radius: 12px; margin: 8px auto 6px; display: flex; }
+    .pd.p1 .ch-box { width: 66px; height: 66px; }
+    .pd-name { font-weight: 700; color: #fff; font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pd-score { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--gold2); line-height: 1.1; }
+    .pd-meta { font-size: .66rem; color: #8a97ab; }
+    /* 지금 가장 뜨거운/차가운 */
+    .hc { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; margin-bottom: 8px; }
+    .hc.win { background: linear-gradient(90deg, rgba(255,120,40,.18), transparent); border: 1px solid rgba(255,140,60,.3); }
+    .hc.lose { background: linear-gradient(90deg, rgba(90,130,210,.18), transparent); border: 1px solid rgba(120,160,230,.28); }
+    .hc .ch-box { width: 40px; height: 40px; }
+    .hc-t { font-size: .64rem; color: var(--muted); }
+    .hc-n { font-weight: 700; color: #fff; font-size: .9rem; }
+    .hc-v { margin-left: auto; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.6rem; }
+    .hc.win .hc-v { color: #ffb45a; } .hc.lose .hc-v { color: #9db8ec; }
+    .hc-none { font-size: .74rem; color: var(--muted); padding: 10px; }
+    /* 칭호 보드 */
+    .tt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 10px; }
+    .tt { display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: center; background: var(--panel); border: 1px solid var(--border);
+          border-radius: 12px; padding: 10px 12px; transition: border-color .2s, transform .2s; min-width: 0; }
+    .tt:hover { border-color: rgba(240,196,90,.5); transform: translateY(-2px); }
+    .tt-ico { font-size: 1.6rem; text-align: center; }
+    .tt-name { font-size: .72rem; font-weight: 700; color: #f0c45a; }
+    .tt-who { display: flex; align-items: center; gap: 6px; margin-top: 3px; min-width: 0; }
+    .tt-who .ch-box { width: 22px; height: 22px; border-radius: 5px; }
+    .tt-who b { color: #fff; font-size: .84rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tt-val { font-size: .66rem; color: #8a97ab; margin-top: 2px; }
+    .tt-w { display: inline-flex; align-items: center; gap: 6px; min-width: 0; max-width: 100%; }
+    .tt-who.multi { flex-direction: column; align-items: flex-start; gap: 3px; }
+    .tt-co { font-size: .58rem; font-weight: 400; color: var(--muted); margin-left: 3px; }
+    .tt.empty { opacity: .45; }
+    .tt.duo.best { border-color: rgba(74,163,255,.4); } .tt.duo.worst { border-color: rgba(232,64,64,.4); }
+    /* 챔피언 / 기록 */
+    .db-list { display: flex; flex-direction: column; gap: 7px; }
+    .dl { display: grid; grid-template-columns: 20px 30px 1fr auto; gap: 9px; align-items: center; font-size: .78rem; }
+    .dl-n { font-family: 'Rajdhani', sans-serif; font-weight: 700; color: var(--muted); text-align: center; }
+    .dl .ch-box { width: 30px; height: 30px; }
+    .dl-main { min-width: 0; }
+    .dl-main b { color: #fff; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dl-main small { color: #6b7a90; font-size: .64rem; }
+    .dl-v { font-weight: 700; color: var(--gold2); white-space: nowrap; text-align: right; }
+    .dl-v small { display: block; font-weight: 400; color: var(--muted); font-size: .62rem; }
+    .db-note { font-size: .66rem; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+    .db-empty { text-align: center; color: var(--muted); padding: 50px 10px; font-size: .9rem; line-height: 1.9; background: var(--panel); border: 1px dashed var(--border); border-radius: 14px; }
+    @media (max-width: 900px) { .db-row, .db-row3 { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -1052,9 +1208,11 @@
 <aside class="sidebar">
   <nav class="side-nav">
     <div class="side-nav-title">MENU</div>
-    <button class="nav-btn active" onclick="switchPage('assign',this)"><span class="nav-ico">⚔</span>팀 배정</button>
+    <button class="nav-btn active" onclick="switchPage('dash',this)"><span class="nav-ico">🏠</span>대시보드</button>
+    <button class="nav-btn" onclick="switchPage('assign',this)"><span class="nav-ico">⚔</span>팀 배정</button>
     <button class="nav-btn" onclick="switchPage('record',this)"><span class="nav-ico">📊</span>내전 전적</button>
     <button class="nav-btn" onclick="switchPage('rank',this)"><span class="nav-ico">🏆</span>개인 순위</button>
+    <button class="nav-btn" onclick="switchPage('summoner',this)"><span class="nav-ico">🧙</span>소환사 정보</button>
   </nav>
 </aside>
 
@@ -1062,8 +1220,23 @@
 <main class="main">
 <div class="page">
 
+<!-- ▣ 대시보드 -->
+<div class="page-view active" id="view-dash">
+  <div class="tabs mode-tabs">
+    <button class="tab-btn active" data-mode="rift" onclick="switchRecMode('rift')">
+      <span class="t-main">🌲 소환사 협곡</span>
+      <span class="t-sub">5 : 5 협곡 내전</span>
+    </button>
+    <button class="tab-btn" data-mode="aram" onclick="switchRecMode('aram')">
+      <span class="t-main">❄️ 칼바람 증바람</span>
+      <span class="t-sub">칼바람 나락 · 증강 칼바람</span>
+    </button>
+  </div>
+  <div id="dashBody"></div>
+</div><!-- /view-dash -->
+
 <!-- ▣ 팀 배정 -->
-<div class="page-view active" id="view-assign">
+<div class="page-view" id="view-assign">
 <div class="layout">
 <div class="layout-main">
   <div class="tabs">
@@ -1207,6 +1380,22 @@
   </div>
 </div><!-- /view-rank -->
 
+<!-- ▣ 소환사 정보 -->
+<div class="page-view" id="view-summoner">
+  <div class="tabs mode-tabs">
+    <button class="tab-btn active" data-mode="rift" onclick="switchRecMode('rift')">
+      <span class="t-main">🌲 소환사 협곡</span>
+      <span class="t-sub">5 : 5 협곡 내전</span>
+    </button>
+    <button class="tab-btn" data-mode="aram" onclick="switchRecMode('aram')">
+      <span class="t-main">❄️ 칼바람 증바람</span>
+      <span class="t-sub">칼바람 나락 · 증강 칼바람</span>
+    </button>
+  </div>
+  <div class="sm-head"><span class="rec-list-title">▸ 소환사 정보</span><span class="sm-sub">판수 많은 순 · 카드를 누르면 날짜별 전체 기록이 나와요</span></div>
+  <div class="sm-grid" id="smGrid"></div>
+</div><!-- /view-summoner -->
+
 <!-- ▣ 메뉴를 추가하면 이 자리에 화면을 넣어요
 <div class="page-view" id="view-새기능">
   ... 내용 ...
@@ -1216,6 +1405,15 @@
 </div><!-- page -->
 </main>
 </div><!-- app -->
+
+<div class="hist-pop" id="histPop" onclick="if (event.target === this) closeStreakHist()">
+    <div class="hp-box">
+      <button class="hp-close" onclick="closeStreakHist()">✕</button>
+      <div class="hp-title"></div>
+      <div class="hp-sub"></div>
+      <div class="hp-list"></div>
+    </div>
+  </div>
 
 <!-- ══ 배정 모달 ══ -->
 <div class="anim-modal" id="animModal">
@@ -2659,7 +2857,12 @@ async function parseRofl(file) {
     items: [0,1,2,3,4,5,6].map(i => N(p['ITEM' + i])),
     sp: [N(p.SUMMONER_SPELL_1), N(p.SUMMONER_SPELL_2)],
     ks: N(p.KEYSTONE_ID || p.PERK0), sub: N(p.PERK_SUB_STYLE),
-    multi: N(p.LARGEST_MULTI_KILL), penta: N(p.PENTA_KILLS)
+    multi: N(p.LARGEST_MULTI_KILL), penta: N(p.PENTA_KILLS),
+    // 칭호용 추가 기록 (x: 이 기록이 들어 있는 경기 표시)
+    x: 1, ej: N(p.NEUTRAL_MINIONS_KILLED_ENEMY_JUNGLE), early: N(p.Missions_TakedownsBefore15Min), omw: N(p.ON_MY_WAY_PINGS),
+    dbl: N(p.DOUBLE_KILLS), tri: N(p.TRIPLE_KILLS), quad: N(p.QUADRA_KILLS), bld: N(p.TOTAL_DAMAGE_DEALT_TO_BUILDINGS),
+    wp: N(p.WARD_PLACED), casts: N(p.SPELL1_CAST) + N(p.SPELL2_CAST) + N(p.SPELL3_CAST) + N(p.SPELL4_CAST),
+    cons: N(p.CONSUMABLES_PURCHASED), mdmg: N(p.MAGIC_DAMAGE_DEALT_TO_CHAMPIONS), mit: N(p.TOTAL_DAMAGE_SELF_MITIGATED)
   })).sort((x, y) => (x.team === y.team ? 0 : x.team === 'blue' ? -1 : 1) || order.indexOf(x.pos) - order.indexOf(y.pos));
 
   const idm = file.name.match(/([A-Z]{2,4}\d?)-(\d{6,})/);
@@ -2700,7 +2903,7 @@ async function handleRecFiles(fileList) {
   if (!files.length) return;
   const msg = document.getElementById('recMsg');
   msg.className = 'rec-msg';
-  let added = 0, dup = 0, fixed = 0, noDate = 0; const fail = [], cnt = { rift: 0, aram: 0 };
+  let added = 0, dup = 0, fixed = 0, noDate = 0, refreshed = 0; const fail = [], cnt = { rift: 0, aram: 0 };
   for (let i = 0; i < files.length; i++) {
     const f = files[i];
     msg.textContent = `⏳ 읽는 중... (${i + 1}/${files.length}) ${f.name}`;
@@ -2715,13 +2918,19 @@ async function handleRecFiles(fileList) {
         const m = await parseRofl(f);                        // 협곡/칼바람은 파일 내용으로 자동 구분
         recDeleted = recDeleted.filter(x => x !== m.id);
         const r = addMatch(m);
-        if (r === 'ok') { added++; cnt[m.mode]++; recOpen.add(m.id); }
+        if (r === 'ok') { added++; cnt[m.mode]++; }
         else if (r === 'dup') {
           const ex = matches.find(x => x.id === m.id);
+          let changed = false;
           if (m.dayOnly && ex && (!ex.dayOnly || ex.date !== m.date || (ex.seq || 0) !== m.seq)) {
-            ex.date = m.date; ex.dayOnly = true; ex.seq = m.seq; fixed++;
-            if (sharedIds.has(ex.id)) dateFixed[ex.id] = true;
-          } else dup++;
+            ex.date = m.date; ex.dayOnly = true; ex.seq = m.seq; fixed++; changed = true;
+          }
+          if (ex && !(ex.players[0] && ex.players[0].x)) {         // 칭호용 기록 채우기
+            const byKey = {}; m.players.forEach(p => { byKey[p.puuid || p.name] = p; });
+            ex.players = ex.players.map(p => ({ ...p, ...(byKey[p.puuid || p.name] || {}), team: p.team, win: p.win, pos: p.pos }));
+            refreshed++; changed = true;
+          }
+          if (changed) { if (sharedIds.has(ex.id)) dateFixed[ex.id] = true; } else dup++;
         }
         if (!m.dayOnly) noDate++;
       }
@@ -2737,6 +2946,7 @@ async function handleRecFiles(fileList) {
   if (cnt.aram) parts.push(`✅ 칼바람 증바람 ${cnt.aram}경기`);
   if (added) parts[parts.length - 1] += ' 추가했어요';
   if (fixed) parts.push(`📅 이미 있던 ${fixed}경기의 날짜·순번을 파일 이름대로 고쳤어요`);
+  if (refreshed) parts.push(`🏷 이미 있던 ${refreshed}경기에 칭호용 기록을 채웠어요`);
   if (dup) parts.push(`이미 있는 경기 ${dup}개는 건너뛰었어요`);
   if (noDate) parts.push(`파일 이름 앞에 날짜(예: 20261103_1_)가 없는 ${noDate}개는 파일 시각으로 저장했어요`);
   if (fail.length) parts.push(`⚠️ 읽지 못한 파일: ${fail.join(', ')}`);
@@ -2823,7 +3033,7 @@ function renderShareInfo() {
   if (hidden) parts.push(`🗑 방금 지운 경기 <b>${hidden}</b>개`);
   if (moved) parts.push(`↔ 탭을 옮긴 경기 <b>${moved}</b>개`);
   const fixedCnt = Object.keys(dateFixed).length;
-  if (fixedCnt) parts.push(`📅 날짜·순번을 고친 경기 <b>${fixedCnt}</b>개`);
+  if (fixedCnt) parts.push(`📅 날짜·기록을 고친 경기 <b>${fixedCnt}</b>개`);
   const needUpload = localCnt || hidden || moved || fixedCnt;
   el.innerHTML = parts.join(' · ') + (needUpload ? '<br><span class="need">→ 📤 공유용 파일 내보내기 후 GitHub에 올려야 반영돼요. 그 전에 새로고침하면 이 변경은 사라져요</span>' : '');
   el.className = 'rec-share' + (needUpload ? ' warn' : '');
@@ -2912,6 +3122,8 @@ function renderRecord() {
   renderRecSummary();
   renderMatchList();
   renderRank();
+  renderSummoners();
+  renderDashboard();
 }
 function renderRecSummary() {
   const box = document.getElementById('recSum');
@@ -2949,11 +3161,11 @@ const STREAK_LINES = {
     { key: 'fast', ok: f => f.mins <= 25, text: f => `${f.mins}분 만에 끝냈다. 빠른 퇴근 장인` },
     { key: 'vision', ok: f => f.visRank === 1, text: f => `시야점수 ${f.vis}로 1등. 맵을 통째로 꿰뚫어 봤다` },
     { key: 'gold', ok: f => f.goldRank === 1, text: f => `골드 ${f.gold} 1등. 지갑이 제일 두둑함` },
-    { key: 'sumK', ok: f => f.n >= 2 && f.sumK >= 10, text: f => `최근 ${f.n}판 동안 ${f.sumK}킬 쓸어 담는 중` },
+    { key: 'sumK', ok: f => f.n >= 2 && f.sumK >= 10, text: f => `${f.n}연승 하는 동안 ${f.sumK}킬 쓸어 담는 중` },
     { key: 'assist', ok: f => f.a >= 15, text: f => `지난 판 어시스트 ${f.a}개. 숨은 1등 공신` },
     { key: 'carry', ok: () => true, text: f => `지난 판 ${f.champ} ${f.k}/${f.d}/${f.a}. 오늘 이 폼 그대로 간다` },
     { key: 'carry2', ok: () => true, text: f => `${f.champ} 잡으면 일단 이기고 본다` },
-    { key: 'carry3', ok: () => true, text: f => `${f.n}판째 승리 세리머니 연습 중` }
+    { key: 'carry3', ok: () => true, text: f => `${f.n}번 연속 내전 승리. 세리머니 연습 중` }
   ],
   lose: [
     { key: 'deathTop', ok: f => f.deathRank === 1 && f.d >= 6, text: f => `지난 판 ${f.d}데스로 데스 1등… 상대가 집 주소를 알아냈다` },
@@ -2962,7 +3174,7 @@ const STREAK_LINES = {
     { key: 'ace', ok: f => f.badge === 'ace', text: f => `지고도 ACE. 빛나는 패배의 아이콘` },
     { key: 'dmgHigh', ok: f => f.dmgRank <= 3, text: f => `딜량 ${f.dmg}로 혼자 열심히 했는데… 버스 기사 파업` },
     { key: 'sameChamp', ok: f => f.sameChamp && f.n >= 2, text: f => `${f.champ}로 ${f.n}연패. 챔프 바꿔볼 타이밍` },
-    { key: 'sumD', ok: f => f.n >= 2 && f.sumD >= 15, text: f => `최근 ${f.n}판 누적 ${f.sumD}데스. 리스폰 타이머랑 절친` },
+    { key: 'sumD', ok: f => f.n >= 2 && f.sumD >= 15, text: f => `${f.n}연패 동안 누적 ${f.sumD}데스. 리스폰 타이머랑 절친` },
     { key: 'long', ok: f => f.mins >= 38, text: f => `${f.mins}분 혈전 끝에 패배. 다음 판은 빨리 끝내자` },
     { key: 'surrender', ok: f => f.surrender, text: f => `지난 판 항복… 다음 판엔 끝까지 가보자` },
     { key: 'vision', ok: f => f.visRank === 1, text: f => `시야점수 ${f.vis} 1등인데… 다 보고도 졌다` },
@@ -2974,23 +3186,59 @@ const STREAK_LINES = {
     { key: 'cold3', ok: () => true, text: f => `${f.n}연패는 반등 서사의 시작일 뿐` }
   ]
 };
+const dayKey = m => fmtDate(m.date).slice(0, 10);
+let _streakCache = [];
+// 카드의 '더보기' → 그 사람의 내전 날짜별 전체 기록 (현재 탭 기준)
+function showStreakHist(i) {
+  const s = _streakCache[i];
+  if (!s) return;
+  const pop = document.getElementById('histPop');
+  const all = s.days.slice().reverse();
+  const tw = s.days.filter(d => d.res === 'w').length, tl = s.days.filter(d => d.res === 'l').length, td = s.days.length - tw - tl;
+  pop.querySelector('.hp-title').innerHTML = `${escapeHtml(s.name)}<small>#${escapeHtml(s.tag)}</small>`;
+  pop.querySelector('.hp-sub').textContent = `${MODE_NAME[recMode]} · 내전 ${s.days.length}일 · ${tw}승 ${tl}패 ${td}무 (날짜 기준)`;
+  pop.querySelector('.hp-list').innerHTML = all.map(d => `
+    <div class="hp-row">
+      <span class="hp-date">${d.day.slice(5).replace('.', '/')}<small>${d.day.slice(0, 4)}</small></span>
+      <span class="hp-res ${d.res}">${d.res === 'w' ? '승' : d.res === 'l' ? '패' : '무'}</span>
+      <span class="hp-rec">${d.w}승 ${d.l}패</span>
+      <span class="hp-ch">${d.games.map(g => `<span class="hp-g ${g.p.win ? 'w' : 'l'}" title="${g.m.seq ? g.m.seq + '번째 판 · ' : ''}${escapeHtml(champInfo(g.p.champ).name)} ${g.p.k}/${g.p.d}/${g.p.a} ${g.p.win ? '승' : '패'}">${champIcon(g.m, g.p.champ, 'sm')}</span>`).join('')}</span>
+    </div>`).join('');
+  pop.classList.add('open');
+}
+function closeStreakHist() { document.getElementById('histPop').classList.remove('open'); }          // '2026.11.03'
+// 연승/연패는 '내전 날짜' 기준: 그날 승이 많으면 승, 패가 많으면 패, 같으면 무승부(연승·연패 계산에서 빼요)
 function calcStreaks() {
   const P = {};
   modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => {
-    const badges = matchBadges(m);
+    const badges = matchBadges(m), day = dayKey(m);
     m.players.forEach((p, i) => {
       const key = p.puuid || p.name;
-      const s = P[key] || (P[key] = { games: [] });
+      const s = P[key] || (P[key] = { key, games: [] });
       s.name = p.name; s.tag = p.tag;
-      s.games.push({ m, p, badge: badges[i] });
+      s.games.push({ m, p, badge: badges[i], day });
     });
   });
   return Object.values(P).map(s => {
-    const last = s.games[s.games.length - 1];
-    let n = 0;
-    for (let i = s.games.length - 1; i >= 0 && s.games[i].p.win === last.p.win; i--) n++;
-    return { ...s, last, n, kind: last.p.win ? 'win' : 'lose',
-             streakGames: s.games.slice(-n), res: s.games.map(g => g.p.win) };
+    const days = [];
+    s.games.forEach(g => {
+      let d = days[days.length - 1];
+      if (!d || d.day !== g.day) days.push(d = { day: g.day, w: 0, l: 0, games: [] });
+      if (g.p.win) d.w++; else d.l++;
+      d.games.push(g);
+    });
+    days.forEach(d => { d.res = d.w > d.l ? 'w' : d.l > d.w ? 'l' : 'd'; });
+    const decided = days.filter(d => d.res !== 'd');
+    const lastGame = s.games[s.games.length - 1];
+    if (!decided.length) return { ...s, days, last: lastGame, n: 0, kind: 'none', streakGames: [] };
+    const lastRes = decided[decided.length - 1].res;
+    const streakDays = [];
+    for (let i = decided.length - 1; i >= 0 && decided[i].res === lastRes; i--) streakDays.unshift(decided[i]);
+    const kind = lastRes === 'w' ? 'win' : 'lose';
+    const streakGames = streakDays.flatMap(d => d.games);
+    // 멘트는 연승이면 가장 최근에 이긴 판, 연패면 가장 최근에 진 판 기록으로
+    const last = streakGames.slice().reverse().find(g => g.p.win === (kind === 'win')) || lastGame;
+    return { ...s, days, last, n: streakDays.length, kind, streakGames };
   });
 }
 // 마지막 경기에서 멘트 재료 뽑기
@@ -3038,6 +3286,7 @@ function renderStreaks() {
   const wins = pick('win'), loses = pick('lose');
   const isWide = Math.max(1, wins.length) + Math.max(1, loses.length) <= 3;
   let delay = 0;
+  _streakCache = [];
   const card = s => {
     const kind = s.kind, tag = pickStreakTag(s, usedTag), line = pickStreakLine(s, usedLine);
     const d = (delay++ * 0.12).toFixed(2);
@@ -3054,17 +3303,18 @@ function renderStreaks() {
           <div class="tc-name" title="${escapeHtml(s.name)}#${escapeHtml(s.tag)}">${escapeHtml(s.name)}</div>
           <div class="tc-champ">최근 · ${escapeHtml(champInfo(s.last.p.champ).name)}</div>
           <div class="tc-quote">${escapeHtml(line)}</div>
-          <div class="stk-dots">${s.res.slice(-5).map(w => `<i class="${w ? 'w' : 'l'}">${w ? '승' : '패'}</i>`).join('')}</div>
+          <div class="stk-dots">${s.days.slice(-5).map(d => `<i class="${d.res}" title="${d.day.slice(5)} · ${d.w}승 ${d.l}패">${d.res === 'w' ? '승' : d.res === 'l' ? '패' : '무'}</i>`).join('')}
+            <button class="stk-more" onclick="showStreakHist(${_streakCache.push(s) - 1})" title="지금까지 내전 기록 전체 보기">${s.days.length > 5 ? `+${s.days.length - 5} ` : ''}더보기 ›</button></div>
         </div>
       </div>
     </div>`;
   };
   const ghost = kind => `<div class="tcard ghost" style="animation-delay:${(delay++ * 0.12).toFixed(2)}s"><div>
-      <span class="gi">${kind === 'win' ? '🔥' : '🧊'}</span>${kind === 'win' ? '2연승 이상<br>아직 없음<br>다음 주인공은?' : '2연패 이상<br>아무도 없음<br>다들 선방 중 👏'}</div></div>`;
+      <span class="gi">${kind === 'win' ? '🔥' : '🧊'}</span>${kind === 'win' ? '2연승 이상<br>아직 없음<br>다음 내전 주인공은?' : '2연패 이상<br>아무도 없음<br>다들 선방 중 👏'}</div></div>`;
 
-  const head = `<div class="hot-head"><span class="hot-title">HOT &amp; COLD</span><span class="hot-sub">최근 경기 기준 2판 이상 연승 · 연패 중인 소환사</span></div>`;
+  const head = `<div class="hot-head"><span class="hot-title">HOT &amp; COLD</span><span class="hot-sub">내전 날짜 기준 2일 이상 연승 · 연패 중인 소환사 (그날 승이 많으면 승, 같으면 무승부라 제외)</span></div>`;
   if (!modeMatches().length) { box.innerHTML = head + '<div class="hot-none">경기 기록이 올라오면 연승·연패 카드가 여기에 나와요</div>'; return; }
-  if (!wins.length && !loses.length) { box.innerHTML = head + '<div class="hot-none">아직 2연승·2연패 이상인 사람이 없어요. 다음 판 주인공은 누구? 🔥🧊</div>'; return; }
+  if (!wins.length && !loses.length) { box.innerHTML = head + '<div class="hot-none">아직 2연승·2연패 이상인 사람이 없어요. 다음 내전 주인공은 누구? 🔥🧊</div>'; return; }
   const count = Math.max(1, wins.length) + Math.max(1, loses.length);    // 빈 카드 포함 실제 카드 수
   const wide = count <= 3;                                                // 3장 이하면 넓은 카드
   box.innerHTML = head + `<div class="hot-row c${count}${wide ? ' wide' : ''}">
@@ -3092,15 +3342,36 @@ function toggleMatch(id) {
 function renderMatchList() {
   const box = document.getElementById('recMatchList');
   if (!box) return;
-  const list = modeMatches().sort((a, b) => (b.date || 0) - (a.date || 0));
+  const list = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
   if (!list.length) {
     box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기가 없어요.<br>
       오른쪽 위 <b>📂 리플레이 올리기</b>를 누르거나, 리플레이 파일(.rofl)을 이 화면에 끌어다 놓으세요.<br>
       <small>롤 클라이언트 경기 기록에서 리플레이를 받으면 <b>문서\\League of Legends\\Replays</b> 폴더에 저장돼요</small></div>`;
     return;
   }
-  if (!list.some(m => recOpen.has(m.id))) recOpen.add(list[0].id);   // 처음엔 가장 최근 경기를 펼쳐 둬요
-  box.innerHTML = list.map(m => matchCard(m)).join('');
+  // 같은 날 경기끼리 묶기 (최근 날짜가 위, 그날 안에서는 1번째 판부터)
+  const groups = [];
+  list.forEach(m => {
+    const k = dayKey(m);
+    let g = groups[groups.length - 1];
+    if (!g || g.day !== k) groups.push(g = { day: k, ms: [] });
+    g.ms.push(m);
+  });
+  const WD = ['일', '월', '화', '수', '목', '금', '토'];
+  box.innerHTML = groups.reverse().map(g => {
+    const d = new Date(g.ms[0].date);
+    const total = g.ms.reduce((t, m) => t + m.len, 0);
+    return `<div class="day-group">
+      <div class="day-head">
+        <span class="dh-dot"></span>
+        <span class="dh-date">${g.day.slice(5).replace('.', '/')}</span>
+        <span class="dh-wd">${g.day.slice(0, 4)} · ${WD[d.getDay()]}요일</span>
+        <span class="dh-chip">${g.ms.length}판</span>
+        <span class="dh-len">총 ${Math.round(total / 60)}분</span>
+      </div>
+      <div class="day-list">${g.ms.map(m => matchCard(m)).join('')}</div>
+    </div>`;
+  }).join('');
 }
 function matchCard(m) {
   const win = winnerOf(m);
@@ -3148,7 +3419,7 @@ function matchCard(m) {
     <div class="mt-head" onclick="toggleMatch('${escapeHtml(m.id)}')">
       <div class="mt-meta">
         <span class="mt-win ${win}">${win === 'blue' ? '블루팀 승리' : win === 'red' ? '레드팀 승리' : '결과 없음'}</span>
-        <span>${m.dayOnly ? fmtDate(m.date).slice(0, 10) + (m.seq ? ` · ${m.seq}번째 판` : '') : fmtDate(m.date)}</span>
+        <span>${m.seq ? `<b class="mt-seq">${m.seq}번째 판</b>` : m.dayOnly ? '' : fmtDate(m.date).slice(11)}</span>
         <span>${fmtLen(m.len)}${m.surrender ? ' · 항복' : ''}${m.ver ? ' · ' + m.ver : ''}</span>
         ${sharedState !== 'none' && isLocalOnly(m) ? '<span class="mt-local" title="공유용 파일 내보내기 후 GitHub에 올리면 모두에게 보여요. 그 전에 새로고침하면 사라져요">📌 공유 전 · 새로고침하면 사라져요</span>' : ''}
       </div>
@@ -3191,18 +3462,8 @@ const SCORE_W = {
   SPT: { wr: 30, kda: 25, vpm: 20, kp: 15, mvp: 10 }
 };
 const SCORE_LABEL = { wr: '승률(판수 보정)', kda: 'KDA', dpm: '분당 딜량', kp: '킬관여', mvp: 'MVP·ACE 비율', cspm: '분당 CS', vpm: '분당 시야점수' };
-function renderRank() {
-  const box = document.getElementById('recRank');
-  const sortBox = document.getElementById('rkSort');
-  if (!box) return;
-  const lane = recMode === 'rift' ? recLane : 'ALL';
-  sortBox.innerHTML =
-    '<div class="rk-group"><span>정렬</span>' + RK_SORTS.map(([k, t]) =>
-      `<button class="rk-btn${k === 'total' ? ' total' : ''}${recSort === k ? ' active' : ''}" onclick="setRankSort('${k}')">${k === 'total' ? '🏅 ' : ''}${t}</button>`).join('') + '</div>' +
-    (recMode === 'rift' ? '<div class="rk-group rk-lanes"><span>라인별</span>' + RK_LANES.map(([k, t]) =>
-      `<button class="rk-btn${lane === k ? ' active' : ''}" onclick="setRankLane('${k}')">${ICONS[k] ? `<img src="${ICONS[k]}" alt="" onerror="this.remove()">` : ''}${t}</button>`).join('') + '</div>' : '');
-  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.</div>`; return; }
-
+// 개인 순위 계산 (종합 점수 포함)
+function rankRowsFor(lane) {
   const P = {};
   modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => {
     const badges = matchBadges(m);
@@ -3229,7 +3490,7 @@ function renderRank() {
            kda: Math.min(10, (s.k + s.a) / Math.max(1, s.d)), dpm: s.dmg / mins, kp: s.tk ? s.ka / s.tk : 0,
            mvp: s.mvp / s.g, cspm: s.cs / mins, vpm: s.vis / mins } };
   });
-  if (!rows.length) { box.innerHTML = `<div class="rec-empty">${RK_LANES.find(x => x[0] === lane)[1]} 라인으로 뛴 기록이 아직 없어요.</div>`; return; }
+  if (!rows.length) return rows;
 
   // 종합 점수: 지표마다 참가자 중 최저 0 ~ 최고 1로 맞춘 뒤 가중치로 더해 100점 만점
   const W = SCORE_W[lane] || SCORE_W.ALL;
@@ -3241,6 +3502,24 @@ function renderRank() {
       return t + w * (hi > lo ? (r.f[k] - lo) / (hi - lo) : 0.5);
     }, 0);
   });
+
+  return rows;
+}
+function renderRank() {
+  const box = document.getElementById('recRank');
+  const sortBox = document.getElementById('rkSort');
+  if (!box) return;
+  const lane = recMode === 'rift' ? recLane : 'ALL';
+  sortBox.innerHTML =
+    '<div class="rk-group"><span>정렬</span>' + RK_SORTS.map(([k, t]) =>
+      `<button class="rk-btn${k === 'total' ? ' total' : ''}${recSort === k ? ' active' : ''}" onclick="setRankSort('${k}')">${k === 'total' ? '🏅 ' : ''}${t}</button>`).join('') + '</div>' +
+    (recMode === 'rift' ? '<div class="rk-group rk-lanes"><span>라인별</span>' + RK_LANES.map(([k, t]) =>
+      `<button class="rk-btn${lane === k ? ' active' : ''}" onclick="setRankLane('${k}')">${ICONS[k] ? `<img src="${ICONS[k]}" alt="" onerror="this.remove()">` : ''}${t}</button>`).join('') + '</div>' : '');
+  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.</div>`; return; }
+
+  const rows = rankRowsFor(lane);
+  if (!rows.length) { box.innerHTML = `<div class="rec-empty">${RK_LANES.find(x => x[0] === lane)[1]} 라인으로 뛴 기록이 아직 없어요.</div>`; return; }
+  const W = SCORE_W[lane] || SCORE_W.ALL;
 
   // 정렬 기준 값 (화면에 보이는 자릿수로 맞춰서, 보이는 값이 같으면 같은 순위)
   const keyOf = {
@@ -3277,6 +3556,363 @@ function renderRank() {
   </table></div>
   <div class="rk-note">🏅 종합 점수(100점 만점) = ${Object.entries(W).map(([k, w]) => `${SCORE_LABEL[k]} ${w}%`).join(' + ')}<br>
     지표마다 ${lane === 'ALL' ? '전체' : RK_LANES.find(x => x[0] === lane)[1] + ' 라인'} 참가자 중 가장 낮은 사람 0 ~ 가장 높은 사람 1로 맞춰서 더해요 · 표시된 값이 같으면 같은 순위예요</div>`;
+}
+
+// ══════════════════ 소환사 정보 ══════════════════
+// 특성 아이콘: 그 지표가 참가자 중 상위 3명이면 붙어요 (2판 이상 한 사람끼리 비교)
+const SM_TRAITS = [
+  { key: 'kpg',  ico: '🗡️', name: '학살자',     desc: '평균 킬 상위 3' },
+  { key: 'dpm',  ico: '💥', name: '딜 머신',     desc: '분당 챔피언 피해량 상위 3' },
+  { key: 'kda',  ico: '🎯', name: '정밀 타격',   desc: 'KDA 상위 3' },
+  { key: 'apg',  ico: '🤝', name: '도우미',      desc: '평균 어시스트 상위 3' },
+  { key: 'tpm',  ico: '🛡️', name: '철벽',        desc: '분당 받은 피해량 상위 3' },
+  { key: 'vpm',  ico: '👁️', name: '시야 장인',   desc: '분당 시야점수 상위 3' },
+  { key: 'gpm',  ico: '💰', name: '부자',        desc: '분당 골드 상위 3' },
+  { key: 'cspm', ico: '🌾', name: '파밍 장인',   desc: '분당 CS 상위 3', rift: true }
+];
+function summonerStats() {
+  const streaks = calcStreaks();
+  const byKey = {};
+  streaks.forEach(st => { byKey[st.key] = st; });
+  return streaks.map(st => {
+    const gs = st.games;
+    const sum = f => gs.reduce((t, g) => t + f(g), 0);
+    const mins = Math.max(1, sum(g => g.m.len / 60));
+    const champ = {}, pos = {};
+    gs.forEach(g => {
+      const c = champ[g.p.champ] || (champ[g.p.champ] = { g: 0, w: 0, last: 0, m: g.m });
+      c.g++; if (g.p.win) c.w++; c.last = g.m.date; c.m = g.m;
+      if (g.p.pos) pos[g.p.pos] = (pos[g.p.pos] || 0) + 1;
+    });
+    const main = Object.entries(champ).sort((a, b) => b[1].g - a[1].g || b[1].last - a[1].last)[0];
+    const w = gs.filter(g => g.p.win).length;
+    // 날짜 기준 최장 연승
+    let best = 0, cur = 0;
+    st.days.forEach(d => { if (d.res === 'w') { cur++; best = Math.max(best, cur); } else if (d.res === 'l') cur = 0; });
+    return {
+      st, key: st.key, name: st.name, tag: st.tag, g: gs.length, w, l: gs.length - w,
+      k: sum(g => g.p.k), d: sum(g => g.p.d), a: sum(g => g.p.a), mins,
+      f: {
+        kpg: sum(g => g.p.k) / gs.length, apg: sum(g => g.p.a) / gs.length,
+        kda: (sum(g => g.p.k) + sum(g => g.p.a)) / Math.max(1, sum(g => g.p.d)),
+        dpm: sum(g => g.p.dmg) / mins, tpm: sum(g => g.p.taken || 0) / mins, vpm: sum(g => g.p.vis) / mins,
+        gpm: sum(g => g.p.gold) / mins, cspm: sum(g => g.p.cs) / mins
+      },
+      champ, main, pos, bestStreak: best, days: st.days,
+      mvp: gs.filter(g => g.badge === 'mvp').length, ace: gs.filter(g => g.badge === 'ace').length,
+      penta: gs.some(g => g.p.penta > 0 || g.p.multi >= 5), quadra: gs.some(g => g.p.multi === 4),
+      triples: gs.filter(g => g.p.multi >= 3).length,
+      perfectWin: gs.some(g => g.p.win && g.p.d === 0),
+      dmgTop: gs.filter(g => g.p.dmg === Math.max(...g.m.players.map(x => x.dmg))).length,
+      fastWin: gs.some(g => g.p.win && g.m.len < 25 * 60), longWin: gs.some(g => g.p.win && g.m.len >= 40 * 60),
+      recent: gs.slice(-5).reverse()
+    };
+  });
+}
+// 업적 (우선순위 순서대로)
+function summonerAchievements(r, totalDays) {
+  const A = [];
+  if (r.penta) A.push(['펜타킬 달성', '내전에서 펜타킬을 했어요']);
+  if (r.quadra) A.push(['쿼드라킬 달성', '내전에서 쿼드라킬을 했어요']);
+  if (r.bestStreak >= 3) A.push([`${r.bestStreak}연승 달성`, `내전 날짜 기준 최장 ${r.bestStreak}연승`]);
+  if (r.mvp >= 3) A.push(['MVP 장인', `MVP ${r.mvp}회`]); else if (r.mvp) A.push([`MVP ${r.mvp}회`, '이긴 팀 최고 활약']);
+  if (r.perfectWin) A.push(['노데스 승리', '0데스로 이긴 판이 있어요']);
+  if (r.dmgTop >= 2) A.push(['딜량 괴물', `딜량 1등 ${r.dmgTop}회`]); else if (r.dmgTop) A.push(['딜량 1등', '한 판에서 10명 중 딜량 1등']);
+  if (r.triples >= 2) A.push(['트리플킬 장인', `트리플킬 이상 ${r.triples}회`]); else if (r.triples && !r.quadra && !r.penta) A.push(['트리플킬', '트리플킬 이상 1회']);
+  const one = r.main && r.main[1].g >= 5 && r.main[1].w / r.main[1].g >= .6;
+  if (one) A.push([`${champInfo(r.main[0]).name} 장인`, `${r.main[1].g}판 승률 ${Math.round(r.main[1].w / r.main[1].g * 100)}%`]);
+  if (r.ace >= 2) A.push(['비운의 에이스', `ACE ${r.ace}회 (진 팀 최고 활약)`]); else if (r.ace) A.push(['ACE 1회', '진 팀 최고 활약']);
+  if (totalDays >= 3 && r.days.length === totalDays) A.push(['개근상', `내전 ${totalDays}일 모두 참여`]);
+  if (r.fastWin) A.push(['속전속결', '25분 안에 이긴 판이 있어요']);
+  if (r.longWin) A.push(['혈전 생존자', '40분 넘는 판을 이겼어요']);
+  if (r.g >= 10) A.push([`${r.g}판 출전`, '내전 10판 이상 참여']);
+  return A;
+}
+let _smList = [];
+function renderSummoners() {
+  const box = document.getElementById('smGrid');
+  if (!box) return;
+  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty" style="grid-column:1/-1">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 소환사 카드가 나와요.</div>`; return; }
+  const rows = summonerStats();
+  const titleMap = computeTitles().byKey;
+  const totalDays = new Set(modeMatches().map(dayKey)).size;
+  // 특성: 2판 이상 한 사람 중 상위 3 (모두 1판이면 전체에서)
+  const pool = rows.filter(r => r.g >= 2).length >= 3 ? rows.filter(r => r.g >= 2) : rows;
+  const top = {};
+  SM_TRAITS.forEach(t => {
+    if (t.rift && recMode !== 'rift') return;
+    const sorted = pool.slice().sort((a, b) => b.f[t.key] - a.f[t.key]);
+    const cut = sorted[Math.min(2, sorted.length - 1)].f[t.key];
+    top[t.key] = new Set(sorted.filter(r => r.f[t.key] >= cut && r.f[t.key] > 0).slice(0, 3).map(r => r.key));
+  });
+  rows.sort((a, b) => b.g - a.g || b.w / b.g - a.w / a.g || a.name.localeCompare(b.name));
+  _smList = rows;
+  box.innerHTML = rows.map((r, i) => {
+    const wr = Math.round(r.w / r.g * 100);
+    const mainC = r.main ? r.main[0] : '';
+    const mainM = r.main ? r.main[1].m : null;
+    const ci = champInfo(mainC);
+    const mainPos = Object.entries(r.pos).sort((a, b) => b[1] - a[1])[0];
+    const traits = [];
+    if (recMode === 'rift' && mainPos && ICONS[mainPos[0]])
+      traits.push(`<span class="sm-tr" title="주 라인: ${POS_KO[mainPos[0]]} (${mainPos[1]}판)"><img src="${ICONS[mainPos[0]]}" alt="" onerror="this.remove()"></span>`);
+    SM_TRAITS.forEach(t => { if (top[t.key] && top[t.key].has(r.key)) traits.push(`<span class="sm-tr" title="${t.name} · ${t.desc}">${t.ico}</span>`); });
+    const ach = (titleMap[r.key] || []).map(t => [`${t.ico} ${t.name}`, t.desc, true]).concat(summonerAchievements(r, totalDays));
+    const achHtml = ach.length
+      ? ach.map(([t, d, isTitle], j) => `<span class="sm-a${isTitle ? ' title' : ''}${j >= 2 ? ' extra' : ''}" title="${escapeHtml(d)}">${escapeHtml(t)}</span>`).join('') +
+        (ach.length > 2 ? `<span class="sm-a more" title="${escapeHtml(ach.slice(2).map(a => a[0]).join(', '))}" onclick="event.stopPropagation(); this.parentElement.classList.add('all')">+${ach.length - 2}</span>` : '')
+      : '<span class="sm-none">아직 획득한 업적이 없어요</span>';
+    return `<div class="sm-card" style="animation-delay:${Math.min(i, 12) * 0.04}s" onclick="openSummonerHist(${i})">
+      <div class="sm-bg" style="background-image:url('${mainC ? splashOf(mainC) : ''}')"></div>
+      <div class="sm-shade"></div>
+      <div class="sm-in">
+        <div class="sm-top">
+          <div class="sm-ic" data-i="${escapeHtml(String(mainC).slice(0, 2))}" title="모스트: ${escapeHtml(ci.name)} ${r.main ? r.main[1].g + '판' : ''}">
+            ${mainC ? `<img src="${DD_BASE}${ddVer(mainM)}/img/champion/${encodeURIComponent(ci.id)}.png" alt="" onerror="this.remove()">` : ''}</div>
+          <div style="min-width:0">
+            <div class="sm-name">${escapeHtml(r.name)}<small>#${escapeHtml(r.tag)}</small></div>
+            <div class="sm-traits">${traits.join('')}</div>
+          </div>
+          <div class="sm-wr">
+            <b class="${wr >= 60 ? 'hi' : wr < 45 ? 'lo' : ''}">${wr}%</b>
+            <div class="sm-wl"><span class="w">${r.w}승</span> <span class="l">${r.l}패</span></div>
+            <div class="sm-mini">KDA ${r.d ? ((r.k + r.a) / r.d).toFixed(2) : 'Perfect'}</div>
+          </div>
+        </div>
+        <div class="sm-ach">${achHtml}</div>
+        <div class="sm-recent">
+          <div class="sm-rl">최근 ${Math.min(5, r.recent.length)}경기</div>
+          <div class="sm-rg">${r.recent.map(g => {
+            const c = champInfo(g.p.champ);
+            return `<span class="sm-g ${g.p.win ? 'w' : 'l'}" data-i="${escapeHtml(String(g.p.champ).slice(0, 2))}" title="${fmtDate(g.m.date).slice(5, 10)}${g.m.seq ? ' ' + g.m.seq + '번째 판' : ''} · ${escapeHtml(c.name)} ${g.p.k}/${g.p.d}/${g.p.a} · ${g.p.win ? '승리' : '패배'}"><img src="${DD_BASE}${ddVer(g.m)}/img/champion/${encodeURIComponent(c.id)}.png" alt="" loading="lazy" onerror="this.remove()"></span>`;
+          }).join('')}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function openSummonerHist(i) {
+  const r = _smList[i];
+  if (!r) return;
+  showStreakHist(_streakCache.push(r.st) - 1);
+}
+
+// ══════════════════ 칭호 (업적별 1등) ══════════════════
+const stdev = a => { if (a.length < 2) return null; const m = a.reduce((x, y) => x + y, 0) / a.length; return Math.sqrt(a.reduce((x, y) => x + (y - m) ** 2, 0) / a.length); };
+const pctFmt = v => Math.round(v * 100) + '%';
+// v: 값 계산 (null이면 대상 아님) · low: 낮을수록 1등 · rift: 협곡에서만
+const TITLES = [
+  { k: 'duoBest',  ico: '🤝', name: '최고의 듀오', desc: '같은 팀일 때 승률이 가장 높은 2인', duo: 'best' },
+  { k: 'duoWorst', ico: '💣', name: '최악의 듀오', desc: '같은 팀일 때 승률이 가장 낮은 2인', duo: 'worst' },
+  { k: 'cs',     ico: '🧑‍🌾', name: 'CS KING',        desc: '분당 CS 1위', rift: true, v: r => r.cs / r.mins, f: v => v.toFixed(1) + ' CS/분' },
+  { k: 'ej',     ico: '🌲', name: '카나비 정신',     desc: '상대 정글 몬스터를 가장 많이 뺏어 먹음 (판당)', rift: true, v: r => r.xg ? r.ej / r.xg : null, f: v => v.toFixed(1) + '마리/판' },
+  { k: 'gold',   ico: '💰', name: 'GOLD KING',      desc: '분당 골드 1위', v: r => r.gold / r.mins, f: v => fmtNum(Math.round(v)) + ' 골드/분' },
+  { k: 'dps',    ico: '💥', name: 'DPS KING',       desc: '분당 챔피언 피해량 1위', v: r => r.dmg / r.mins, f: v => fmtNum(Math.round(v)) + ' 딜/분' },
+  { k: 'eff',    ico: '🪙', name: '가성비 KING',     desc: '골드 1당 챔피언 피해량 1위', v: r => r.gold ? r.dmg / r.gold : null, f: v => v.toFixed(2) + ' 딜/골드' },
+  { k: 'early',  ico: '🌅', name: '초반 캐리형',     desc: '15분 전 킬관여(킬+어시) 판당 1위', v: r => r.xg ? r.early / r.xg : null, f: v => v.toFixed(1) + '회/판' },
+  { k: 'vis',    ico: '👁️', name: '천리안',          desc: '분당 시야점수 1위', v: r => r.vis / r.mins, f: v => v.toFixed(2) + '/분' },
+  { k: 'lost',   ico: '🧭', name: '어디로 가야 하오', desc: '킬관여율이 가장 낮음', low: true, v: r => r.tk ? r.ka / r.tk : null, f: v => '킬관여 ' + pctFmt(v) },
+  { k: 'omw',    ico: '🏃', name: '금방 가요~',       desc: "'가는 중' 핑을 가장 많이 찍음 (판당)", v: r => r.xg ? r.omw / r.xg : null, f: v => v.toFixed(1) + '회/판' },
+  { k: 'multi',  ico: '🎯', name: '최다 멀티킬',      desc: '더블킬 이상 멀티킬 총 횟수 1위', v: r => r.xg ? r.multiCnt : null, f: v => v + '회' },
+  { k: 'bld',    ico: '🏚️', name: '철거반장',         desc: '건물 피해량 판당 1위', v: r => r.xg ? r.bld / r.xg : null, f: v => fmtNum(Math.round(v)) + '/판' },
+  { k: 'wp',     ico: '🌱', name: '식목일',           desc: '와드 설치 판당 1위', rift: true, v: r => r.xg ? r.wp / r.xg : null, f: v => v.toFixed(1) + '개/판' },
+  { k: 'apm',    ico: '⚡', name: '손은 눈보다 빠르지', desc: '분당 스킬 사용 횟수 1위', v: r => r.xmins ? r.casts / r.xmins : null, f: v => v.toFixed(1) + '회/분' },
+  { k: 'pot',    ico: '💊', name: '포션 중독자',      desc: '소모품 구매 판당 1위', v: r => r.xg ? r.cons / r.xg : null, f: v => v.toFixed(1) + '개/판' },
+  { k: 'mage',   ico: '🧙', name: '대마법사',         desc: '챔피언에게 준 마법 피해 판당 1위', v: r => r.xg ? r.mdmg / r.xg : null, f: v => fmtNum(Math.round(v)) + '/판' },
+  { k: 'roller', ico: '🎢', name: '롤러코스터',       desc: '판마다 KDA 기복이 가장 큼', v: r => stdev(r.kdas), f: v => '기복 ' + v.toFixed(2) },
+  { k: 'river',  ico: '🌊', name: '흐르는 강물처럼',   desc: '판마다 KDA가 가장 꾸준함', low: true, v: r => stdev(r.kdas), f: v => '기복 ' + v.toFixed(2) },
+  { k: 'form',   ico: '📈', name: '폼 미쳤다',        desc: '최근 5판 승률 1위 (3판 이상)', v: r => r.g >= 3 ? r.res.slice(-5).filter(Boolean).length / Math.min(5, r.g) : null, f: pctFmt },
+  { k: 'pool',   ico: '🎭', name: '만물박사',         desc: '가장 많은 챔피언을 플레이', v: r => r.champs.size, f: v => v + '챔피언' },
+  { k: 'attend', ico: '😎', name: '프로참석러',       desc: '가장 많은 판 참여', any: true, v: r => r.g, f: v => v + '판' },
+  { k: 'carry',  ico: '💪', name: '내가 캐리한다',    desc: '팀 내 딜 비중 평균 1위', v: r => r.dshare / r.g, f: v => '딜 비중 ' + pctFmt(v) },
+  { k: 'bus',    ico: '🚌', name: '프로 탑승러',      desc: '이긴 판에서 팀 딜 비중이 가장 낮음 (버스 탑승)', low: true, v: r => r.w ? r.wshare / r.w : null, f: v => '이긴 판 딜 비중 ' + pctFmt(v) },
+  { k: 'die',    ico: '⚰️', name: '우물 밖은 위험해', desc: '판당 데스 1위', v: r => r.d / r.g, f: v => v.toFixed(1) + '데스/판' },
+  { k: 'tank',   ico: '🛡️', name: '필사즉생 필생즉사', desc: '분당 받은 피해량 1위', v: r => r.taken / r.mins, f: v => fmtNum(Math.round(v)) + '/분' },
+  { k: 'rock',   ico: '🪨', name: '바위처럼 단단하게', desc: '분당 피해 감소량 1위', v: r => r.xmins ? r.mit / r.xmins : null, f: v => fmtNum(Math.round(v)) + '/분' }
+];
+function titleStats() {
+  const P = {};
+  modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => {
+    const tk = { blue: 0, red: 0 }, td = { blue: 0, red: 0 };
+    m.players.forEach(p => { tk[p.team] += p.k; td[p.team] += p.dmg; });
+    const mins = Math.max(1, m.len / 60);
+    m.players.forEach(p => {
+      const key = p.puuid || p.name;
+      const r = P[key] || (P[key] = { key, g: 0, w: 0, k: 0, d: 0, a: 0, dmg: 0, gold: 0, cs: 0, vis: 0, taken: 0, mins: 0, ka: 0, tk: 0,
+        dshare: 0, wshare: 0, kdas: [], res: [], champs: new Set(), champCnt: {},
+        xg: 0, xmins: 0, ej: 0, early: 0, omw: 0, multiCnt: 0, bld: 0, wp: 0, casts: 0, cons: 0, mdmg: 0, mit: 0 });
+      r.name = p.name; r.tag = p.tag; r.lastM = m;
+      r.g++; if (p.win) r.w++;
+      r.k += p.k; r.d += p.d; r.a += p.a; r.dmg += p.dmg; r.gold += p.gold; r.cs += p.cs; r.vis += p.vis; r.taken += p.taken || 0; r.mins += mins;
+      r.ka += p.k + p.a; r.tk += tk[p.team];
+      const share = td[p.team] ? p.dmg / td[p.team] : 0;
+      r.dshare += share; if (p.win) r.wshare += share;
+      r.kdas.push(Math.min(15, (p.k + p.a) / Math.max(1, p.d))); r.res.push(p.win);
+      r.champs.add(p.champ); r.champCnt[p.champ] = (r.champCnt[p.champ] || 0) + 1;
+      if (p.x) {
+        r.xg++; r.xmins += mins;
+        r.ej += p.ej; r.early += p.early; r.omw += p.omw; r.multiCnt += p.dbl + p.tri + p.quad + p.penta;
+        r.bld += p.bld; r.wp += p.wp; r.casts += p.casts; r.cons += p.cons; r.mdmg += p.mdmg; r.mit += p.mit;
+      }
+    });
+  });
+  const rows = Object.values(P);
+  rows.forEach(r => { r.mainChamp = Object.entries(r.champCnt).sort((a, b) => b[1] - a[1])[0][0]; });
+  return rows;
+}
+function duoStats() {
+  const D = {}, name = {};
+  modeMatches().forEach(m => {
+    ['blue', 'red'].forEach(t => {
+      const ps = m.players.filter(p => p.team === t);
+      ps.forEach(p => { name[p.puuid || p.name] = p; });
+      for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) {
+        const ks = [ps[i].puuid || ps[i].name, ps[j].puuid || ps[j].name].sort();
+        const d = D[ks.join('|')] || (D[ks.join('|')] = { ks, g: 0, w: 0 });
+        d.g++; if (ps[i].win) d.w++;
+      }
+    });
+  });
+  return { list: Object.values(D), name };
+}
+// 칭호별 1등 계산 → [{t, winners:[row], val, text}]
+function computeTitles() {
+  const rows = titleStats();
+  if (!rows.length) return { titles: [], byKey: {}, rows };
+  const maxG = Math.max(...rows.map(r => r.g));
+  const minG = Math.min(3, maxG);                        // 판수가 쌓이면 3판 이상 한 사람만 대상
+  const byKey = {};                                       // 소환사 → 받은 칭호 목록
+  const give = (key, t) => { (byKey[key] = byKey[key] || []).push(t); };
+  const out = [];
+  TITLES.forEach(t => {
+    if (t.rift && recMode !== 'rift') return;
+    if (t.duo) {
+      const { list, name } = duoStats();
+      if (!list.length) { out.push({ t }); return; }
+      const maxPg = Math.max(...list.map(d => d.g));
+      const pool = list.filter(d => d.g >= Math.min(3, maxPg));
+      pool.sort((a, b) => t.duo === 'best' ? (b.w / b.g - a.w / a.g || b.g - a.g) : (a.w / a.g - b.w / b.g || b.g - a.g));
+      const d = pool[0];
+      const ps = d.ks.map(k => rows.find(r => r.key === k) || { key: k, name: name[k].name, tag: name[k].tag, mainChamp: name[k].champ, lastM: null });
+      ps.forEach(p => give(p.key, t));
+      out.push({ t, winners: ps, text: `함께 ${d.g}판 ${d.w}승 ${d.g - d.w}패 · 승률 ${pctFmt(d.w / d.g)}` });
+      return;
+    }
+    const pool = rows.filter(r => (t.any || r.g >= minG)).map(r => ({ r, v: t.v(r) })).filter(x => x.v !== null && isFinite(x.v));
+    if (!pool.length) { out.push({ t }); return; }
+    pool.sort((a, b) => t.low ? a.v - b.v : b.v - a.v);
+    if (!t.low && pool[0].v <= 0) { out.push({ t }); return; }
+    const bestTxt = t.f(pool[0].v);
+    const winners = pool.filter(x => t.f(x.v) === bestTxt).map(x => x.r);     // 표시값이 같으면 공동 1등
+    if (winners.length > 3) { out.push({ t, tie: winners.length, text: bestTxt }); return; }   // 4명 이상 같으면 칭호 없음
+    winners.forEach(w => give(w.key, t));
+    out.push({ t, winners, text: bestTxt });
+  });
+  return { titles: out, byKey, rows };
+}
+
+// ══════════════════ 대시보드 ══════════════════
+function renderDashboard() {
+  const box = document.getElementById('dashBody');
+  if (!box) return;
+  const ms = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
+  if (!ms.length) {
+    box.innerHTML = `<div class="db-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>왼쪽 <b>📊 내전 전적</b> 메뉴에서 리플레이 파일을 올리면 대시보드가 채워져요.</div>`;
+    return;
+  }
+  const days = [...new Set(ms.map(dayKey))];
+  const totalSec = ms.reduce((t, m) => t + m.len, 0);
+  const totalKills = ms.reduce((t, m) => t + m.players.reduce((x, p) => x + p.k, 0), 0);
+  const people = new Set(ms.flatMap(m => m.players.map(p => p.puuid || p.name))).size;
+  const lastDay = days[days.length - 1];
+  const lastMs = ms.filter(m => dayKey(m) === lastDay);
+  const hm = sec => `${Math.floor(sec / 3600)}<small>시간</small> ${Math.round(sec % 3600 / 60)}<small>분</small>`;
+
+  // ① 숫자 요약
+  const kpi = `<div class="db-sec"><div class="db-kpi">
+    <div class="kpi" data-ico="🗓"><div class="kpi-l">내전 일수</div><div class="kpi-v">${days.length}<small>일</small></div><div class="kpi-s">${days[0].slice(5)} ~ ${lastDay.slice(5)}</div></div>
+    <div class="kpi" data-ico="⚔"><div class="kpi-l">총 경기</div><div class="kpi-v">${ms.length}<small>판</small></div><div class="kpi-s">하루 평균 ${(ms.length / days.length).toFixed(1)}판</div></div>
+    <div class="kpi" data-ico="👥"><div class="kpi-l">참여 인원</div><div class="kpi-v">${people}<small>명</small></div><div class="kpi-s">한 번이라도 뛴 소환사</div></div>
+    <div class="kpi" data-ico="⏱"><div class="kpi-l">총 플레이 시간</div><div class="kpi-v">${hm(totalSec)}</div><div class="kpi-s">평균 ${Math.round(totalSec / ms.length / 60)}분 / 판</div></div>
+    <div class="kpi" data-ico="☠"><div class="kpi-l">총 킬</div><div class="kpi-v">${fmtNum(totalKills)}<small>킬</small></div><div class="kpi-s">판당 ${Math.round(totalKills / ms.length)}킬</div></div>
+    <div class="kpi" data-ico="📅"><div class="kpi-l">최근 내전</div><div class="kpi-v">${lastDay.slice(5).replace('.', '/')}</div><div class="kpi-s">${lastMs.length}판 진행</div></div>
+  </div></div>`;
+
+  // ② 종합 TOP 3 + 지금 가장 뜨거운/차가운
+  const rk = rankRowsFor('ALL').sort((a, b) => b.score - a.score || b.g - a.g);
+  const pdCard = (r, n) => {
+    if (!r) return `<div class="pd p${n}" style="opacity:.35"><div class="pd-medal">${['', '🥇', '🥈', '🥉'][n]}</div><div class="pd-meta" style="margin-top:20px">-</div></div>`;
+    const most = Object.entries(r.champ).sort((a, b) => b[1].g - a[1].g)[0];
+    return `<div class="pd p${n}">
+      <div class="pd-bg" style="background-image:url('${splashOf(most[0])}')"></div><div class="pd-sh"></div>
+      <div class="pd-medal">${['', '🥇', '🥈', '🥉'][n]}</div>
+      ${champIcon(most[1].m, most[0])}
+      <div class="pd-name">${escapeHtml(r.name)}</div>
+      <div class="pd-score">${r.score.toFixed(1)}<small style="font-size:.7rem;color:#8a97ab"> 점</small></div>
+      <div class="pd-meta">${r.g}판 · 승률 ${Math.round(r.wr * 100)}% · KDA ${r.d ? r.kda.toFixed(2) : 'P'}</div>
+    </div>`;
+  };
+  const st = calcStreaks();
+  const hot = st.filter(s => s.kind === 'win' && s.n >= 2).sort((a, b) => b.n - a.n)[0];
+  const cold = st.filter(s => s.kind === 'lose' && s.n >= 2).sort((a, b) => b.n - a.n)[0];
+  const hcRow = (s, kind) => s
+    ? `<div class="hc ${kind}">${champIcon(s.last.m, s.last.p.champ)}<div><div class="hc-t">${kind === 'win' ? '🔥 지금 가장 뜨거운' : '🧊 지금 가장 차가운'}</div><div class="hc-n">${escapeHtml(s.name)}</div></div><div class="hc-v">${s.n}${kind === 'win' ? '연승' : '연패'}</div></div>`
+    : `<div class="hc ${kind}"><div class="hc-none">${kind === 'win' ? '🔥 2연승 이상 없음' : '🧊 2연패 이상 없음'}</div></div>`;
+  const dayWin = {};
+  lastMs.forEach(m => m.players.forEach(p => { const k = p.puuid || p.name; const d = dayWin[k] || (dayWin[k] = { p, w: 0, g: 0 }); d.g++; if (p.win) d.w++; d.p = p; }));
+  const dayKing = Object.values(dayWin).sort((a, b) => b.w - a.w || a.g - b.g)[0];
+  const row2 = `<div class="db-sec db-row">
+    <div class="db-box"><div class="db-h"><b>🏆 종합 TOP 3</b><span>개인 순위 종합 점수 기준</span></div>
+      <div class="podium">${pdCard(rk[1], 2)}${pdCard(rk[0], 1)}${pdCard(rk[2], 3)}</div></div>
+    <div class="db-box"><div class="db-h"><b>🌡 지금 분위기</b><span>내전 날짜 기준</span></div>
+      ${hcRow(hot, 'win')}${hcRow(cold, 'lose')}
+      ${dayKing ? `<div class="hc" style="background:rgba(200,155,60,.08);border:1px solid rgba(200,155,60,.3)">${champIcon(lastMs[lastMs.length - 1], dayKing.p.champ)}<div><div class="hc-t">👑 최근 내전(${lastDay.slice(5)}) 승리왕</div><div class="hc-n">${escapeHtml(dayKing.p.name)}</div></div><div class="hc-v" style="color:var(--gold2)">${dayKing.w}승 ${dayKing.g - dayKing.w}패</div></div>` : ''}
+    </div>
+  </div>`;
+
+  // ③ 칭호 보드
+  const { titles } = computeTitles();
+  const missingX = ms.some(m => !(m.players[0] && m.players[0].x));
+  const tt = titles.map(({ t, winners, text, tie }) => {
+    if (tie) return `<div class="tt empty" title="${escapeHtml(t.desc)}"><div class="tt-ico">${t.ico}</div><div><div class="tt-name">${t.name}</div><div class="tt-val">${tie}명이 똑같아요 (${escapeHtml(text)}) · 아직 1등 없음</div></div></div>`;
+    if (!winners || !winners.length) return `<div class="tt empty" title="${escapeHtml(t.desc)}"><div class="tt-ico">${t.ico}</div><div><div class="tt-name">${t.name}</div><div class="tt-val">아직 기록이 부족해요</div></div></div>`;
+    const who = winners.map(w => `<span class="tt-w">${w.lastM ? champIcon(w.lastM, w.mainChamp) : ''}<b>${escapeHtml(w.name)}</b></span>`).join('');
+    const tag = !t.duo && winners.length > 1 ? ' <span class="tt-co">공동 1등</span>' : '';
+    return `<div class="tt${t.duo ? ' duo ' + t.duo : ''}" title="${escapeHtml(t.desc)}"><div class="tt-ico">${t.ico}</div><div style="min-width:0"><div class="tt-name">${t.name}${tag}</div><div class="tt-who${winners.length > 1 ? ' multi' : ''}">${who}</div><div class="tt-val">${escapeHtml(text)}</div></div></div>`;
+  }).join('');
+  const row3 = `<div class="db-sec"><div class="db-h"><b>🏅 칭호 1등</b><span>마우스를 올리면 기준이 나와요 · 3판 이상 한 소환사 대상</span></div>
+    <div class="tt-grid">${tt}</div>
+    ${missingX ? '<div class="db-note">※ 일부 칭호(카나비 정신, 금방 가요~, 철거반장 등)는 이번 업데이트부터 읽는 기록이라, 예전에 올린 경기는 리플레이를 한 번 더 올리면 채워져요.</div>' : ''}</div>`;
+
+  // ④ 챔피언 / 한 판 기록 / 최근 내전
+  const C = {};
+  ms.forEach(m => m.players.forEach(p => { const c = C[p.champ] || (C[p.champ] = { g: 0, w: 0, m }); c.g++; if (p.win) c.w++; c.m = m; }));
+  const champs = Object.entries(C).sort((a, b) => b[1].g - a[1].g || b[1].w - a[1].w).slice(0, 5);
+  const champHtml = champs.map(([c, v], i) => `<div class="dl"><span class="dl-n">${i + 1}</span>${champIcon(v.m, c)}<div class="dl-main"><b>${escapeHtml(champInfo(c).name)}</b><small>${v.w}승 ${v.g - v.w}패</small></div><div class="dl-v">${v.g}픽<small>승률 ${Math.round(v.w / v.g * 100)}%</small></div></div>`).join('');
+  const allP = ms.flatMap(m => m.players.map(p => ({ p, m })));
+  const best = (f, low) => allP.slice().sort((a, b) => low ? f(a) - f(b) : f(b) - f(a))[0];
+  const recs = [
+    ['🗡 한 판 최다 킬', best(x => x.p.k), x => x.p.k + '킬'],
+    ['💥 한 판 최고 딜량', best(x => x.p.dmg), x => fmtNum(x.p.dmg)],
+    ['🤝 한 판 최다 어시', best(x => x.p.a), x => x.p.a + '어시'],
+    ['☠ 한 판 최다 데스', best(x => x.p.d), x => x.p.d + '데스'],
+    ['👁 한 판 최고 시야', best(x => x.p.vis), x => x.p.vis + '점']
+  ];
+  const recHtml = recs.map(([lb, x, f]) => `<div class="dl"><span class="dl-n" style="font-size:.9rem">${lb.split(' ')[0]}</span>${champIcon(x.m, x.p.champ)}<div class="dl-main"><b>${escapeHtml(x.p.name)}</b><small>${lb.slice(lb.indexOf(' ') + 1)} · ${dayKey(x.m).slice(5)}</small></div><div class="dl-v">${f(x)}</div></div>`).join('');
+  const longest = ms.reduce((a, m) => m.len > a.len ? m : a), shortest = ms.reduce((a, m) => m.len < a.len ? m : a);
+  const dayList = days.slice(-5).reverse().map(d => {
+    const dm = ms.filter(m => dayKey(m) === d);
+    const k = dm.reduce((t, m) => t + m.players.reduce((x, p) => x + p.k, 0), 0);
+    return `<div class="dl"><span class="dl-n">📅</span><span></span><div class="dl-main"><b>${d.slice(5).replace('.', '/')}</b><small>${d.slice(0, 4)}</small></div><div class="dl-v">${dm.length}판<small>총 ${Math.round(dm.reduce((t, m) => t + m.len, 0) / 60)}분 · ${k}킬</small></div></div>`;
+  }).join('');
+  const row4 = `<div class="db-sec db-row3">
+    <div class="db-box"><div class="db-h"><b>🎯 인기 챔피언</b><span>픽 많은 순</span></div><div class="db-list">${champHtml}</div></div>
+    <div class="db-box"><div class="db-h"><b>📜 한 판 최고 기록</b></div><div class="db-list">${recHtml}</div>
+      <div class="db-note">⏳ 최장 ${fmtLen(longest.len)} (${dayKey(longest).slice(5)}) · ⚡ 최단 ${fmtLen(shortest.len)} (${dayKey(shortest).slice(5)})</div></div>
+    <div class="db-box"><div class="db-h"><b>🗓 최근 내전</b><span>최근 5일</span></div><div class="db-list">${dayList}</div></div>
+  </div>`;
+
+  box.innerHTML = kpi + row2 + row3 + row4;
 }
 
 loadRec();
