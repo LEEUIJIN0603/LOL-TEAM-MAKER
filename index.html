@@ -861,6 +861,152 @@
       .mt-champs .ch-box.sm { width: 20px; height: 20px; }
       .mt-kills { font-size: 1.2rem; }
     }
+
+    /* ── 관리용 버튼 (작게, 오른쪽 위) ── */
+    .rec-admin { display: flex; justify-content: flex-end; gap: 2px; margin: -18px 0 6px; }
+    .adm-btn { background: none; border: none; color: var(--muted); opacity: .55; font-size: .66rem; padding: 3px 7px;
+               border-radius: 5px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all .15s; }
+    .adm-btn:hover { opacity: 1; color: var(--gold2); background: var(--panel2); }
+    .mt-move, .mt-del { opacity: .3; transition: opacity .15s; }
+    .mt-card:hover .mt-move, .mt-card:hover .mt-del { opacity: 1; }
+
+    /* ── 연승 / 연패 대표 카드 ── */
+    .stk-hero { position: relative; border-radius: 14px; padding: 2px; overflow: hidden; }
+    .streak-col.win .stk-hero  { animation: stkIn .65s cubic-bezier(.2,.9,.3,1.25) both; }
+    .streak-col.lose .stk-hero { animation: stkDrop .75s cubic-bezier(.3,1.5,.5,1) both; }
+    .stk-spin { position: absolute; left: -50%; top: -150%; width: 200%; height: 400%; animation: stkSpin 3.5s linear infinite; }
+    .streak-col.win .stk-spin  { background: conic-gradient(from 0deg, transparent 0 55%, #ff9a3c 70%, #ffe08a 80%, #ff5a1f 90%, transparent 100%); }
+    .streak-col.lose .stk-spin { background: conic-gradient(from 0deg, transparent 0 55%, #7fb2ff 72%, #eef6ff 82%, #4a7cd8 92%, transparent 100%); animation-duration: 6s; }
+    .stk-inner { position: relative; border-radius: 12px; min-height: 150px; overflow: hidden; background: #0b1220;
+                 display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 16px 18px; }
+    .stk-bg { position: absolute; inset: 0; background-size: cover; background-position: 70% 20%; opacity: .6;
+              animation: stkPan 14s ease-in-out infinite alternate; }
+    .streak-col.lose .stk-bg { filter: grayscale(.75) brightness(.75); }
+    .stk-shade { position: absolute; inset: 0; }
+    .streak-col.win .stk-shade  { background: linear-gradient(90deg, rgba(22,8,2,.96) 0%, rgba(40,14,4,.78) 48%, rgba(70,24,0,.2) 100%); }
+    .streak-col.lose .stk-shade { background: linear-gradient(90deg, rgba(4,10,24,.96) 0%, rgba(8,20,44,.8) 48%, rgba(30,60,120,.25) 100%); }
+    .streak-col.win .stk-inner::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; z-index: 1; pointer-events: none;
+      background: linear-gradient(100deg, transparent, rgba(255,220,150,.2), transparent); animation: stkSweep 3.4s ease-in-out infinite; }
+    .streak-col.lose .stk-inner::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: radial-gradient(circle at 100% 0%, rgba(210,230,255,.22), transparent 45%), radial-gradient(circle at 0% 100%, rgba(160,200,255,.12), transparent 40%); }
+    .stk-body { position: relative; z-index: 2; min-width: 0; }
+    .stk-tag { display: inline-block; font-size: .66rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; margin-bottom: 7px; letter-spacing: .5px; }
+    .streak-col.win .stk-tag  { background: linear-gradient(90deg, #ff6a1f, #ffb347); color: #2a0e00; box-shadow: 0 0 14px rgba(255,120,40,.55); }
+    .streak-col.lose .stk-tag { background: linear-gradient(90deg, #5b8def, #b5d0ff); color: #06122a; box-shadow: 0 0 14px rgba(110,160,255,.45); }
+    .stk-hero .stk-name { font-size: 1.2rem; text-shadow: 0 2px 8px rgba(0,0,0,.8); }
+    .stk-hero .stk-quote { font-size: .82rem; color: #eef1f7; margin-top: 5px; text-shadow: 0 1px 6px rgba(0,0,0,.9); }
+    .stk-hero .stk-dots { margin-top: 9px; }
+    .stk-big { position: relative; z-index: 2; text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; line-height: .9; min-width: 72px; }
+    .stk-big b { display: block; font-size: 4.4rem; }
+    .streak-col.win .stk-big b  { color: #ffd27a; text-shadow: 0 0 18px rgba(255,140,40,.95), 0 0 44px rgba(255,90,20,.6); animation: stkPulse 1.6s ease-in-out infinite; }
+    .streak-col.lose .stk-big b { color: #d6e6ff; text-shadow: 0 0 16px rgba(120,170,255,.95), 0 0 40px rgba(70,120,220,.55); animation: stkShiver 3.2s ease-in-out infinite; }
+    .stk-big span { display: block; font-family: 'Noto Sans KR', sans-serif; font-size: .8rem; letter-spacing: 3px; margin-top: 4px; }
+    .streak-col.win .stk-big span { color: #ffb45a; } .streak-col.lose .stk-big span { color: #a9c4f2; }
+    /* 불씨 / 눈송이 */
+    .stk-fx { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .stk-fx i { position: absolute; border-radius: 50%; opacity: 0; }
+    .streak-col.win .stk-fx i  { bottom: -8px; width: 5px; height: 5px; background: radial-gradient(circle, #fff1b8, #ff7a1f 55%, transparent 72%); animation: stkEmber 2.8s ease-in infinite; }
+    .streak-col.lose .stk-fx i { top: -8px; width: 4px; height: 4px; background: #e2eeff; box-shadow: 0 0 6px rgba(200,225,255,.9); animation: stkSnow 4.2s linear infinite; }
+    /* 2·3위 작은 카드 */
+    .streak-col .stk-card { animation: stkIn .5s ease both; position: relative; overflow: hidden; }
+    .streak-col.win .stk-card  { border-color: rgba(255,150,60,.28); }
+    .streak-col.lose .stk-card { border-color: rgba(120,160,230,.25); }
+    .stk-mini-tag { font-size: .58rem; font-weight: 700; margin-left: 6px; padding: 1px 7px; border-radius: 999px; vertical-align: 2px; }
+    .streak-col.win .stk-mini-tag  { background: rgba(255,120,40,.18); color: #ffb45a; }
+    .streak-col.lose .stk-mini-tag { background: rgba(110,160,255,.16); color: #a9c4f2; }
+    .streak-col.win .stk-card .stk-num b  { text-shadow: 0 0 12px rgba(255,140,40,.6); }
+    .streak-col.lose .stk-card .stk-num b { text-shadow: 0 0 12px rgba(120,170,255,.6); }
+
+    @keyframes stkSpin   { to { transform: rotate(360deg); } }
+    @keyframes stkIn     { 0% { opacity: 0; transform: translateY(16px) scale(.95); } 100% { opacity: 1; transform: none; } }
+    @keyframes stkDrop   { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: none; } }
+    @keyframes stkPulse  { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.09); } }
+    @keyframes stkShiver { 0%, 84%, 100% { transform: translateX(0); } 86% { transform: translateX(-3px); } 88% { transform: translateX(3px); } 90% { transform: translateX(-2px); } 92% { transform: translateX(2px); } }
+    @keyframes stkSweep  { 0% { left: -60%; } 55%, 100% { left: 130%; } }
+    @keyframes stkPan    { from { transform: scale(1.08); } to { transform: scale(1.16) translateX(-3%); } }
+    @keyframes stkEmber  { 0% { transform: translate(0,0) scale(1); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(var(--dx,10px),-170px) scale(.3); opacity: 0; } }
+    @keyframes stkSnow   { 0% { transform: translate(0,0); opacity: 0; } 15% { opacity: .95; } 100% { transform: translate(var(--dx,10px),180px); opacity: 0; } }
+    @media (max-width: 620px) { .stk-big b { font-size: 3.3rem; } .stk-inner { min-height: 130px; padding: 14px; } }
+    @media (prefers-reduced-motion: reduce) { .streak-row *, .streak-row *::after { animation: none !important; } }
+
+    /* ── 연승 / 연패: 세로형 트레이딩 카드 ── */
+    .hot-sec { margin: 4px 0 22px; }
+    .hot-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+    .hot-title { font-family: 'Bebas Neue', 'Noto Sans KR', sans-serif; font-size: 1.5rem; letter-spacing: 5px;
+                 background: linear-gradient(90deg, #ffd27a, #ff6a1f 42%, #6fa4ff 58%, #d6e6ff);
+                 -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hot-sub { font-size: .7rem; color: var(--muted); }
+    .hot-row { display: flex; gap: 14px; overflow-x: auto; padding: 10px 4px 16px; align-items: stretch; }
+    .hot-row::-webkit-scrollbar { height: 6px; } .hot-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    .hot-vs { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 0 2px; }
+    .hot-vs::before, .hot-vs::after { content: ''; width: 1px; flex: 1; background: linear-gradient(to bottom, transparent, var(--border), transparent); }
+    .hot-vs span { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 2px; color: var(--muted); }
+    .hot-none { font-size: .8rem; color: var(--muted); padding: 16px 0; text-align: center;
+                border-top: 1px dashed var(--border); border-bottom: 1px dashed var(--border); }
+
+    .tcard { flex: 0 0 168px; height: 262px; position: relative; border-radius: 16px; padding: 2px; overflow: hidden;
+             animation: tcDeal .75s cubic-bezier(.2,.9,.3,1.2) both; transition: transform .25s ease, box-shadow .25s ease; }
+    .tcard.win  { box-shadow: 0 8px 26px rgba(255,110,30,.22); }
+    .tcard.lose { box-shadow: 0 8px 26px rgba(80,130,230,.2); }
+    .tcard:hover { transform: translateY(-6px) rotate(-1deg); }
+    .tcard.win:hover  { box-shadow: 0 14px 34px rgba(255,110,30,.38); }
+    .tcard.lose:hover { box-shadow: 0 14px 34px rgba(80,130,230,.35); }
+    .tc-spin { position: absolute; left: -100%; top: -50%; width: 300%; height: 200%; animation: stkSpin 3.5s linear infinite; }
+    .tcard.win .tc-spin  { background: conic-gradient(from 0deg, #3a1606 0 50%, #ff9a3c 66%, #ffe08a 76%, #ff5a1f 88%, #3a1606 100%); }
+    .tcard.lose .tc-spin { background: conic-gradient(from 0deg, #0c1a33 0 50%, #7fb2ff 68%, #eef6ff 78%, #4a7cd8 90%, #0c1a33 100%); animation-duration: 6s; }
+    .tc-in { position: relative; height: 100%; border-radius: 14px; overflow: hidden; background: #0b1220; }
+    .tc-art { position: absolute; inset: 0; background-size: cover; background-position: center 12%; animation: tcZoom 12s ease-in-out infinite alternate; }
+    .tcard.lose .tc-art { filter: grayscale(.8) brightness(.72) contrast(1.05); }
+    .tc-shade { position: absolute; inset: 0; z-index: 1; }
+    .tcard.win .tc-shade  { background: linear-gradient(180deg, rgba(30,10,0,.25) 0%, rgba(30,10,0,0) 30%, rgba(26,8,2,.9) 60%, #170701 100%); }
+    .tcard.lose .tc-shade { background: linear-gradient(180deg, rgba(4,10,24,.3) 0%, rgba(4,10,24,0) 30%, rgba(6,14,32,.92) 60%, #040b1a 100%); }
+    .tcard.win .tc-in::after { content: ''; position: absolute; top: 0; bottom: 0; width: 45%; left: -70%; z-index: 2; pointer-events: none;
+      background: linear-gradient(100deg, transparent, rgba(255,225,160,.25), transparent); animation: stkSweep 3.6s ease-in-out infinite; }
+    .tcard.lose .tc-in::after { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background: radial-gradient(circle at 100% 0%, rgba(220,235,255,.28), transparent 42%); }
+    .tc-ribbon { position: absolute; top: 11px; left: 11px; z-index: 4; font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px;
+                 font-size: .7rem; padding: 2px 7px 1px; border-radius: 4px; }
+    .tcard.win .tc-ribbon  { background: linear-gradient(90deg, #ff6a1f, #ffb347); color: #2a0e00; box-shadow: 0 0 12px rgba(255,120,40,.6); }
+    .tcard.lose .tc-ribbon { background: linear-gradient(90deg, #4a7cd8, #b5d0ff); color: #06122a; box-shadow: 0 0 12px rgba(110,160,255,.5); }
+    .tc-num { position: absolute; top: 36px; right: 12px; z-index: 4; text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; line-height: .85; }
+    .tc-num b { display: block; font-size: 3.5rem; }
+    .tc-num span { display: block; font-family: 'Noto Sans KR', sans-serif; font-size: .66rem; letter-spacing: 2px; margin-top: 2px; }
+    .tcard.win .tc-num b  { color: #ffd27a; text-shadow: 0 0 16px rgba(255,140,40,.95), 0 0 40px rgba(255,90,20,.6), 0 2px 4px #000; animation: stkPulse 1.6s ease-in-out infinite; }
+    .tcard.lose .tc-num b { color: #d6e6ff; text-shadow: 0 0 14px rgba(120,170,255,.95), 0 0 36px rgba(70,120,220,.55), 0 2px 4px #000; animation: stkShiver 3.2s ease-in-out infinite; }
+    .tcard.win .tc-num span { color: #ffb45a; } .tcard.lose .tc-num span { color: #a9c4f2; }
+    .tc-body { position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; padding: 10px 12px 12px; }
+    .tc-tag { display: inline-block; font-size: .6rem; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-bottom: 5px; }
+    .tcard.win .tc-tag  { background: rgba(255,120,40,.22); color: #ffc078; border: 1px solid rgba(255,140,60,.4); }
+    .tcard.lose .tc-tag { background: rgba(110,160,255,.18); color: #b5cdf5; border: 1px solid rgba(120,160,240,.35); }
+    .tc-name { font-weight: 700; font-size: .98rem; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.9);
+               white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tc-champ { font-size: .64rem; color: rgba(255,255,255,.55); margin-top: 1px; }
+    .tc-quote { font-size: .72rem; color: #eef1f7; margin-top: 6px; line-height: 1.45; text-shadow: 0 1px 4px rgba(0,0,0,.9);
+                display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .tc-body .stk-dots { margin-top: 7px; }
+    .tc-body .stk-dots i { width: 13px; height: 13px; line-height: 13px; }
+    .tcard .stk-fx { z-index: 3; }
+    .tcard.win .stk-fx i  { bottom: -8px; width: 5px; height: 5px; background: radial-gradient(circle, #fff1b8, #ff7a1f 55%, transparent 72%); animation: stkEmber 2.8s ease-in infinite; }
+    .tcard.lose .stk-fx i { top: -8px; width: 4px; height: 4px; background: #e2eeff; box-shadow: 0 0 6px rgba(200,225,255,.9); animation: stkSnow 4.2s linear infinite; }
+    .tcard.ghost { border: 1.5px dashed var(--border); padding: 0; box-shadow: none; display: flex; align-items: center; justify-content: center;
+                   text-align: center; font-size: .76rem; color: var(--muted); line-height: 1.7; background: rgba(13,21,32,.5); }
+    .tcard.ghost:hover { transform: none; }
+    .tcard.ghost .gi { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+    @keyframes tcDeal { 0% { opacity: 0; transform: translateY(26px) rotateY(75deg) scale(.9); } 100% { opacity: 1; transform: none; } }
+    @keyframes tcZoom { from { transform: scale(1.04); } to { transform: scale(1.14) translateY(-2%); } }
+    @media (prefers-reduced-motion: reduce) { .hot-sec *, .hot-sec *::after { animation: none !important; } }
+
+    /* 개인 순위: 정렬 / 라인별 */
+    .rk-sort { justify-content: space-between; }
+    .rk-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .rk-lanes .rk-btn { display: inline-flex; align-items: center; gap: 4px; }
+    .rk-lanes .rk-btn img { width: 14px; height: 14px; opacity: .8; }
+    .rk-btn.total { font-weight: 700; }
+    .rk-score { display: flex; align-items: center; gap: 7px; justify-content: center; }
+    .rk-score b { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; color: var(--text-bright); min-width: 34px; text-align: right; }
+    .rk-score .bar { width: 56px; height: 5px; border-radius: 3px; background: #0a1422; overflow: hidden; }
+    .rk-score .bar i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #c89b3c, #f0d070); }
+    .rk-note { font-size: .68rem; color: var(--muted); margin-top: 10px; line-height: 1.6; }
   </style>
 </head>
 <body>
@@ -994,6 +1140,14 @@
 
 <!-- ▣ 내전 전적 -->
 <div class="page-view" id="view-record">
+  <!-- 관리용 (전적 올리는 사람만 사용) -->
+  <div class="rec-admin">
+    <button class="adm-btn" onclick="document.getElementById('recFile').click()" title="리플레이 위치: 문서\League of Legends\Replays">📂 리플레이 올리기</button>
+    <button class="adm-btn" onclick="exportMatches()" title="받은 matches.json을 GitHub에 올리면 모두에게 보여요">📤 공유용 파일 내보내기</button>
+  </div>
+  <input type="file" id="recFile" accept=".rofl,.json" multiple hidden onchange="handleRecFiles(this.files); this.value='';">
+  <div class="rec-share" id="recShare"></div>
+  <div class="rec-msg" id="recMsg"></div>
   <div class="tabs mode-tabs">
     <button class="tab-btn active" data-mode="rift" onclick="switchRecMode('rift')">
       <span class="t-main">🌲 소환사 협곡</span>
@@ -1004,21 +1158,12 @@
       <span class="t-sub">칼바람 나락 · 증강 칼바람</span>
     </button>
   </div>
-  <div class="streak-row" id="recStreak"></div>
+  <div class="hot-sec" id="recStreak"></div>
   <div class="rec-sum" id="recSum"></div>
 
   <div class="rec-bar">
     <div class="rec-list-title">▸ 경기 기록</div>
-    <div class="rec-tools">
-      <button class="btn-upload" onclick="document.getElementById('recFile').click()"
-              title="리플레이 위치: 문서\League of Legends\Replays">📂 리플레이 올리기</button>
-      <button class="btn-copy" onclick="exportMatches()"><span class="btn-copy-icon">📤</span> 공유용 파일 내보내기</button>
-      <button class="btn-copy" onclick="clearMatches()"><span class="btn-copy-icon">🗑</span> 이 탭 전적 삭제</button>
-    </div>
   </div>
-  <input type="file" id="recFile" accept=".rofl,.json" multiple hidden onchange="handleRecFiles(this.files); this.value='';">
-  <div class="rec-share" id="recShare"></div>
-  <div class="rec-msg" id="recMsg"></div>
   <div id="recMatchList"></div>
 </div><!-- /view-record -->
 
@@ -2636,7 +2781,7 @@ function loadSharedMatches() {
 function renderShareInfo() {
   const el = document.getElementById('recShare');
   if (!el) return;
-  if (sharedState === 'none') { el.innerHTML = ''; el.className = 'rec-share'; return; }
+  if (sharedState === 'none' || !hasUnshared()) { el.innerHTML = ''; el.className = 'rec-share'; return; }
   const localCnt = matches.filter(isLocalOnly).length;
   const hidden = recDeleted.filter(id => sharedIds.has(id)).length;
   const moved = Object.keys(modeOverride).length;
@@ -2749,62 +2894,158 @@ function renderRecSummary() {
 }
 
 // ── 연승 / 연패 ──
-const STREAK_QUOTES = {
-  win: {
-    2: ['슬슬 손이 풀리기 시작했다', '어? 오늘 좀 되는 날인가?', '감 잡았다. 이제 시작이다'],
-    3: ['오늘 폼 미쳤다 🔥', '이 정도면 실력이라고 봐야지', '3연승… 팀원들이 줄 서는 중'],
-    4: ['누가 좀 말려봐요', '상대팀 단톡방에 비상 걸림', '이쯤 되면 밴 카드 써야 함'],
-    5: ['내전 파괴자 등장. 밴 요청 접수 중', '전설은 이렇게 시작된다', '이 사람이랑 같은 팀 되는 법 아시는 분?']
-  },
-  lose: {
-    2: ['아직 몸 푸는 중이에요', '잠깐 컨디션 조절 중', '다음 판은 진짜 다를 거임'],
-    3: ['팀운이 없었을 뿐…', '혹시 키보드 연결 확인해 보셨어요?', '오늘은 서폿 버스 태워주세요'],
-    4: ['물 한 잔 마시고 오세요', '마우스 탓일 확률 87%', '다음 판 이기면 역대급 반전 서사'],
-    5: ['이 정도면 다음 판은 무조건 이긴다 (아마도)', '오늘 일진이 좀… 내일 다시 오세요', '연패도 기록이다. 레전드 갱신 중']
-  }
+// 단계별 꼬리표 (같은 화면에 겹치지 않게 골라 써요)
+const STREAK_TAGS = {
+  win:  { 2: ['🔥 기세 상승', '🔥 손 풀림', '🔥 슬슬 시동'], 3: ['🔥🔥 불타는 중', '🔥🔥 폼 미침', '🔥🔥 멈출 생각 없음'],
+          4: ['☄️ 폭주 기관차', '☄️ 아무도 못 막음', '☄️ 밴 요청 접수'], 5: ['👑 내전 지배자', '👑 살아있는 전설', '👑 협곡의 왕'] },
+  lose: { 2: ['🌧 살짝 흐림', '🌧 컨디션 조절', '🌧 몸 푸는 중'], 3: ['🧊 얼어붙는 중', '🧊 팀운 실종', '🧊 슬럼프 입장'],
+          4: ['🥶 빙하기', '🥶 리스폰 단골', '🥶 회색 화면 마스터'], 5: ['💀 나락 탐험가', '💀 바닥 뚫는 중', '💀 반등만 남았다'] }
 };
-function hashStr(t) { let h = 0; for (const ch of t) h = (h * 31 + ch.codePointAt(0)) | 0; return Math.abs(h); }
-function streakQuote(kind, n, name) {
-  const list = STREAK_QUOTES[kind][Math.min(5, n)];
-  return list[hashStr(name + n) % list.length];        // 같은 사람·같은 연승 수면 문구가 바뀌지 않게
-}
+// 최근 경기 기록을 보고 고르는 멘트 (위에 있을수록 우선). key가 같은 멘트는 한 화면에 한 번만 나와요.
+const STREAK_LINES = {
+  win: [
+    { key: 'perfect', ok: f => f.d === 0 && f.k + f.a >= 5, text: f => `지난 판 ${f.champ}로 ${f.k}/${f.d}/${f.a} 노데스. 죽는 법을 잊어버렸다` },
+    { key: 'multi', ok: f => f.multi >= 3, text: f => `지난 판 ${f.champ}로 ${MULTI[Math.min(5, f.multi)]} 작렬! 그 기세 그대로 간다` },
+    { key: 'sameChamp', ok: f => f.sameChamp && f.n >= 2, text: f => `${f.champ}로만 ${f.n}연승. 장인 인증 완료` },
+    { key: 'mvpDmg', ok: f => f.badge === 'mvp' && f.dmgRank === 1, text: f => `지난 판 딜량 ${f.dmg} 1등에 MVP까지. 혼자 다 했다` },
+    { key: 'dmgTop', ok: f => f.dmgRank === 1, text: f => `지난 판 딜량 ${f.dmg}, 10명 중 1등. 계산기가 증명한다` },
+    { key: 'mvp', ok: f => f.badge === 'mvp', text: f => `지난 판 MVP. 팀원들이 이 사람 버스 타는 중` },
+    { key: 'highKda', ok: f => f.ratioNum >= 5, text: f => `지난 판 KDA ${f.ratio}. 손가락에 뭐 발랐어요?` },
+    { key: 'kills', ok: f => f.k >= 10, text: f => `지난 판 ${f.k}킬. 상대팀 단톡방에 비상 걸림` },
+    { key: 'kp', ok: f => f.kp >= 70, text: f => `킬관여 ${f.kp}%. 한타마다 빠짐없이 출석` },
+    { key: 'fast', ok: f => f.mins <= 25, text: f => `${f.mins}분 만에 끝냈다. 빠른 퇴근 장인` },
+    { key: 'vision', ok: f => f.visRank === 1, text: f => `시야점수 ${f.vis}로 1등. 맵을 통째로 꿰뚫어 봤다` },
+    { key: 'gold', ok: f => f.goldRank === 1, text: f => `골드 ${f.gold} 1등. 지갑이 제일 두둑함` },
+    { key: 'sumK', ok: f => f.n >= 2 && f.sumK >= 10, text: f => `최근 ${f.n}판 동안 ${f.sumK}킬 쓸어 담는 중` },
+    { key: 'assist', ok: f => f.a >= 15, text: f => `지난 판 어시스트 ${f.a}개. 숨은 1등 공신` },
+    { key: 'carry', ok: () => true, text: f => `지난 판 ${f.champ} ${f.k}/${f.d}/${f.a}. 오늘 이 폼 그대로 간다` },
+    { key: 'carry2', ok: () => true, text: f => `${f.champ} 잡으면 일단 이기고 본다` },
+    { key: 'carry3', ok: () => true, text: f => `${f.n}판째 승리 세리머니 연습 중` }
+  ],
+  lose: [
+    { key: 'deathTop', ok: f => f.deathRank === 1 && f.d >= 6, text: f => `지난 판 ${f.d}데스로 데스 1등… 상대가 집 주소를 알아냈다` },
+    { key: 'aceDmg', ok: f => f.badge === 'ace' && f.dmgRank <= 2, text: f => `딜량 ${f.dmg}에 ACE인데 졌다. 억울함 MAX` },
+    { key: 'goodKda', ok: f => f.ratioNum >= 3, text: f => `지난 판 KDA ${f.ratio}인데 졌다. 이건 팀운 탓 인정` },
+    { key: 'ace', ok: f => f.badge === 'ace', text: f => `지고도 ACE. 빛나는 패배의 아이콘` },
+    { key: 'dmgHigh', ok: f => f.dmgRank <= 3, text: f => `딜량 ${f.dmg}로 혼자 열심히 했는데… 버스 기사 파업` },
+    { key: 'sameChamp', ok: f => f.sameChamp && f.n >= 2, text: f => `${f.champ}로 ${f.n}연패. 챔프 바꿔볼 타이밍` },
+    { key: 'sumD', ok: f => f.n >= 2 && f.sumD >= 15, text: f => `최근 ${f.n}판 누적 ${f.sumD}데스. 리스폰 타이머랑 절친` },
+    { key: 'long', ok: f => f.mins >= 38, text: f => `${f.mins}분 혈전 끝에 패배. 다음 판은 빨리 끝내자` },
+    { key: 'surrender', ok: f => f.surrender, text: f => `지난 판 항복… 다음 판엔 끝까지 가보자` },
+    { key: 'vision', ok: f => f.visRank === 1, text: f => `시야점수 ${f.vis} 1등인데… 다 보고도 졌다` },
+    { key: 'lowDmg', ok: f => f.dmgTeamLast, text: f => `지난 판 딜량 ${f.dmg}… 혹시 평화주의자세요?` },
+    { key: 'zeroK', ok: f => f.k <= 1, text: f => `지난 판 ${f.k}킬. 킬은 팀원에게 양보하는 미덕` },
+    { key: 'deaths', ok: f => f.d >= 8, text: f => `지난 판 ${f.d}데스. 회색 화면이 더 익숙한 하루` },
+    { key: 'cold', ok: () => true, text: f => `지난 판 ${f.champ} ${f.k}/${f.d}/${f.a}. 다음 판은 진짜 다르다` },
+    { key: 'cold2', ok: () => true, text: f => `${f.champ} 손에 안 붙는 날. 물 한 잔 마시고 오세요` },
+    { key: 'cold3', ok: () => true, text: f => `${f.n}연패는 반등 서사의 시작일 뿐` }
+  ]
+};
 function calcStreaks() {
   const P = {};
-  modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => m.players.forEach(p => {
-    const key = p.puuid || p.name;
-    const s = P[key] || (P[key] = { name: p.name, tag: p.tag, res: [], champ: p.champ, m });
-    s.name = p.name; s.tag = p.tag; s.champ = p.champ; s.m = m;
-    s.res.push(p.win);
-  }));
+  modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => {
+    const badges = matchBadges(m);
+    m.players.forEach((p, i) => {
+      const key = p.puuid || p.name;
+      const s = P[key] || (P[key] = { games: [] });
+      s.name = p.name; s.tag = p.tag;
+      s.games.push({ m, p, badge: badges[i] });
+    });
+  });
   return Object.values(P).map(s => {
-    const last = s.res[s.res.length - 1];
+    const last = s.games[s.games.length - 1];
     let n = 0;
-    for (let i = s.res.length - 1; i >= 0 && s.res[i] === last; i--) n++;
-    return { ...s, kind: last ? 'win' : 'lose', n };
+    for (let i = s.games.length - 1; i >= 0 && s.games[i].p.win === last.p.win; i--) n++;
+    return { ...s, last, n, kind: last.p.win ? 'win' : 'lose',
+             streakGames: s.games.slice(-n), res: s.games.map(g => g.p.win) };
   });
 }
+// 마지막 경기에서 멘트 재료 뽑기
+function streakFacts(s) {
+  const { m, p, badge } = s.last;
+  const all = m.players, mates = all.filter(x => x.team === p.team);
+  const rankIn = (arr, key, low) => 1 + arr.filter(x => (low ? x[key] < p[key] : x[key] > p[key])).length;
+  const teamK = mates.reduce((t, x) => t + x.k, 0);
+  return {
+    champ: champInfo(p.champ).name, k: p.k, d: p.d, a: p.a,
+    ratioNum: p.d ? (p.k + p.a) / p.d : 99, ratio: kdaRatio(p.k, p.d, p.a),
+    kp: teamK ? Math.round((p.k + p.a) / teamK * 100) : 0,
+    dmg: fmtNum(p.dmg), dmgRank: rankIn(all, 'dmg'), dmgTeamLast: rankIn(mates, 'dmg', true) === 1,
+    deathRank: rankIn(all, 'd'), visRank: rankIn(all, 'vis'), vis: p.vis,
+    goldRank: rankIn(all, 'gold'), gold: fmtNum(p.gold), multi: p.multi, badge,
+    mins: Math.round(m.len / 60), surrender: !!m.surrender, n: s.n,
+    sumK: s.streakGames.reduce((t, g) => t + g.p.k, 0), sumD: s.streakGames.reduce((t, g) => t + g.p.d, 0),
+    sameChamp: s.streakGames.every(g => g.p.champ === p.champ)
+  };
+}
+function pickStreakLine(s, used) {
+  const f = streakFacts(s);
+  const line = STREAK_LINES[s.kind].find(l => !used.has(s.kind + l.key) && l.ok(f));
+  if (!line) return `지난 판 ${f.champ} ${f.k}/${f.d}/${f.a}`;
+  used.add(s.kind + line.key);
+  return line.text(f);
+}
+function pickStreakTag(s, used) {
+  const list = STREAK_TAGS[s.kind][Math.min(5, s.n)];
+  const t = list.find(x => !used.has(x)) || list[0];
+  used.add(t);
+  return t;
+}
+const loadingArtOf = c => `${DD_BASE}img/champion/loading/${encodeURIComponent(champInfo(c).id)}_0.jpg`;
 function renderStreaks() {
   const box = document.getElementById('recStreak');
   if (!box) return;
   const all = calcStreaks();
-  const col = kind => {
-    const list = all.filter(s => s.kind === kind && s.n >= 2).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name)).slice(0, 3);
-    const title = kind === 'win' ? '🔥 연승 중' : '🧊 연패 중';
-    const body = list.length ? list.map(s => `
-      <div class="stk-card${kind === 'win' && s.n >= 3 ? ' hot' : ''}">
-        ${champIcon(s.m, s.champ)}
-        <div>
-          <div class="stk-name">${escapeHtml(s.name)}<small>#${escapeHtml(s.tag)}</small></div>
-          <div class="stk-quote">${streakQuote(kind, s.n, s.name)}</div>
+  const usedLine = new Set(), usedTag = new Set();
+  const fx = kind => '<div class="stk-fx">' + Array.from({ length: kind === 'win' ? 9 : 10 }, (_, i) =>
+    `<i style="left:${(i * 37 + 7) % 100}%;animation-delay:${((i * 0.53) % 3).toFixed(2)}s;--dx:${(i % 2 ? 1 : -1) * (5 + (i * 7) % 14)}px"></i>`).join('') + '</div>';
+  const pick = kind => all.filter(s => s.kind === kind && s.n >= 2)
+    .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name)).slice(0, 3);
+  const wins = pick('win'), loses = pick('lose');
+  let delay = 0;
+  const card = s => {
+    const kind = s.kind, tag = pickStreakTag(s, usedTag), line = pickStreakLine(s, usedLine);
+    const d = (delay++ * 0.12).toFixed(2);
+    return `<div class="tcard ${kind}" style="animation-delay:${d}s">
+      <div class="tc-spin"></div>
+      <div class="tc-in">
+        <div class="tc-art" style="background-image:url('${loadingArtOf(s.last.p.champ)}')"></div>
+        <div class="tc-shade"></div>
+        ${fx(kind)}
+        <div class="tc-ribbon">${kind === 'win' ? 'WIN STREAK' : 'LOSE STREAK'}</div>
+        <div class="tc-num"><b class="stk-count" data-n="${s.n}">${s.n}</b><span>${kind === 'win' ? '연승' : '연패'}</span></div>
+        <div class="tc-body">
+          <span class="tc-tag">${tag}</span>
+          <div class="tc-name" title="${escapeHtml(s.name)}#${escapeHtml(s.tag)}">${escapeHtml(s.name)}</div>
+          <div class="tc-champ">최근 · ${escapeHtml(champInfo(s.last.p.champ).name)}</div>
+          <div class="tc-quote">${escapeHtml(line)}</div>
           <div class="stk-dots">${s.res.slice(-5).map(w => `<i class="${w ? 'w' : 'l'}">${w ? '승' : '패'}</i>`).join('')}</div>
         </div>
-        <div class="stk-num"><b>${s.n}</b><span>${kind === 'win' ? '연승' : '연패'}</span></div>
-      </div>`).join('')
-      : `<div class="stk-empty">${!modeMatches().length ? '경기를 올리면 여기에 나와요'
-          : kind === 'win' ? '아직 2연승 이상인 사람이 없어요<br>다음 판 주인공은 누구?' : '2연패 이상인 사람이 없어요<br>다들 선방 중 👏'}</div>`;
-    return `<div class="streak-col ${kind}"><div class="streak-head">${title}<small>2판 이상 연속 · 최근 경기 기준</small></div><div class="stk-list">${body}</div></div>`;
+      </div>
+    </div>`;
   };
-  box.innerHTML = col('win') + col('lose');
+  const ghost = kind => `<div class="tcard ghost" style="animation-delay:${(delay++ * 0.12).toFixed(2)}s"><div>
+      <span class="gi">${kind === 'win' ? '🔥' : '🧊'}</span>${kind === 'win' ? '2연승 이상<br>아직 없음<br>다음 주인공은?' : '2연패 이상<br>아무도 없음<br>다들 선방 중 👏'}</div></div>`;
+
+  const head = `<div class="hot-head"><span class="hot-title">HOT &amp; COLD</span><span class="hot-sub">최근 경기 기준 2판 이상 연승 · 연패 중인 소환사</span></div>`;
+  if (!modeMatches().length) { box.innerHTML = head + '<div class="hot-none">경기 기록이 올라오면 연승·연패 카드가 여기에 나와요</div>'; return; }
+  if (!wins.length && !loses.length) { box.innerHTML = head + '<div class="hot-none">아직 2연승·2연패 이상인 사람이 없어요. 다음 판 주인공은 누구? 🔥🧊</div>'; return; }
+  box.innerHTML = head + `<div class="hot-row">
+    ${wins.length ? wins.map(card).join('') : ghost('win')}
+    <div class="hot-vs"><span>VS</span></div>
+    ${loses.length ? loses.map(card).join('') : ghost('lose')}
+  </div>`;
+  // 숫자 카운트업
+  box.querySelectorAll('.stk-count').forEach(el => {
+    const n = Number(el.dataset.n), t0 = performance.now(), dur = 800;
+    el.textContent = '0';
+    const step = now => {
+      const k = Math.min(1, (now - t0) / dur);
+      el.textContent = String(Math.round(n * (1 - Math.pow(1 - k, 3))));
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
 }
 function toggleMatch(id) {
   if (recOpen.has(id)) recOpen.delete(id); else recOpen.add(id);
@@ -2817,7 +3058,7 @@ function renderMatchList() {
   const list = modeMatches().sort((a, b) => (b.date || 0) - (a.date || 0));
   if (!list.length) {
     box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기가 없어요.<br>
-      <b>📂 리플레이 올리기</b> 버튼을 누르거나, 리플레이 파일(.rofl)을 이 화면에 끌어다 놓으세요.<br>
+      오른쪽 위 <b>📂 리플레이 올리기</b>를 누르거나, 리플레이 파일(.rofl)을 이 화면에 끌어다 놓으세요.<br>
       <small>롤 클라이언트 경기 기록에서 리플레이를 받으면 <b>문서\\League of Legends\\Replays</b> 폴더에 저장돼요</small></div>`;
     return;
   }
@@ -2897,59 +3138,108 @@ function matchCard(m) {
   </div>`;
 }
 
-const RK_SORTS = [['games','판수'], ['wr','승률'], ['kda','KDA'], ['dmg','평균 딜량'], ['mvp','MVP']];
+const RK_SORTS = [['total','종합'], ['games','판수'], ['wr','승률'], ['kda','KDA'], ['dmg','평균 딜량'], ['mvp','MVP']];
+const RK_LANES = [['ALL','전체'], ['TOP','탑'], ['JGL','정글'], ['MID','미드'], ['BOT','원딜'], ['SPT','서폿']];
+let recLane = 'ALL';
+recSort = 'total';
 function setRankSort(k) { recSort = k; renderRank(); }
+function setRankLane(l) { recLane = l; renderRank(); }
+// 종합 점수 가중치 (합 100). 라인별로 그 라인에 중요한 지표를 더 봐요.
+const SCORE_W = {
+  ALL: { wr: 30, kda: 25, dpm: 20, kp: 15, mvp: 10 },
+  TOP: { wr: 30, kda: 20, dpm: 20, cspm: 10, kp: 10, mvp: 10 },
+  JGL: { wr: 30, kda: 25, kp: 20, dpm: 15, mvp: 10 },
+  MID: { wr: 30, kda: 20, dpm: 20, cspm: 10, kp: 10, mvp: 10 },
+  BOT: { wr: 30, kda: 20, dpm: 20, cspm: 10, kp: 10, mvp: 10 },
+  SPT: { wr: 30, kda: 25, vpm: 20, kp: 15, mvp: 10 }
+};
+const SCORE_LABEL = { wr: '승률(판수 보정)', kda: 'KDA', dpm: '분당 딜량', kp: '킬관여', mvp: 'MVP·ACE 비율', cspm: '분당 CS', vpm: '분당 시야점수' };
 function renderRank() {
   const box = document.getElementById('recRank');
   const sortBox = document.getElementById('rkSort');
   if (!box) return;
-  sortBox.innerHTML = '<span>정렬</span>' + RK_SORTS.map(([k, t]) =>
-    `<button class="rk-btn${recSort === k ? ' active' : ''}" onclick="setRankSort('${k}')">${t}</button>`).join('');
+  const lane = recMode === 'rift' ? recLane : 'ALL';
+  sortBox.innerHTML =
+    '<div class="rk-group"><span>정렬</span>' + RK_SORTS.map(([k, t]) =>
+      `<button class="rk-btn${k === 'total' ? ' total' : ''}${recSort === k ? ' active' : ''}" onclick="setRankSort('${k}')">${k === 'total' ? '🏅 ' : ''}${t}</button>`).join('') + '</div>' +
+    (recMode === 'rift' ? '<div class="rk-group rk-lanes"><span>라인별</span>' + RK_LANES.map(([k, t]) =>
+      `<button class="rk-btn${lane === k ? ' active' : ''}" onclick="setRankLane('${k}')">${ICONS[k] ? `<img src="${ICONS[k]}" alt="" onerror="this.remove()">` : ''}${t}</button>`).join('') + '</div>' : '');
   if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.</div>`; return; }
 
   const P = {};
   modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => {
     const badges = matchBadges(m);
+    const tk = { blue: 0, red: 0 };
+    m.players.forEach(p => { tk[p.team] += p.k; });
     m.players.forEach((p, i) => {
+      if (lane !== 'ALL' && p.pos !== lane) return;          // 라인별: 그 라인으로 뛴 판만
       const key = p.puuid || p.name;
-      const s = P[key] || (P[key] = { name: p.name, tag: p.tag, g: 0, w: 0, k: 0, d: 0, a: 0, dmg: 0, cs: 0, mins: 0, mvp: 0, champ: {}, pos: {} });
+      const s = P[key] || (P[key] = { name: p.name, tag: p.tag, g: 0, w: 0, k: 0, d: 0, a: 0, dmg: 0, cs: 0, vis: 0, mins: 0, mvp: 0, ka: 0, tk: 0, champ: {}, pos: {} });
       s.name = p.name; s.tag = p.tag;                      // 닉네임이 바뀌어도 가장 최근 이름으로
       s.g++; if (p.win) s.w++;
-      s.k += p.k; s.d += p.d; s.a += p.a; s.dmg += p.dmg; s.cs += p.cs; s.mins += m.len / 60;
+      s.k += p.k; s.d += p.d; s.a += p.a; s.dmg += p.dmg; s.cs += p.cs; s.vis += p.vis; s.mins += m.len / 60;
+      s.ka += p.k + p.a; s.tk += tk[p.team];
       if (badges[i]) s.mvp++;
       const c = s.champ[p.champ] || (s.champ[p.champ] = { g: 0, w: 0, m });
       c.g++; if (p.win) c.w++; c.m = m;
       if (p.pos) s.pos[p.pos] = (s.pos[p.pos] || 0) + 1;
     });
   });
-  const rows = Object.values(P).map(s => ({
-    ...s, wr: s.w / s.g, kda: (s.k + s.a) / Math.max(1, s.d), avgDmg: s.dmg / s.g
-  }));
-  const keyOf = { games: r => r.g, wr: r => r.wr, kda: r => r.kda, dmg: r => r.avgDmg, mvp: r => r.mvp };
-  rows.sort((a, b) => keyOf[recSort](b) - keyOf[recSort](a) || b.g - a.g || b.wr - a.wr);
+  const rows = Object.values(P).map(s => {
+    const mins = Math.max(1, s.mins);
+    return { ...s, wr: s.w / s.g, kda: (s.k + s.a) / Math.max(1, s.d), avgDmg: s.dmg / s.g,
+      f: { wr: (s.w + 2.5) / (s.g + 5),                      // 판수가 적으면 50% 쪽으로 보정
+           kda: Math.min(10, (s.k + s.a) / Math.max(1, s.d)), dpm: s.dmg / mins, kp: s.tk ? s.ka / s.tk : 0,
+           mvp: s.mvp / s.g, cspm: s.cs / mins, vpm: s.vis / mins } };
+  });
+  if (!rows.length) { box.innerHTML = `<div class="rec-empty">${RK_LANES.find(x => x[0] === lane)[1]} 라인으로 뛴 기록이 아직 없어요.</div>`; return; }
 
+  // 종합 점수: 지표마다 참가자 중 최저 0 ~ 최고 1로 맞춘 뒤 가중치로 더해 100점 만점
+  const W = SCORE_W[lane] || SCORE_W.ALL;
+  const rng = {};
+  Object.keys(W).forEach(k => { const v = rows.map(r => r.f[k]); rng[k] = [Math.min(...v), Math.max(...v)]; });
+  rows.forEach(r => {
+    r.score = Object.entries(W).reduce((t, [k, w]) => {
+      const [lo, hi] = rng[k];
+      return t + w * (hi > lo ? (r.f[k] - lo) / (hi - lo) : 0.5);
+    }, 0);
+  });
+
+  // 정렬 기준 값 (화면에 보이는 자릿수로 맞춰서, 보이는 값이 같으면 같은 순위)
+  const keyOf = {
+    total: r => Math.round(r.score * 10) / 10, games: r => r.g, wr: r => Math.round(r.wr * 100),
+    kda: r => (r.d ? Math.round(r.kda * 100) / 100 : 9999), dmg: r => Math.round(r.avgDmg), mvp: r => r.mvp
+  };
+  const kf = keyOf[recSort] || keyOf.total;
+  rows.sort((a, b) => kf(b) - kf(a) || b.score - a.score || b.g - a.g || a.name.localeCompare(b.name));
+  rows.forEach((r, i) => { r.rank = i > 0 && kf(r) === kf(rows[i - 1]) ? rows[i - 1].rank : i + 1; });   // 동점 = 같은 순위, 다음은 인원만큼 건너뛰기
+
+  const showPos = recMode === 'rift' && lane === 'ALL';
   box.innerHTML = `<div class="rk-wrap"><table class="rk-table">
-    <tr><th>#</th><th class="l">플레이어</th><th>판수</th><th>승률</th><th>평균 K / D / A</th><th>평균 딜량</th><th>분당 CS</th><th>MVP·ACE</th>${recMode === 'rift' ? '<th>주 라인</th>' : ''}<th class="l">모스트 챔피언</th></tr>
-    ${rows.map((r, i) => {
+    <tr><th>#</th><th class="l">플레이어</th><th title="아래 설명 참고">종합 점수</th><th>판수</th><th>승률</th><th>평균 K / D / A</th><th>평균 딜량</th><th>${lane === 'SPT' ? '분당 시야' : '분당 CS'}</th><th>MVP·ACE</th>${showPos ? '<th>주 라인</th>' : ''}<th class="l">모스트 챔피언</th></tr>
+    ${rows.map(r => {
       const wrp = Math.round(r.wr * 100);
       const mainPos = Object.entries(r.pos).sort((a, b) => b[1] - a[1])[0];
       const most = Object.entries(r.champ).sort((a, b) => b[1].g - a[1].g || b[1].w - a[1].w).slice(0, 3);
       return `<tr>
-        <td><span class="rk-no${i < 3 ? ' top' + (i + 1) : ''}">${i + 1}</span></td>
+        <td><span class="rk-no${r.rank <= 3 ? ' top' + r.rank : ''}">${r.rank}</span></td>
         <td class="rk-name"><b>${escapeHtml(r.name)}</b><small>#${escapeHtml(r.tag)}</small></td>
+        <td><div class="rk-score"><b>${r.score.toFixed(1)}</b><div class="bar"><i style="width:${Math.round(r.score)}%"></i></div></div></td>
         <td>${r.g}</td>
         <td><div class="wr"><div class="wr-bar"><div class="w" style="width:${wrp}%">${r.w ? r.w + '승' : ''}</div><div class="l">${r.g - r.w ? (r.g - r.w) + '패' : ''}</div></div>
           <span class="wr-pct${wrp >= 60 ? ' hi' : wrp < 40 ? ' lo' : ''}">${wrp}%</span></div></td>
         <td class="kda">${(r.k / r.g).toFixed(1)} / <span class="dd">${(r.d / r.g).toFixed(1)}</span> / ${(r.a / r.g).toFixed(1)}
           <span class="kda-r${r.kda >= 4 ? ' hi' : ''}">${r.d ? r.kda.toFixed(2) + ':1' : 'Perfect'}</span></td>
         <td>${fmtNum(Math.round(r.avgDmg))}</td>
-        <td>${r.mins ? (r.cs / r.mins).toFixed(1) : '-'}</td>
+        <td>${lane === 'SPT' ? r.f.vpm.toFixed(2) : r.f.cspm.toFixed(1)}</td>
         <td>${r.mvp || '-'}</td>
-        ${recMode !== 'rift' ? '' : `<td class="rk-pos">${mainPos && ICONS[mainPos[0]] ? `<img src="${ICONS[mainPos[0]]}" title="${POS_KO[mainPos[0]]} ${mainPos[1]}판" alt="" onerror="this.remove()">` : '-'}</td>`}
+        ${showPos ? `<td class="rk-pos">${mainPos && ICONS[mainPos[0]] ? `<img src="${ICONS[mainPos[0]]}" title="${POS_KO[mainPos[0]]} ${mainPos[1]}판" alt="" onerror="this.remove()">` : '-'}</td>` : ''}
         <td><div class="rk-most">${most.map(([c, v]) => `<div>${champIcon(v.m, c, 'sm')}<span>${v.g}판 ${Math.round(v.w / v.g * 100)}%</span></div>`).join('')}</div></td>
       </tr>`;
     }).join('')}
-  </table></div>`;
+  </table></div>
+  <div class="rk-note">🏅 종합 점수(100점 만점) = ${Object.entries(W).map(([k, w]) => `${SCORE_LABEL[k]} ${w}%`).join(' + ')}<br>
+    지표마다 ${lane === 'ALL' ? '전체' : RK_LANES.find(x => x[0] === lane)[1] + ' 라인'} 참가자 중 가장 낮은 사람 0 ~ 가장 높은 사람 1로 맞춰서 더해요 · 표시된 값이 같으면 같은 순위예요</div>`;
 }
 
 loadRec();
