@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>LOL 내전 팀 배정기</title>
+  <title>오늘의 LOL 내전</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Rajdhani:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
@@ -25,7 +25,7 @@
 
     /* ── HERO ── */
     .hero {
-      position: relative; width: 100%; height: 240px;
+      position: relative; width: 100%; height: 160px;
       overflow: hidden; display: flex; align-items: center; justify-content: center;
     }
     .hero-img {
@@ -48,7 +48,7 @@
       opacity: 0.7;
     }
     .hero-credit {
-      position: absolute; right: 22px; bottom: 14px; z-index: 2;
+      position: absolute; right: 22px; bottom: 10px; z-index: 2;
       font-size: 0.72rem; letter-spacing: 1px; color: var(--gold);
       opacity: 0.75; text-shadow: 0 1px 4px rgba(0,0,0,0.9);
     }
@@ -56,10 +56,10 @@
     .hero-title {
       font-family: 'Rajdhani', sans-serif;
       font-weight: 700;
-      font-size: 3.8rem;
+      font-size: 3.1rem;
       letter-spacing: 10px;
       line-height: 1;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       color: var(--gold2);
       text-shadow:
         0 0 30px rgba(200,155,60,0.9),
@@ -74,7 +74,7 @@
     }
 
     /* ── 배너 아래: 왼쪽 메뉴 + 오른쪽 본문 ── */
-    .app { display: flex; align-items: stretch; min-height: calc(100vh - 240px); }
+    .app { display: flex; align-items: stretch; min-height: calc(100vh - 160px); }
     .sidebar {
       width: 200px; flex-shrink: 0;
       background: var(--panel); border-right: 1px solid var(--border);
@@ -485,8 +485,10 @@
       .member-list { max-height: 200px; }
     }
     @media (max-width: 620px) {
-      .hero { height: 200px; }
-      .hero-title { font-size: 2.4rem; letter-spacing: 6px; }
+      .hero { height: 134px; }
+      .hero-title { font-size: 2.1rem; letter-spacing: 5px; }
+      .hero-sub { font-size: .62rem; letter-spacing: 2px; }
+      .hero-credit { font-size: .62rem; right: 12px; bottom: 6px; }
       .rand-grid, .ability-grid { grid-template-columns: repeat(2, 1fr); }
       .ability-wrap:nth-child(n+6) { margin-top: 0; }
       .flip-grid { grid-template-columns: repeat(5, 1fr); }
@@ -697,12 +699,21 @@
     .rec-msg { font-size: .78rem; margin: 8px 0 10px; min-height: 1.1em; color: var(--gold2); text-align: center; }
     .rec-msg.err { color: #ff7a7a; }
 
-    .rec-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-    .rec-sum-box { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
-    .rec-sum-lbl { font-size: .68rem; color: var(--muted); letter-spacing: 1px; }
-    .rec-sum-val { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.55rem; color: var(--text-bright); line-height: 1.2; }
+    .rec-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 4px 0 24px; }
+    .rec-sum-box { position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(200,155,60,.16), rgba(13,21,32,.95) 55%); border: 1px solid rgba(200,155,60,.45);
+      box-shadow: 0 6px 22px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,230,160,.08); animation: fadeUp .45s ease both; }
+    .rec-sum-box:nth-child(2) { animation-delay: .07s; } .rec-sum-box:nth-child(3) { animation-delay: .14s; }
+    .rec-sum-box::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; pointer-events: none;
+      background: linear-gradient(100deg, transparent, rgba(255,225,150,.1), transparent); animation: stkSweep 5s ease-in-out infinite; }
+    .rec-sum-ico { flex-shrink: 0; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+      background: rgba(200,155,60,.15); border: 1px solid rgba(200,155,60,.4); box-shadow: 0 0 16px rgba(200,155,60,.2); }
+    .rec-sum-lbl { font-size: .74rem; color: #c9b27a; letter-spacing: 1px; font-weight: 700; }
+    .rec-sum-val { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 2.3rem; line-height: 1.05;
+      background: linear-gradient(180deg, #fff3c4, #f0d070 55%, #c89b3c); -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 0 10px rgba(240,208,112,.25)); }
     .rec-sum-val .b { color: var(--blue-team); } .rec-sum-val .r { color: var(--red-team); }
-    .rec-sum-val small { font-size: .8rem; color: var(--muted); font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
+    .rec-sum-val small { font-size: .85rem; color: #c9b27a; -webkit-text-fill-color: #c9b27a; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
     .rec-panel { display: none; } .rec-panel.active { display: block; animation: fadeUp .3s ease; }
     .rec-empty { text-align: center; color: var(--muted); padding: 40px 10px; font-size: .85rem; line-height: 1.8;
                  background: var(--panel); border: 1px dashed var(--border); border-radius: 12px; }
@@ -867,7 +878,7 @@
     .rk-pos img { width: 20px; height: 20px; opacity: .85; vertical-align: middle; }
 
     @media (max-width: 760px) {
-      .rec-sum { grid-template-columns: repeat(3, 1fr); }
+      .rec-sum { grid-template-columns: 1fr; gap: 10px; }
       .streak-row { grid-template-columns: 1fr; }
       .mt-head { grid-template-columns: 1fr auto; }
       .mt-vs { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; gap: 6px; }
@@ -1193,7 +1204,7 @@
   <div class="hero-overlay"></div>
   <div class="hero-shine"></div>
   <div class="hero-content">
-    <div class="hero-title">LOL 내전 팀 배정기</div>
+    <div class="hero-title">오늘의 LOL 내전</div>
     <div class="hero-sub">League of Legends · 10인 · 2팀 랜덤</div>
   </div>
   <div class="hero-credit">by. 챱츄챱챱츄</div>
@@ -1352,8 +1363,8 @@
       <span class="t-sub">칼바람 나락 · 증강 칼바람</span>
     </button>
   </div>
-  <div class="rec-sum" id="recSum"></div>
   <div class="hot-sec" id="recStreak"></div>
+  <div class="rec-sum" id="recSum"></div>
 
   <div class="rec-bar">
     <div class="rec-list-title">▸ 경기 기록</div>
@@ -3133,9 +3144,9 @@ function renderRecSummary() {
   const people = new Set(list.flatMap(m => m.players.map(p => p.puuid || p.name))).size;
   const avgLen = total ? Math.round(list.reduce((s, m) => s + m.len, 0) / total) : 0;
   box.innerHTML = `
-    <div class="rec-sum-box"><div class="rec-sum-lbl">총 경기</div><div class="rec-sum-val">${total}<small> 판</small></div></div>
-    <div class="rec-sum-box"><div class="rec-sum-lbl">참여 인원</div><div class="rec-sum-val">${people}<small> 명</small></div></div>
-    <div class="rec-sum-box"><div class="rec-sum-lbl">평균 게임 시간</div><div class="rec-sum-val">${total ? Math.floor(avgLen / 60) : 0}<small> 분</small> ${total ? String(avgLen % 60).padStart(2, '0') : '00'}<small> 초</small></div></div>`;
+    <div class="rec-sum-box"><div class="rec-sum-ico">⚔️</div><div><div class="rec-sum-lbl">총 경기</div><div class="rec-sum-val">${total}<small> 판</small></div></div></div>
+    <div class="rec-sum-box"><div class="rec-sum-ico">👥</div><div><div class="rec-sum-lbl">참여 인원</div><div class="rec-sum-val">${people}<small> 명</small></div></div></div>
+    <div class="rec-sum-box"><div class="rec-sum-ico">⏱️</div><div><div class="rec-sum-lbl">평균 게임 시간</div><div class="rec-sum-val">${total ? Math.floor(avgLen / 60) : 0}<small> 분 </small>${total ? String(avgLen % 60).padStart(2, '0') : '00'}<small> 초</small></div></div></div>`;
 }
 
 // ── 연승 / 연패 ──
@@ -3707,7 +3718,6 @@ const TITLES = [
   { k: 'cs',     ico: '🧑‍🌾', name: 'CS KING',        desc: '분당 CS 1위', rift: true, v: r => r.cs / r.mins, f: v => v.toFixed(1) + ' CS/분' },
   { k: 'ej',     ico: '🌲', name: '카나비 정신',     desc: '상대 정글 몬스터를 가장 많이 뺏어 먹음 (판당)', rift: true, v: r => r.xg ? r.ej / r.xg : null, f: v => v.toFixed(1) + '마리/판' },
   { k: 'gold',   ico: '💰', name: 'GOLD KING',      desc: '분당 골드 1위', v: r => r.gold / r.mins, f: v => fmtNum(Math.round(v)) + ' 골드/분' },
-  { k: 'dps',    ico: '💥', name: 'DPS KING',       desc: '분당 챔피언 피해량 1위', v: r => r.dmg / r.mins, f: v => fmtNum(Math.round(v)) + ' 딜/분' },
   { k: 'eff',    ico: '🪙', name: '가성비 KING',     desc: '골드 1당 챔피언 피해량 1위', v: r => r.gold ? r.dmg / r.gold : null, f: v => v.toFixed(2) + ' 딜/골드' },
   { k: 'early',  ico: '🌅', name: '초반 캐리형',     desc: '15분 전 킬관여(킬+어시) 판당 1위', v: r => r.xg ? r.early / r.xg : null, f: v => v.toFixed(1) + '회/판' },
   { k: 'vis',    ico: '👁️', name: '천리안',          desc: '분당 시야점수 1위', v: r => r.vis / r.mins, f: v => v.toFixed(2) + '/분' },
@@ -3721,7 +3731,6 @@ const TITLES = [
   { k: 'mage',   ico: '🧙', name: '대마법사',         desc: '챔피언에게 준 마법 피해 판당 1위', v: r => r.xg ? r.mdmg / r.xg : null, f: v => fmtNum(Math.round(v)) + '/판' },
   { k: 'roller', ico: '🎢', name: '롤러코스터',       desc: '판마다 KDA 기복이 가장 큼', v: r => stdev(r.kdas), f: v => '기복 ' + v.toFixed(2) },
   { k: 'river',  ico: '🌊', name: '흐르는 강물처럼',   desc: '판마다 KDA가 가장 꾸준함', low: true, v: r => stdev(r.kdas), f: v => '기복 ' + v.toFixed(2) },
-  { k: 'form',   ico: '📈', name: '폼 미쳤다',        desc: '최근 5판 승률 1위 (3판 이상)', v: r => r.g >= 3 ? r.res.slice(-5).filter(Boolean).length / Math.min(5, r.g) : null, f: pctFmt },
   { k: 'pool',   ico: '🎭', name: '만물박사',         desc: '가장 많은 챔피언을 플레이', v: r => r.champs.size, f: v => v + '챔피언' },
   { k: 'attend', ico: '😎', name: '프로참석러',       desc: '가장 많은 판 참여', any: true, v: r => r.g, f: v => v + '판' },
   { k: 'carry',  ico: '💪', name: '내가 캐리한다',    desc: '팀 내 딜 비중 평균 1위', v: r => r.dshare / r.g, f: v => '딜 비중 ' + pctFmt(v) },
@@ -3858,22 +3867,32 @@ function renderDashboard() {
   const hcRow = (s, kind) => s
     ? `<div class="hc ${kind}">${champIcon(s.last.m, s.last.p.champ)}<div><div class="hc-t">${kind === 'win' ? '🔥 지금 가장 뜨거운' : '🧊 지금 가장 차가운'}</div><div class="hc-n">${escapeHtml(s.name)}</div></div><div class="hc-v">${s.n}${kind === 'win' ? '연승' : '연패'}</div></div>`
     : `<div class="hc ${kind}"><div class="hc-none">${kind === 'win' ? '🔥 2연승 이상 없음' : '🧊 2연패 이상 없음'}</div></div>`;
+  // 최근 내전 MVP: ① 그날 승 수 → ② 그날 MVP 횟수 → ③ 그날 경기별 활약 점수 합 (같은 팀이라 승 수가 같아도 활약으로 갈려요)
   const dayWin = {};
-  lastMs.forEach(m => m.players.forEach(p => { const k = p.puuid || p.name; const d = dayWin[k] || (dayWin[k] = { p, w: 0, g: 0 }); d.g++; if (p.win) d.w++; d.p = p; }));
-  const dayKing = Object.values(dayWin).sort((a, b) => b.w - a.w || a.g - b.g)[0];
+  lastMs.forEach(m => {
+    const sc = matchScores(m), bd = matchBadges(m);
+    m.players.forEach((p, i) => {
+      const k = p.puuid || p.name;
+      const d = dayWin[k] || (dayWin[k] = { p, w: 0, g: 0, mvp: 0, sc: 0, k: 0, d: 0, a: 0 });
+      d.g++; if (p.win) d.w++; if (bd[i] === 'mvp') d.mvp++;
+      d.sc += sc[i]; d.k += p.k; d.d += p.d; d.a += p.a; d.p = p;
+    });
+  });
+  const dayKing = Object.values(dayWin).sort((a, b) => b.w - a.w || b.mvp - a.mvp || b.sc - a.sc)[0];
   const row2 = `<div class="db-sec db-row">
     <div class="db-box"><div class="db-h"><b>🏆 종합 TOP 3</b><span>개인 순위 종합 점수 기준</span></div>
       <div class="podium">${pdCard(rk[1], 2)}${pdCard(rk[0], 1)}${pdCard(rk[2], 3)}</div></div>
     <div class="db-box"><div class="db-h"><b>🌡 지금 분위기</b><span>내전 날짜 기준</span></div>
       ${hcRow(hot, 'win')}${hcRow(cold, 'lose')}
-      ${dayKing ? `<div class="hc" style="background:rgba(200,155,60,.08);border:1px solid rgba(200,155,60,.3)">${champIcon(lastMs[lastMs.length - 1], dayKing.p.champ)}<div><div class="hc-t">👑 최근 내전(${lastDay.slice(5)}) 승리왕</div><div class="hc-n">${escapeHtml(dayKing.p.name)}</div></div><div class="hc-v" style="color:var(--gold2)">${dayKing.w}승 ${dayKing.g - dayKing.w}패</div></div>` : ''}
+      ${dayKing ? `<div class="hc" style="background:rgba(200,155,60,.08);border:1px solid rgba(200,155,60,.3)">${champIcon(lastMs[lastMs.length - 1], dayKing.p.champ)}<div><div class="hc-t" title="그날 승 수 → MVP 횟수 → 활약 점수(KDA·딜 비중·킬관여·시야) 순으로 비교">👑 최근 내전(${lastDay.slice(5)}) MVP</div><div class="hc-n">${escapeHtml(dayKing.p.name)}</div><div class="hc-t">${dayKing.w}승 ${dayKing.g - dayKing.w}패 · MVP ${dayKing.mvp}회 · ${dayKing.k}/${dayKing.d}/${dayKing.a}</div></div><div class="hc-v" style="color:var(--gold2)">${dayKing.w}승</div></div>` : ''}
     </div>
   </div>`;
 
   // ③ 칭호 보드
   const { titles } = computeTitles();
   const missingX = ms.some(m => !(m.players[0] && m.players[0].x));
-  const tt = titles.map(({ t, winners, text, tie }) => {
+  const picked = x => !x.tie && x.winners && x.winners.length;
+  const tt = titles.filter(picked).concat(titles.filter(x => !picked(x))).map(({ t, winners, text, tie }) => {
     if (tie) return `<div class="tt empty" title="${escapeHtml(t.desc)}"><div class="tt-ico">${t.ico}</div><div><div class="tt-name">${t.name}</div><div class="tt-val">${tie}명이 똑같아요 (${escapeHtml(text)}) · 아직 1등 없음</div></div></div>`;
     if (!winners || !winners.length) return `<div class="tt empty" title="${escapeHtml(t.desc)}"><div class="tt-ico">${t.ico}</div><div><div class="tt-name">${t.name}</div><div class="tt-val">아직 기록이 부족해요</div></div></div>`;
     const who = winners.map(w => `<span class="tt-w">${w.lastM ? champIcon(w.lastM, w.mainChamp) : ''}<b>${escapeHtml(w.name)}</b></span>`).join('');
