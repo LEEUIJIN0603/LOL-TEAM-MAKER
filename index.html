@@ -1336,6 +1336,25 @@
       .rec-sum-val { font-size: 1.3rem; }
       .nav-btn { font-size: .58rem; }
     }
+    /* 증강 */
+    .aug { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px;
+           background: linear-gradient(135deg, #3a2a66, #1b1435); border: 1px solid rgba(180,150,255,.45); overflow: hidden; flex-shrink: 0; }
+    .aug img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+    .aug em { font-style: normal; font-size: .5rem; color: #d9ccff; line-height: 1; padding: 1px; text-align: center; overflow: hidden; }
+    .aug img + em { display: none; }
+    .aug.big { width: 30px; height: 30px; border-radius: 8px; }
+    .aug { cursor: pointer; overflow: visible; }
+    .aug img { border-radius: inherit; }
+    .aug.show::after { content: attr(data-n); position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 50;
+                       white-space: nowrap; font-size: .68rem; font-weight: 700; color: #fff; background: #2a1f4d; border: 1px solid rgba(180,150,255,.6);
+                       padding: 3px 8px; border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.5); pointer-events: none; }
+    .mt-augs { display: flex; gap: 3px; justify-content: center; margin-top: 4px; }
+    .sm-augrow { margin-top: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .sm-augrow .sm-rl { margin: 0; }
+    .sm-augs { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .sm-augs small { font-size: .62rem; color: #b9a8ee; margin-right: 6px; }
+    .aug-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px 16px; }
+    @media (max-width: 760px) { .mt-table tr.pr td:nth-child(9) .mt-augs { justify-content: flex-start; } .aug-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -3014,7 +3033,9 @@ async function parseRofl(file) {
     x: 1, ej: N(p.NEUTRAL_MINIONS_KILLED_ENEMY_JUNGLE), early: N(p.Missions_TakedownsBefore15Min), omw: N(p.ON_MY_WAY_PINGS),
     dbl: N(p.DOUBLE_KILLS), tri: N(p.TRIPLE_KILLS), quad: N(p.QUADRA_KILLS), bld: N(p.TOTAL_DAMAGE_DEALT_TO_BUILDINGS),
     wp: N(p.WARD_PLACED), casts: N(p.SPELL1_CAST) + N(p.SPELL2_CAST) + N(p.SPELL3_CAST) + N(p.SPELL4_CAST),
-    cons: N(p.CONSUMABLES_PURCHASED), mdmg: N(p.MAGIC_DAMAGE_DEALT_TO_CHAMPIONS), mit: N(p.TOTAL_DAMAGE_SELF_MITIGATED)
+    cons: N(p.CONSUMABLES_PURCHASED), mdmg: N(p.MAGIC_DAMAGE_DEALT_TO_CHAMPIONS), mit: N(p.TOTAL_DAMAGE_SELF_MITIGATED),
+    // 증바람(증강 칼바람) 증강: 고른 순서대로 최대 6개
+    aug: [1, 2, 3, 4, 5, 6].map(k => N(p['PLAYER_AUGMENT_' + k])).filter(Boolean), xv: 2
   })).sort((x, y) => (x.team === y.team ? 0 : x.team === 'blue' ? -1 : 1) || order.indexOf(x.pos) - order.indexOf(y.pos));
 
   const idm = file.name.match(/([A-Z]{2,4}\d?)-(\d{6,})/);
@@ -3077,7 +3098,7 @@ async function handleRecFiles(fileList) {
           if (m.dayOnly && ex && (!ex.dayOnly || ex.date !== m.date || (ex.seq || 0) !== m.seq)) {
             ex.date = m.date; ex.dayOnly = true; ex.seq = m.seq; fixed++; changed = true;
           }
-          if (ex && !(ex.players[0] && ex.players[0].x)) {         // 칭호용 기록 채우기
+          if (ex && ((ex.players[0] && ex.players[0].xv) || 0) < 2) {   // 예전에 올린 경기: 칭호·증강 기록 채우기
             const byKey = {}; m.players.forEach(p => { byKey[p.puuid || p.name] = p; });
             ex.players = ex.players.map(p => ({ ...p, ...(byKey[p.puuid || p.name] || {}), team: p.team, win: p.win, pos: p.pos }));
             refreshed++; changed = true;
@@ -3098,7 +3119,7 @@ async function handleRecFiles(fileList) {
   if (cnt.aram) parts.push(`✅ 칼바람 증바람 ${cnt.aram}경기`);
   if (added) parts[parts.length - 1] += ' 추가했어요';
   if (fixed) parts.push(`📅 이미 있던 ${fixed}경기의 날짜·순번을 파일 이름대로 고쳤어요`);
-  if (refreshed) parts.push(`🏷 이미 있던 ${refreshed}경기에 칭호용 기록을 채웠어요`);
+  if (refreshed) parts.push(`🏷 이미 있던 ${refreshed}경기에 칭호·증강 기록을 채웠어요`);
   if (dup) parts.push(`이미 있는 경기 ${dup}개는 건너뛰었어요`);
   if (noDate) parts.push(`파일 이름 앞에 날짜(예: 20261103_1_)가 없는 ${noDate}개는 파일 시각으로 저장했어요`);
   if (fail.length) parts.push(`⚠️ 읽지 못한 파일: ${fail.join(', ')}`);
@@ -3217,6 +3238,34 @@ async function loadDD() {
   } catch (e) { /* 이미지 정보 없이도 기록은 그대로 보여요 */ }
   _ddLoading = false;
 }
+const AUG = {};                                      // 증강 번호 → { name, icon }
+let _augLoading = false, _augTried = false;
+async function loadAugments() {
+  if (_augLoading || _augTried || !matches.some(m => m.players.some(p => p.aug && p.aug.length))) return;
+  _augLoading = true;
+  const CD = 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/';
+  try {
+    const list = await fetch(CD + 'ko_kr/v1/cherry-augments.json').then(r => r.json());
+    list.forEach(a => {
+      const path = a.augmentSmallIconPath || a.augmentIconPath || '';
+      AUG[a.id] = { name: a.nameTRA || a.name || ('증강 #' + a.id),
+                    icon: path ? CD + 'default/' + path.replace(/^\/lol-game-data\/assets\//i, '').toLowerCase() : '' };
+    });
+    renderRecord();
+  } catch (e) { /* 이름을 못 불러와도 번호로 표시돼요 */ }
+  _augLoading = false; _augTried = true;
+}
+const augInfo = id => AUG[id] || { name: '증강 #' + id, icon: '' };
+function augIcon(id, cls) {
+  const a = augInfo(id);
+  return `<span class="aug ${cls || ''}" title="${escapeHtml(a.name)}" data-n="${escapeHtml(a.name)}">${a.icon ? `<img src="${a.icon}" alt="" loading="lazy" onerror="this.remove()">` : ''}<em>${escapeHtml(a.name.replace(/^증강 /, ''))}</em></span>`;
+}
+// 증강 아이콘을 누르면 이름 말풍선 (휴대폰은 마우스 올리기가 없어서)
+document.addEventListener('click', e => {
+  const a = e.target.closest && e.target.closest('.aug');
+  document.querySelectorAll('.aug.show').forEach(x => { if (x !== a) x.classList.remove('show'); });
+  if (a) { a.classList.toggle('show'); e.stopPropagation(); }
+}, true);
 const champInfo = c => DD.champ[String(c).toLowerCase()] || { id: c, name: c };
 function champIcon(m, c, cls) {
   const ci = champInfo(c);
@@ -3269,6 +3318,7 @@ const MULTI = { 2: '더블킬', 3: '트리플킬', 4: '쿼드라킬', 5: '펜타
 
 // ── 화면 그리기 ──
 function renderRecord() {
+  loadAugments();
   renderShareInfo();
   renderStreaks();
   renderRecSummary();
@@ -3339,6 +3389,12 @@ const STREAK_LINES = {
   ]
 };
 const dayKey = m => fmtDate(m.date).slice(0, 10);
+// 그날 몇 번째 판인지: 파일 이름의 순번은 정렬에만 쓰고, 화면에는 협곡/칼바람 따로 1번부터 다시 매겨요
+function gameNo(m) {
+  const same = matches.filter(x => modeOf(x) === modeOf(m) && dayKey(x) === dayKey(m))
+                      .sort((a, b) => (a.date || 0) - (b.date || 0));
+  return same.findIndex(x => x.id === m.id) + 1;
+}
 let _streakCache = [];
 // 카드의 '더보기' → 그 사람의 내전 날짜별 전체 기록 (현재 탭 기준)
 function showStreakHist(i) {
@@ -3354,7 +3410,7 @@ function showStreakHist(i) {
       <span class="hp-date">${d.day.slice(5).replace('.', '/')}<small>${d.day.slice(0, 4)}</small></span>
       <span class="hp-res ${d.res}">${d.res === 'w' ? '승' : d.res === 'l' ? '패' : '무'}</span>
       <span class="hp-rec">${d.w}승 ${d.l}패</span>
-      <span class="hp-ch">${d.games.map(g => `<span class="hp-g ${g.p.win ? 'w' : 'l'}" title="${g.m.seq ? g.m.seq + '번째 판 · ' : ''}${escapeHtml(champInfo(g.p.champ).name)} ${g.p.k}/${g.p.d}/${g.p.a} ${g.p.win ? '승' : '패'}">${champIcon(g.m, g.p.champ, 'sm')}</span>`).join('')}</span>
+      <span class="hp-ch">${d.games.map(g => `<span class="hp-g ${g.p.win ? 'w' : 'l'}" title="${gameNo(g.m)}번째 판 · ${escapeHtml(champInfo(g.p.champ).name)} ${g.p.k}/${g.p.d}/${g.p.a} ${g.p.win ? '승' : '패'}">${champIcon(g.m, g.p.champ, 'sm')}</span>`).join('')}</span>
     </div>`).join('');
   pop.classList.add('open');
 }
@@ -3555,7 +3611,7 @@ function matchCard(m) {
       <td>${p.cs}<span class="sub">분당 ${(p.cs / mins).toFixed(1)}</span></td>
       <td>${fmtK(p.gold)}</td>
       <td>${p.vis}<span class="sub">제어 ${p.cw}</span></td>
-      <td><div class="mt-items">${p.items.slice(0, 6).map(it => itemIcon(m, it)).join('')}${itemIcon(m, p.items[6], true)}</div></td>
+      <td><div class="mt-items">${p.items.slice(0, 6).map(it => itemIcon(m, it)).join('')}${itemIcon(m, p.items[6], true)}</div>${p.aug && p.aug.length ? `<div class="mt-augs">${p.aug.map(a => augIcon(a)).join('')}</div>` : ''}</td>
     </tr>`;
   };
   const teamBlock = t => {
@@ -3563,7 +3619,7 @@ function matchCard(m) {
     const isWin = ps.some(p => p.win);
     const gold = ps.reduce((s, p) => s + p.gold, 0);
     return `<tr><th class="team ${t}" colspan="3">${t === 'blue' ? '블루팀' : '레드팀'} · ${isWin ? '승리' : '패배'}<span>K/D/A ${kdaLine(t)} · 골드 ${fmtK(gold)}</span></th>
-      <th>K / D / A</th><th>챔피언 피해량</th><th>CS</th><th>골드</th><th>시야</th><th>아이템</th></tr>
+      <th>K / D / A</th><th>챔피언 피해량</th><th>CS</th><th>골드</th><th>시야</th><th>${m.players.some(p => p.aug && p.aug.length) ? '아이템 · 증강' : '아이템'}</th></tr>
       ${m.players.map((p, i) => p.team === t ? row(p, i) : '').join('')}`;
   };
 
@@ -3571,7 +3627,7 @@ function matchCard(m) {
     <div class="mt-head" onclick="toggleMatch('${escapeHtml(m.id)}')">
       <div class="mt-meta">
         <span class="mt-win ${win}">${win === 'blue' ? '블루팀 승리' : win === 'red' ? '레드팀 승리' : '결과 없음'}</span>
-        <span>${m.seq ? `<b class="mt-seq">${m.seq}번째 판</b>` : m.dayOnly ? '' : fmtDate(m.date).slice(11)}</span>
+        <span><b class="mt-seq">${gameNo(m)}번째 판</b>${m.dayOnly ? '' : ' · ' + fmtDate(m.date).slice(11)}</span>
         <span>${fmtLen(m.len)}${m.surrender ? ' · 항복' : ''}${m.ver ? ' · ' + m.ver : ''}</span>
         ${sharedState !== 'none' && isLocalOnly(m) ? '<span class="mt-local" title="공유용 파일 내보내기 후 GitHub에 올리면 모두에게 보여요. 그 전에 새로고침하면 사라져요">📌 공유 전 · 새로고침하면 사라져요</span>' : ''}
       </div>
@@ -3832,11 +3888,17 @@ function renderSummoners() {
           </div>
         </div>
         <div class="sm-ach">${achHtml}</div>
+        ${(() => {
+          const cnt = {};
+          r.st.games.forEach(g => (g.p.aug || []).forEach(a => { cnt[a] = (cnt[a] || 0) + 1; }));
+          const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 4);
+          return top.length ? `<div class="sm-augrow"><span class="sm-rl">자주 고른 증강</span><div class="sm-augs">${top.map(([a, n]) => augIcon(a, 'big') + `<small>${n}회</small>`).join('')}</div></div>` : '';
+        })()}
         <div class="sm-recent">
           <div class="sm-rl">최근 ${Math.min(5, r.recent.length)}경기</div>
           <div class="sm-rg">${r.recent.map(g => {
             const c = champInfo(g.p.champ);
-            return `<span class="sm-g ${g.p.win ? 'w' : 'l'}" data-i="${escapeHtml(String(g.p.champ).slice(0, 2))}" title="${fmtDate(g.m.date).slice(5, 10)}${g.m.seq ? ' ' + g.m.seq + '번째 판' : ''} · ${escapeHtml(c.name)} ${g.p.k}/${g.p.d}/${g.p.a} · ${g.p.win ? '승리' : '패배'}"><img src="${DD_BASE}${ddVer(g.m)}/img/champion/${encodeURIComponent(c.id)}.png" alt="" loading="lazy" onerror="this.remove()"></span>`;
+            return `<span class="sm-g ${g.p.win ? 'w' : 'l'}" data-i="${escapeHtml(String(g.p.champ).slice(0, 2))}" title="${fmtDate(g.m.date).slice(5, 10)}${' ' + gameNo(g.m) + '번째 판'} · ${escapeHtml(c.name)} ${g.p.k}/${g.p.d}/${g.p.a} · ${g.p.win ? '승리' : '패배'}"><img src="${DD_BASE}${ddVer(g.m)}/img/champion/${encodeURIComponent(c.id)}.png" alt="" loading="lazy" onerror="this.remove()"></span>`;
           }).join('')}</div>
         </div>
       </div>
@@ -4072,7 +4134,13 @@ function renderDashboard() {
     <div class="db-box"><div class="db-h"><b>🗓 최근 내전</b><span>최근 5일</span></div><div class="db-list">${dayList}</div></div>
   </div>`;
 
-  box.innerHTML = kpi + row2 + row3 + row4;
+  // 인기 증강 (증강 기록이 있을 때)
+  const AU = {};
+  ms.forEach(m => m.players.forEach(p => (p.aug || []).forEach(a => { const x = AU[a] || (AU[a] = { g: 0, w: 0 }); x.g++; if (p.win) x.w++; })));
+  const augTop = Object.entries(AU).sort((a, b) => b[1].g - a[1].g || b[1].w - a[1].w).slice(0, 10);
+  const row5 = augTop.length ? `<div class="db-sec"><div class="db-box"><div class="db-h"><b>✨ 인기 증강</b><span>많이 고른 순 · 고른 사람 기준 승률</span></div>
+    <div class="aug-grid">${augTop.map(([a, v], i) => `<div class="dl"><span class="dl-n">${i + 1}</span>${augIcon(a, 'big')}<div class="dl-main"><b>${escapeHtml(augInfo(a).name)}</b><small>${v.w}승 ${v.g - v.w}패</small></div><div class="dl-v">${v.g}회<small>승률 ${Math.round(v.w / v.g * 100)}%</small></div></div>`).join('')}</div></div></div>` : '';
+  box.innerHTML = kpi + row2 + row3 + row4 + row5;
 }
 
 loadRec();
