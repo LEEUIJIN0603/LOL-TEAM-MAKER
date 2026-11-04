@@ -1331,6 +1331,57 @@
       .hp-row { grid-template-columns: 52px 28px 62px 1fr; gap: 8px; }
       .anim-modal-box { width: 100% !important; max-width: 100% !important; padding: 18px 12px !important; }
     }
+    @media (max-width: 760px) {
+      /* 카드 제목 + 초기화 버튼: 줄바꿈돼도 버튼은 한 줄로 */
+      .card-title { gap: 8px; flex-wrap: wrap; font-size: .95rem; letter-spacing: 2px; }
+      .btn-tab-reset { white-space: nowrap; flex-shrink: 0; }
+      /* 증바람 능력치 입력: 이름 칸을 넓게 */
+      .ability-wrap { grid-template-columns: 50px minmax(0, 1fr) 62px; gap: 6px; }
+      .ability-meta { min-width: 0; }
+      .ability-num { min-width: 0; font-size: .64rem; white-space: nowrap; }
+      .ability-hint { display: none; }
+      /* 카드 플립 모션: 5줄이 창 안에 들어오게 */
+      .flip-grid { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; gap: 5px !important; }
+      .flip-col { min-width: 0; width: 100%; }
+      .flip-role-lbl { gap: 2px; min-width: 0; max-width: 100%; overflow: hidden; justify-content: center; }
+      .flip-role-lbl .role-emoji-sm, .flip-role-lbl > span:not(.flip-role-name) { display: none; }
+      .flip-role-icon { width: 14px; height: 14px; }
+      .flip-role-name { font-size: .62rem; }
+      .flip-card-scene { height: 54px; }
+      .flip-card-back .fc-name { font-size: .66rem; max-width: 94%; }
+      .flip-card-back .fc-team { font-size: .5rem; letter-spacing: 1px; }
+      /* 라인 매치업 모션 */
+      .vs-head, .vs-row { grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr) !important; gap: 5px !important; }
+      .vs-card { min-width: 0; font-size: .8rem; }
+      /* 개인 순위 정렬 버튼: 옆으로 숨지 않고 줄바꿈 */
+      .rk-group { flex-wrap: wrap !important; overflow: visible !important; max-width: 100%; }
+      .rk-btn { padding: 4px 9px; font-size: .7rem; }
+      /* 경기 카드 머리 */
+      .mt-head { min-width: 0; }
+      .mt-vs { min-width: 0; overflow: hidden; }
+      .mt-champs { min-width: 0; }
+    }
+    @media (max-width: 760px) {
+      .slot-grid { gap: 4px; }
+      .slot-col-lbl { font-size: .7rem; letter-spacing: .5px; gap: 2px; }
+      .slot-col-lbl img { width: 12px; height: 12px; }
+      .slot-item { font-size: .64rem; padding: 0 3px; overflow: hidden; text-overflow: ellipsis; }
+      .slot-hl { left: 1px; right: 1px; }
+      .sh-chip { font-size: .78rem; padding: 0 4px; border-radius: 8px; }
+      .sh-lane { font-size: .8rem; gap: 2px; }
+      .sh-lane img { width: 14px; height: 14px; }
+      .sh-head { grid-template-columns: minmax(0, 1fr) 58px minmax(0, 1fr); }
+    }
+    @media (max-width: 420px) {
+      /* 아주 좁은 화면: 경기 카드 점수를 위에, 양 팀을 아래 좌우로 */
+      .mt-vs { display: grid !important; grid-template-columns: 1fr 1fr; grid-template-areas: "k k" "b r"; gap: 4px 8px; justify-items: center; }
+      .mt-vs .mt-kills { grid-area: k; font-size: 1.15rem; }
+      .mt-vs .mt-side.blue { grid-area: b; } .mt-vs .mt-side.red { grid-area: r; }
+      .mt-champs .ch-box.sm { width: 20px !important; height: 20px !important; }
+      .mt-champs { gap: 2px; }
+      .mt-tkda { font-size: .62rem; }
+      .mt-table .mt-pl .cn { display: block; margin: 0; }
+    }
     @media (max-width: 380px) {
       .hero-title { font-size: 1.6rem; letter-spacing: 3px; }
       .rec-sum-val { font-size: 1.3rem; }
@@ -1355,6 +1406,13 @@
     .sm-augs small { font-size: .62rem; color: #b9a8ee; margin-right: 6px; }
     .aug-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px 16px; }
     @media (max-width: 760px) { .mt-table tr.pr td:nth-child(9) .mt-augs { justify-content: flex-start; } .aug-grid { grid-template-columns: 1fr; } }
+    .rk-note b { color: var(--text); }
+    .rk-lanes-note { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); display: flex; flex-direction: column; gap: 3px; }
+    .rk-lanes-note b { font-size: .7rem; color: #c9b27a; margin-bottom: 2px; }
+    .rk-lanes-note span { font-size: .68rem; color: #7d8aa0; }
+    .rk-lanes-note span.on { color: var(--gold2); font-weight: 700; }
+    .rk-lanes-note em { font-style: normal; color: #9aa6b8; }
+    .rk-lanes-note span.on em { color: #e6d29a; font-weight: 400; }
   </style>
 </head>
 <body>
@@ -2271,7 +2329,10 @@ function runShuffleAnimation(members, onDone) {
   }
 
   const boardW = board.clientWidth || 600;
-  const chipW = Math.max(120, Math.floor(boardW / 2) - 56);
+  // 좁은 화면(휴대폰)에서는 가운데 라인 칸을 줄이고 이름표를 그만큼 맞춰요
+  const laneW = boardW < 460 ? 58 : 112;
+  lanes.forEach(ln => { ln.style.width = laneW + 'px'; ln.style.marginLeft = (-laneW / 2) + 'px'; });
+  const chipW = boardW < 460 ? Math.floor((boardW - laneW) / 2) - 4 : Math.max(120, Math.floor(boardW / 2) - 56);
   // 칩 c 의 최종 자리 = c번 칸 (0~4: 블루 TOP→SPT, 5~9: 레드 TOP→SPT)
   const chips = members.map(m => {
     const el = mkEl('div', 'sh-chip', m.name);
@@ -3739,8 +3800,16 @@ function renderRank() {
   rows.forEach((r, i) => { r.rank = i > 0 && kf(r) === kf(rows[i - 1]) ? rows[i - 1].rank : i + 1; });   // 동점 = 같은 순위, 다음은 인원만큼 건너뛰기
 
   const showPos = recMode === 'rift' && lane === 'ALL';
-  box.innerHTML = `<div class="rk-note">🏅 종합 점수(100점 만점) = ${Object.entries(W).map(([k, w]) => `${SCORE_LABEL[k]} ${w}%`).join(' + ')}<br>
-    지표마다 ${lane === 'ALL' ? '전체' : RK_LANES.find(x => x[0] === lane)[1] + ' 라인'} 참가자 중 가장 낮은 사람 0 ~ 가장 높은 사람 1로 맞춰서 더해요 · 표시된 값이 같으면 같은 순위예요</div>
+  const wTxt = w => Object.entries(w).map(([k, v]) => `${SCORE_LABEL[k]} ${v}%`).join(' + ');
+  const laneNote = recMode !== 'rift' ? '' : `<div class="rk-lanes-note">
+      <b>라인별로 보면 그 라인에 중요한 지표 비중이 달라져요</b>
+      <span${lane === 'TOP' || lane === 'MID' || lane === 'BOT' ? ' class="on"' : ''}>⚔ 탑·미드·원딜: ${wTxt(SCORE_W.TOP)} <em>→ 라인전 성장(분당 CS)도 봐요</em></span>
+      <span${lane === 'JGL' ? ' class="on"' : ''}>🌲 정글: ${wTxt(SCORE_W.JGL)} <em>→ 갱킹·합류가 중요해서 킬관여 비중을 높였어요</em></span>
+      <span${lane === 'SPT' ? ' class="on"' : ''}>🛡 서폿: ${wTxt(SCORE_W.SPT)} <em>→ 딜이 적은 역할이라 딜량 대신 분당 시야점수를 봐요</em></span>
+    </div>`;
+  box.innerHTML = `<div class="rk-note">🏅 <b>${lane === 'ALL' ? '전체' : RK_LANES.find(x => x[0] === lane)[1] + ' 라인'} 종합 점수</b>(100점 만점) = ${wTxt(W)}<br>
+    지표마다 ${lane === 'ALL' ? '전체' : RK_LANES.find(x => x[0] === lane)[1] + ' 라인'} 참가자 중 가장 낮은 사람 0 ~ 가장 높은 사람 1로 맞춰서 더해요 · 승률은 판수가 적으면 50% 쪽으로 보정해요 · 표시된 값이 같으면 같은 순위예요
+    ${laneNote}</div>
   <div class="rk-wrap"><table class="rk-table">
     <tr><th>#</th><th class="l">플레이어</th><th title="위 설명 참고">종합 점수</th><th>판수</th><th>승률</th><th>평균 K / D / A</th><th>평균 딜량</th><th>${lane === 'SPT' ? '분당 시야' : '분당 CS'}</th><th>MVP·ACE</th>${showPos ? '<th>주 라인</th>' : ''}<th class="l">모스트 챔피언</th></tr>
     ${rows.map(r => {
