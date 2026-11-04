@@ -1413,6 +1413,52 @@
     .rk-lanes-note span.on { color: var(--gold2); font-weight: 700; }
     .rk-lanes-note em { font-style: normal; color: #9aa6b8; }
     .rk-lanes-note span.on em { color: #e6d29a; font-weight: 400; }
+
+    /* ══ 칭호 캐러셀 ══ */
+    .car { position: relative; height: 230px; margin: 4px 0 6px; }
+    .car-stage { position: absolute; inset: 0; perspective: 1200px; overflow: hidden; border-radius: 16px; }
+    .tcc { position: absolute; left: 50%; top: 50%; width: min(520px, 78%); height: 196px; border-radius: 18px; overflow: hidden; cursor: pointer; border: 2px solid rgba(255,255,255,.18);
+           border: 2px solid color-mix(in srgb, var(--ac) 55%, transparent); background: #07090f;
+           box-shadow: 0 10px 34px rgba(0,0,0,.55); transition: transform .55s cubic-bezier(.2,.8,.2,1), opacity .45s, filter .45s, box-shadow .45s; }
+    .tcc.on { cursor: default; border-color: var(--ac); box-shadow: 0 12px 40px rgba(0,0,0,.6), 0 0 26px color-mix(in srgb, var(--ac) 35%, transparent); }
+    .tcc-bg { position: absolute; inset: 0; background-size: cover; background-position: 70% 20%; opacity: .32; }
+    .tcc::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5,7,12,.95) 0%, rgba(5,7,12,.8) 45%, rgba(5,7,12,.45) 100%); }
+    .tcc-in { position: relative; z-index: 2; height: 100%; display: flex; align-items: center; gap: 22px; padding: 0 30px; }
+    .tcc-pics { position: relative; flex-shrink: 0; width: 104px; height: 104px; }
+    .tcc-pic { position: absolute; inset: 0; border-radius: 16px; overflow: hidden; border: 3px solid var(--ac); box-shadow: 0 0 18px color-mix(in srgb, var(--ac) 40%, transparent); background: #0b1422; }
+    .tcc-pic .ch-box { width: 100%; height: 100%; border: none; border-radius: 0; }
+    .tcc-pics.two .tcc-pic { width: 70px; height: 70px; inset: auto; }
+    .tcc-pics.two .tcc-pic:nth-child(1) { left: 0; top: 0; }
+    .tcc-pics.two .tcc-pic:nth-child(2) { right: 0; bottom: 0; }
+    .tcc-badge { position: absolute; right: -10px; bottom: -10px; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                 font-size: 1.15rem; background: #0b0f18; border: 2px solid var(--ac); box-shadow: 0 0 12px color-mix(in srgb, var(--ac) 45%, transparent); }
+    .tcc-txt { min-width: 0; }
+    .tcc-name { font-size: 1.65rem; font-weight: 700; color: var(--ac); line-height: 1.15; letter-spacing: 1px; text-shadow: 0 0 18px color-mix(in srgb, var(--ac) 35%, transparent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tcc-desc { font-size: .78rem; color: #a7b0bf; margin-top: 4px; }
+    .tcc-who { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tcc-co { font-size: .62rem; font-weight: 500; color: #a7b0bf; margin-left: 6px; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 1px 7px; vertical-align: 2px; }
+    .tcc-val { font-size: .8rem; color: #dfe4ec; margin-top: 4px; font-weight: 700; }
+    .car-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 40; width: 40px; height: 40px; border-radius: 50%;
+               background: rgba(10,14,22,.85); border: 1px solid #2a3a52; color: #e6ebf2; font-size: 1.5rem; line-height: 1; cursor: pointer; transition: all .2s; }
+    .car-nav:hover { border-color: var(--gold); color: var(--gold2); }
+    .car-nav.prev { left: 8px; } .car-nav.next { right: 8px; }
+    .car-dots { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; margin: 4px 0 2px; }
+    .car-dot { width: 7px; height: 7px; border-radius: 50%; border: none; background: #2a3a52; padding: 0; cursor: pointer; transition: all .2s; }
+    .car-dot.on { width: 20px; border-radius: 4px; background: var(--gold); }
+    @media (max-width: 760px) {
+      .car { height: 250px; }
+      .tcc { width: 84%; height: 220px; }
+      .tcc-in { flex-direction: column; align-items: flex-start; justify-content: center; gap: 12px; padding: 16px 18px; }
+      .tcc-pics { width: 64px; height: 64px; }
+      .tcc-pics.two { width: 84px; }
+      .tcc-pics.two .tcc-pic { width: 52px; height: 52px; }
+      .tcc-badge { width: 28px; height: 28px; font-size: .9rem; right: -8px; bottom: -8px; }
+      .tcc-name { font-size: 1.3rem; }
+      .tcc-who { font-size: 1rem; margin-top: 8px; }
+      .car-nav { display: none; }            /* 휴대폰: 손가락으로 밀기 · 점 · 옆 카드 누르기 */
+      .car-dot { width: 8px; height: 8px; }
+      .car-dot.on { width: 22px; }
+    }
   </style>
 </head>
 <body>
@@ -1996,6 +2042,7 @@ function switchPage(id, btn) {
   const view = document.getElementById('view-' + id);
   if (view) view.classList.add('active');
   setTimeout(renderMembers, 50);
+  setTimeout(carLayout, 30);
 }
 
 function switchTab(id, btn) {
@@ -4160,20 +4207,41 @@ function renderDashboard() {
     </div>
   </div>`;
 
-  // ③ 칭호 보드
+  // ③ 칭호 캐러셀 (가운데 카드 크게 · 좌우로 넘기기)
   const { titles } = computeTitles();
   const missingX = ms.some(m => !(m.players[0] && m.players[0].x));
   const picked = x => !x.tie && x.winners && x.winners.length;
-  const tt = titles.filter(picked).concat(titles.filter(x => !picked(x))).map(({ t, winners, text, tie }) => {
-    if (tie) return `<div class="tt empty" title="${escapeHtml(t.desc)}"><div class="tt-ico">${t.ico}</div><div><div class="tt-name">${t.name}</div><div class="tt-val">${tie}명이 똑같아요 (${escapeHtml(text)}) · 아직 1등 없음</div></div></div>`;
-    if (!winners || !winners.length) return `<div class="tt empty" title="${escapeHtml(t.desc)}"><div class="tt-ico">${t.ico}</div><div><div class="tt-name">${t.name}</div><div class="tt-val">아직 기록이 부족해요</div></div></div>`;
-    const who = winners.map(w => `<span class="tt-w">${w.lastM ? champIcon(w.lastM, w.mainChamp) : ''}<b>${escapeHtml(w.name)}</b></span>`).join('');
-    const tag = !t.duo && winners.length > 1 ? ' <span class="tt-co">공동 1등</span>' : '';
-    return `<div class="tt${t.duo ? ' duo ' + t.duo : ''}" title="${escapeHtml(t.desc)}"><div class="tt-ico">${t.ico}</div><div style="min-width:0"><div class="tt-name">${t.name}${tag}</div><div class="tt-who${winners.length > 1 ? ' multi' : ''}">${who}</div><div class="tt-val">${escapeHtml(text)}</div></div></div>`;
+  const got = titles.filter(picked), notYet = titles.filter(x => !picked(x));
+  const ACC = ['#f0b429', '#4fd1c5', '#f56565', '#9f7aea', '#48bb78', '#ed8936', '#63b3ed', '#ed64a6', '#ecc94b', '#38b2ac'];
+  const cards = got.map(({ t, winners, text }, i) => {
+    const ac = t.duo === 'worst' ? '#f56565' : t.duo === 'best' ? '#63b3ed' : ACC[i % ACC.length];
+    const main = winners[0];
+    const pics = winners.slice(0, 2).map(w => `<span class="tcc-pic">${w.lastM ? champIcon(w.lastM, w.mainChamp) : ''}</span>`).join('');
+    const names = winners.map(w => escapeHtml(w.name)).join(t.duo ? ' & ' : ', ');
+    const co = !t.duo && winners.length > 1 ? `<span class="tcc-co">공동 1등</span>` : '';
+    return `<div class="tcc" data-i="${i}" style="--ac:${ac}" onclick="carGo(${i})">
+      <div class="tcc-bg" style="background-image:url('${main.mainChamp ? splashOf(main.mainChamp) : ''}')"></div>
+      <div class="tcc-in">
+        <div class="tcc-pics${winners.length > 1 ? ' two' : ''}">${pics}<span class="tcc-badge">${t.ico}</span></div>
+        <div class="tcc-txt">
+          <div class="tcc-name">${t.name}</div>
+          <div class="tcc-desc">${escapeHtml(t.desc)}</div>
+          <div class="tcc-who">${names}${co}</div>
+          <div class="tcc-val">${escapeHtml(text)}</div>
+        </div>
+      </div>
+    </div>`;
   }).join('');
-  const row3 = `<div class="db-sec"><div class="db-h"><b>🏅 칭호 1등</b><span>마우스를 올리면 기준이 나와요 · 3판 이상 한 소환사 대상</span></div>
-    <div class="tt-grid">${tt}</div>
-    ${missingX ? '<div class="db-note">※ 일부 칭호(카나비 정신, 금방 가요~, 철거반장 등)는 이번 업데이트부터 읽는 기록이라, 예전에 올린 경기는 리플레이를 한 번 더 올리면 채워져요.</div>' : ''}</div>`;
+  const row3 = `<div class="db-sec"><div class="db-h"><b>🏅 칭호</b><span>${matchMedia('(max-width: 760px)').matches ? '옆으로 밀어서' : '좌우 버튼으로'} 넘겨 보세요 · ${got.length}개 · 판수가 쌓이면 3판 이상 한 소환사만 대상</span></div>
+    ${got.length ? `<div class="car" id="ttCar">
+      <button class="car-nav prev" onclick="carGo(_carIdx - 1)" aria-label="이전">‹</button>
+      <div class="car-stage" id="carStage">${cards}</div>
+      <button class="car-nav next" onclick="carGo(_carIdx + 1)" aria-label="다음">›</button>
+    </div>
+    <div class="car-dots">${got.map((x, i) => `<button class="car-dot" title="${x.t.name}" onclick="carGo(${i})"></button>`).join('')}</div>`
+    : '<div class="hot-none">아직 1등이 정해진 칭호가 없어요</div>'}
+    ${notYet.length ? `<div class="db-note">⏳ 아직 1등이 없는 칭호: ${notYet.map(x => x.t.ico + ' ' + x.t.name).join(' · ')}</div>` : ''}
+    ${missingX ? '<div class="db-note">※ 일부 칭호(카나비 정신, 금방 가요~, 철거반장 등)는 예전에 올린 경기에 기록이 없어요. 리플레이를 한 번 더 올리면 채워져요.</div>' : ''}</div>`;
 
   // ④ 챔피언 / 한 판 기록 / 최근 내전
   const C = {};
@@ -4209,8 +4277,63 @@ function renderDashboard() {
   const augTop = Object.entries(AU).sort((a, b) => b[1].g - a[1].g || b[1].w - a[1].w).slice(0, 10);
   const row5 = augTop.length ? `<div class="db-sec"><div class="db-box"><div class="db-h"><b>✨ 인기 증강</b><span>많이 고른 순 · 고른 사람 기준 승률</span></div>
     <div class="aug-grid">${augTop.map(([a, v], i) => `<div class="dl"><span class="dl-n">${i + 1}</span>${augIcon(a, 'big')}<div class="dl-main"><b>${escapeHtml(augInfo(a).name)}</b><small>${v.w}승 ${v.g - v.w}패</small></div><div class="dl-v">${v.g}회<small>승률 ${Math.round(v.w / v.g * 100)}%</small></div></div>`).join('')}</div></div></div>` : '';
-  box.innerHTML = kpi + row2 + row3 + row4 + row5;
+  box.innerHTML = kpi + row3 + row2 + row4 + row5;
+  initCarousel();
 }
+
+// ── 칭호 캐러셀 ──
+let _carIdx = 0, _carTimer = null, _carHover = false;
+function carLayout() {
+  const stage = document.getElementById('carStage');
+  if (!stage) return;
+  const cards = [...stage.querySelectorAll('.tcc')];
+  const n = cards.length;
+  if (!n) return;
+  _carIdx = ((_carIdx % n) + n) % n;
+  const W = stage.clientWidth;
+  const cw = cards[0].offsetWidth;
+  const step = Math.min(cw * 0.62, (W - cw) / 2.3 + 40);          // 옆 카드가 살짝 겹쳐 보이게
+  cards.forEach((c, i) => {
+    let d = i - _carIdx;
+    if (d > n / 2) d -= n; if (d < -n / 2) d += n;                // 양 끝이 이어지게
+    const a = Math.abs(d);
+    c.classList.toggle('on', d === 0);
+    c.style.transform = `translate(-50%, -50%) translateX(${d * step}px) scale(${a === 0 ? 1 : Math.max(.62, 1 - a * .17)}) rotateY(${-Math.sign(d) * Math.min(a, 2) * 14}deg)`;
+    c.style.zIndex = String(20 - a);
+    c.style.opacity = a > 2 ? '0' : String(1 - a * .22);
+    c.style.filter = a === 0 ? 'none' : `blur(${a * 1.4}px) brightness(${1 - a * .28})`;
+    c.style.pointerEvents = a > 2 ? 'none' : 'auto';
+  });
+  document.querySelectorAll('.car-dot').forEach((d, i) => d.classList.toggle('on', i === _carIdx));
+}
+function carGo(i) { _carIdx = i; carLayout(); carAuto(); }
+function carAuto() {
+  clearInterval(_carTimer);
+  _carTimer = setInterval(() => {
+    const stage = document.getElementById('carStage');
+    if (!stage || !stage.offsetParent || _carHover || document.hidden) return;   // 안 보일 땐 멈춤
+    _carIdx++; carLayout();
+  }, 4500);
+}
+function initCarousel() {
+  const car = document.getElementById('ttCar');
+  if (!car) return;
+  car.addEventListener('mouseenter', () => { _carHover = true; });
+  car.addEventListener('mouseleave', () => { _carHover = false; });
+  // 손가락으로 밀어서 넘기기
+  let x0 = null, y0 = null;
+  car.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; _carHover = true; }, { passive: true });
+  car.addEventListener('touchend', e => {
+    _carHover = false;
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) carGo(_carIdx + (dx < 0 ? 1 : -1));
+    x0 = null;
+  });
+  requestAnimationFrame(carLayout);
+  carAuto();
+}
+window.addEventListener('resize', () => carLayout());
 
 loadRec();
 renderRecord();
