@@ -3665,7 +3665,7 @@ function renderMatchList() {
       <small>롤 클라이언트 경기 기록에서 리플레이를 받으면 <b>문서\\League of Legends\\Replays</b> 폴더에 저장돼요</small></div>`;
     return;
   }
-  // 같은 날 경기끼리 묶기 (최근 날짜가 위, 그날 안에서는 1번째 판부터)
+  // 같은 날 경기끼리 묶기 (최근 날짜가 위, 그날 안에서도 최근 판이 위 → 1번째 판은 맨 아래)
   const groups = [];
   list.forEach(m => {
     const k = dayKey(m);
@@ -3685,7 +3685,7 @@ function renderMatchList() {
         <span class="dh-chip">${g.ms.length}판</span>
         <span class="dh-len">총 ${Math.round(total / 60)}분</span>
       </div>
-      <div class="day-list">${g.ms.map(m => matchCard(m)).join('')}</div>
+      <div class="day-list">${g.ms.slice().reverse().map(m => matchCard(m)).join('')}</div>
     </div>`;
   }).join('');
 }
