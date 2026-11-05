@@ -1459,6 +1459,11 @@
       .car-dot { width: 8px; height: 8px; }
       .car-dot.on { width: 22px; }
     }
+    /* 관리자 모드가 아니면 편집 버튼 숨김 */
+    html:not(.admin) .rec-admin, html:not(.admin) #recShare, html:not(.admin) #recMsg,
+    html:not(.admin) .mt-move, html:not(.admin) .mt-del, html:not(.admin) .mt-local, html:not(.admin) .adm-only { display: none !important; }
+    .adm-badge { margin-right: auto; font-size: .66rem; font-weight: 700; color: #1a1205; background: linear-gradient(90deg, #c89b3c, #f0d070);
+                 border-radius: 999px; padding: 2px 10px; align-self: center; }
   </style>
 </head>
 <body>
@@ -1611,6 +1616,7 @@
 <div class="page-view" id="view-record">
   <!-- 관리용 (전적 올리는 사람만 사용) -->
   <div class="rec-admin">
+    <span class="adm-badge" title="이 화면은 관리자 링크(?admin)로 들어왔을 때만 보여요">🔧 관리자 모드</span>
     <button class="adm-btn" onclick="document.getElementById('recFile').click()" title="리플레이 위치: 문서\League of Legends\Replays">📂 리플레이 올리기</button>
     <button class="adm-btn" onclick="exportMatches()" title="받은 matches.json을 GitHub에 올리면 모두에게 보여요">📤 공유용 파일 내보내기</button>
   </div>
@@ -1821,6 +1827,9 @@
 </div>
 
 <script>
+// ── 관리자 모드: 주소 뒤에 ?admin 을 붙여 들어올 때만 편집 버튼이 보여요 (예: …github.io/…/?admin) ──
+const IS_ADMIN = new URLSearchParams(location.search).has('admin');
+document.documentElement.classList.toggle('admin', IS_ADMIN);
 const ROLES = ['TOP','JGL','MID','BOT','SPT'];
 
 // 포지션별 이모지
@@ -3180,6 +3189,7 @@ function addMatch(m) {
   return 'ok';
 }
 async function handleRecFiles(fileList) {
+  if (!IS_ADMIN) return;                                   // 관리자 모드에서만 올리기
   const files = Array.from(fileList || []);
   if (!files.length) return;
   const msg = document.getElementById('recMsg');
@@ -3237,13 +3247,14 @@ async function handleRecFiles(fileList) {
 // 내전 전적 화면 아무 곳에나 파일을 끌어다 놓아도 올라가요
 (function initRecDrop() {
   const view = document.getElementById('view-record');
-  if (!view) return;
+  if (!view || !IS_ADMIN) return;
   ['dragenter','dragover'].forEach(ev => view.addEventListener(ev, e => { e.preventDefault(); view.classList.add('drag-over'); }));
   view.addEventListener('dragleave', e => { if (!view.contains(e.relatedTarget)) view.classList.remove('drag-over'); });
   view.addEventListener('drop', e => { e.preventDefault(); view.classList.remove('drag-over'); handleRecFiles(e.dataTransfer.files); });
 })();
 // 잘못 들어간 경기를 다른 탭으로 옮기기
 function moveMatch(id) {
+  if (!IS_ADMIN) return;
   const m = matches.find(x => x.id === id);
   if (!m) return;
   m.mode = modeOf(m) === 'rift' ? 'aram' : 'rift';
@@ -3254,6 +3265,7 @@ function moveMatch(id) {
   msg.textContent = `↔ ${MODE_NAME[m.mode]} 탭으로 옮겼어요`;
 }
 function deleteMatch(id) {
+  if (!IS_ADMIN) return;
   if (!confirm('이 경기 기록을 삭제할까요?')) return;
   matches = matches.filter(m => m.id !== id);
   if (sharedIds.has(id) && !recDeleted.includes(id)) recDeleted.push(id);
@@ -3660,9 +3672,10 @@ function renderMatchList() {
   if (!box) return;
   const list = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
   if (!list.length) {
-    box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기가 없어요.<br>
+    box.innerHTML = IS_ADMIN ? `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기가 없어요.<br>
       오른쪽 위 <b>📂 리플레이 올리기</b>를 누르거나, 리플레이 파일(.rofl)을 이 화면에 끌어다 놓으세요.<br>
-      <small>롤 클라이언트 경기 기록에서 리플레이를 받으면 <b>문서\\League of Legends\\Replays</b> 폴더에 저장돼요</small></div>`;
+      <small>롤 클라이언트 경기 기록에서 리플레이를 받으면 <b>문서\\League of Legends\\Replays</b> 폴더에 저장돼요</small></div>`
+      : `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>내전 기록이 올라오면 여기에 나와요.</div>`;
     return;
   }
   // 같은 날 경기끼리 묶기 (최근 날짜가 위, 그날 안에서도 최근 판이 위 → 1번째 판은 맨 아래)
@@ -3831,7 +3844,7 @@ function renderRank() {
       `<button class="rk-btn${k === 'total' ? ' total' : ''}${recSort === k ? ' active' : ''}" onclick="setRankSort('${k}')">${k === 'total' ? '🏅 ' : ''}${t}</button>`).join('') + '</div>' +
     (recMode === 'rift' ? '<div class="rk-group rk-lanes"><span>라인별</span>' + RK_LANES.map(([k, t]) =>
       `<button class="rk-btn${lane === k ? ' active' : ''}" onclick="setRankLane('${k}')">${ICONS[k] ? `<img src="${ICONS[k]}" alt="" onerror="this.remove()">` : ''}${t}</button>`).join('') + '</div>' : '');
-  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.</div>`; return; }
+  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.' : '내전 기록이 올라오면 순위가 나와요.'}</div>`; return; }
 
   const rows = rankRowsFor(lane);
   if (!rows.length) { box.innerHTML = `<div class="rec-empty">${RK_LANES.find(x => x[0] === lane)[1]} 라인으로 뛴 기록이 아직 없어요.</div>`; return; }
@@ -3956,7 +3969,7 @@ let _smList = [];
 function renderSummoners() {
   const box = document.getElementById('smGrid');
   if (!box) return;
-  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty" style="grid-column:1/-1">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 소환사 카드가 나와요.</div>`; return; }
+  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty" style="grid-column:1/-1">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 소환사 카드가 나와요.' : '내전 기록이 올라오면 소환사 카드가 나와요.'}</div>`; return; }
   const rows = summonerStats();
   const titleMap = computeTitles().byKey;
   const totalDays = new Set(modeMatches().map(dayKey)).size;
@@ -4145,7 +4158,7 @@ function renderDashboard() {
   if (!box) return;
   const ms = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
   if (!ms.length) {
-    box.innerHTML = `<div class="db-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>왼쪽 <b>📊 내전 전적</b> 메뉴에서 리플레이 파일을 올리면 대시보드가 채워져요.</div>`;
+    box.innerHTML = `<div class="db-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>📊 내전 전적</b> 메뉴에서 리플레이 파일을 올리면 대시보드가 채워져요.' : '내전 기록이 올라오면 대시보드가 채워져요.'}</div>`;
     return;
   }
   const days = [...new Set(ms.map(dayKey))];
@@ -4241,7 +4254,7 @@ function renderDashboard() {
     <div class="car-dots">${got.map((x, i) => `<button class="car-dot" title="${x.t.name}" onclick="carGo(${i})"></button>`).join('')}</div>`
     : '<div class="hot-none">아직 1등이 정해진 칭호가 없어요</div>'}
     ${notYet.length ? `<div class="db-note">⏳ 아직 1등이 없는 칭호: ${notYet.map(x => x.t.ico + ' ' + x.t.name).join(' · ')}</div>` : ''}
-    ${missingX ? '<div class="db-note">※ 일부 칭호(카나비 정신, 금방 가요~, 철거반장 등)는 예전에 올린 경기에 기록이 없어요. 리플레이를 한 번 더 올리면 채워져요.</div>' : ''}</div>`;
+    ${missingX && IS_ADMIN ? '<div class="db-note">※ 일부 칭호(카나비 정신, 금방 가요~, 철거반장 등)는 예전에 올린 경기에 기록이 없어요. 리플레이를 한 번 더 올리면 채워져요.</div>' : ''}</div>`;
 
   // ④ 챔피언 / 한 판 기록 / 최근 내전
   const C = {};
