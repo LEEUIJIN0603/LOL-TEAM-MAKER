@@ -1611,8 +1611,6 @@
       <div class="card-title"><span>▸ 참가자 10명 입력</span><button class="btn-tab-reset" onclick="resetTab('random')">↺ 초기화</button></div>
       <div class="fix-hint" id="randFixHint">라인 칩을 누르면 <b>보통 → 🚫제외 → 📌고정</b> 순으로 바뀌어요. 고정은 1개, 제외는 여러 개 가능해요. 같은 라인을 2명이 고정하면 그 라인은 팀만 랜덤으로 갈려요.</div>
       <div class="rand-grid" id="randGrid"></div>
-        </button>
-      </div>
       <button class="btn-main" id="btnRand" onclick="doRandom()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errRand"></div>
     </div>
@@ -1624,8 +1622,6 @@
     <div class="card">
       <div class="card-title"><span>▸ 참가자 이름 + 능력치 입력 (1~10)</span><button class="btn-tab-reset" onclick="resetTab('ability')">↺ 초기화</button></div>
       <div class="ability-grid" id="abilityGrid"></div>
-        </button>
-      </div>
       <button class="btn-main" id="btnAbility" onclick="doAbility()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errAbility"></div>
     </div>
@@ -3946,15 +3942,18 @@ function renderRank() {
 
   const showPos = recMode === 'rift' && lane === 'ALL';
   const wTxt = w => Object.entries(w).map(([k, v]) => `${SCORE_LABEL[k]} ${v}%`).join(' + ');
-  const laneNote = recMode !== 'rift' ? '' : `<div class="rk-lanes-note">
-      <b>라인별로 보면 그 라인에 중요한 지표 비중이 달라져요</b>
-      <span${lane === 'TOP' || lane === 'MID' || lane === 'BOT' ? ' class="on"' : ''}>⚔ 탑·미드·원딜: ${wTxt(SCORE_W.TOP)} <em>→ 라인전 성장(분당 CS)도 봐요</em></span>
-      <span${lane === 'JGL' ? ' class="on"' : ''}>🌲 정글: ${wTxt(SCORE_W.JGL)} <em>→ 갱킹·합류가 중요해서 킬관여 비중을 높였어요</em></span>
-      <span${lane === 'SPT' ? ' class="on"' : ''}>🛡 서폿: ${wTxt(SCORE_W.SPT)} <em>→ 딜이 적은 역할이라 딜량 대신 분당 시야점수를 봐요</em></span>
-    </div>`;
-  box.innerHTML = `<div class="rk-note">🏅 <b>${lane === 'ALL' ? '전체' : RK_LANES.find(x => x[0] === lane)[1] + ' 라인'} 종합 점수</b>(100점 만점) = ${wTxt(W)}<br>
-    지표마다 ${lane === 'ALL' ? '전체' : RK_LANES.find(x => x[0] === lane)[1] + ' 라인'} 참가자 중 가장 낮은 사람 0 ~ 가장 높은 사람 1로 맞춰서 더해요 · 승률은 판수가 적으면 50% 쪽으로 보정해요 · 표시된 값이 같으면 같은 순위예요
-    ${laneNote}</div>
+  const LANE_WHY = { TOP: '라인전 성장(분당 CS)도 봐요', MID: '라인전 성장(분당 CS)도 봐요', BOT: '라인전 성장(분당 CS)도 봐요',
+                     JGL: '갱킹·합류가 중요해서 킬관여 비중을 높였어요', SPT: '딜이 적은 역할이라 딜량 대신 분당 시야점수를 봐요' };
+  const laneName = lane === 'ALL' ? '' : RK_LANES.find(x => x[0] === lane)[1];
+  // 설명은 종합 / 라인을 골랐을 때만, 그 기준 것만
+  const noteHtml = lane !== 'ALL'
+    ? `<div class="rk-note">🏅 <b>${laneName} 종합 점수</b>(100점 만점) = ${wTxt(W)}<br>
+        → ${LANE_WHY[lane]} · ${laneName}로 뛴 판만 모아 참가자 중 가장 낮은 사람 0 ~ 가장 높은 사람 1로 맞춰 더해요</div>`
+    : recSort === 'total'
+      ? `<div class="rk-note">🏅 <b>전체 종합 점수</b>(100점 만점) = ${wTxt(W)}<br>
+          지표마다 참가자 중 가장 낮은 사람 0 ~ 가장 높은 사람 1로 맞춰 더해요 · 승률은 판수가 적으면 50% 쪽으로 보정 · 표시된 값이 같으면 같은 순위</div>`
+      : '';
+  box.innerHTML = `${noteHtml}
   <div class="rk-wrap"><table class="rk-table">
     <tr><th>#</th><th class="l">플레이어</th><th title="위 설명 참고">종합 점수</th><th>판수</th><th>승률</th><th>평균 K / D / A</th><th>평균 딜량</th><th>${lane === 'SPT' ? '분당 시야' : '분당 CS'}</th><th>MVP·ACE</th>${showPos ? '<th>주 라인</th>' : ''}<th class="l">모스트 챔피언</th></tr>
     ${rows.map(r => {
