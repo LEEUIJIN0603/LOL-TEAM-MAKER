@@ -97,7 +97,10 @@
       font-size: 0.88rem; font-weight: 700; text-align: left;
       cursor: pointer; transition: all 0.2s; white-space: nowrap;
     }
-    .nav-btn .nav-ico { width: 18px; text-align: center; font-size: 0.95rem; }
+    .nav-btn .nav-ico { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: .75; transition: opacity .2s, filter .2s; }
+    .nav-btn .nav-ico svg { width: 19px; height: 19px; display: block; }
+    .nav-btn:hover .nav-ico { opacity: 1; }
+    .nav-btn.active .nav-ico { opacity: 1; filter: drop-shadow(0 0 6px rgba(240,208,112,.55)); }
     .nav-btn:hover:not(.active):not(:disabled) { color: var(--text); background: var(--panel2); }
     .nav-btn.active { color: var(--gold2); background: var(--gold-dim); border-left-color: var(--gold); }
     .nav-btn:disabled { opacity: 0.35; cursor: default; }
@@ -1214,7 +1217,8 @@
       .nav-btn { flex: 1 1 0; min-width: 0; flex-direction: column; align-items: center; gap: 2px; padding: 7px 2px 6px;
                  font-size: .62rem; font-weight: 500; border: none; border-top: 2px solid transparent; border-radius: 0; background: none !important;
                  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
-      .nav-btn .nav-ico { width: auto; font-size: 1.2rem; line-height: 1.1; }
+      .nav-btn .nav-ico { width: 22px; height: 22px; }
+      .nav-btn .nav-ico svg { width: 21px; height: 21px; }
       .nav-btn.active { border-top-color: var(--gold); color: var(--gold2); font-weight: 700; }
       .main { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
       .app { min-height: 0; }
@@ -1330,6 +1334,9 @@
       .hp-box { padding: 16px 14px 10px; max-height: 84vh; }
       .hp-row { grid-template-columns: 52px 28px 62px 1fr; gap: 8px; }
       .anim-modal-box { width: 100% !important; max-width: 100% !important; padding: 18px 12px !important; }
+      .modal-copy-row { flex-wrap: wrap; justify-content: center; gap: 6px; }
+      .modal-copy-row .btn-copy { padding: 6px 10px; }
+      .pred-top b { font-size: .8rem; } .pred-top span { font-size: .72rem; }
     }
     @media (max-width: 760px) {
       /* 카드 제목 + 초기화 버튼: 줄바꿈돼도 버튼은 한 줄로 */
@@ -1464,6 +1471,74 @@
     html:not(.admin) .mt-move, html:not(.admin) .mt-del, html:not(.admin) .mt-local, html:not(.admin) .adm-only { display: none !important; }
     .adm-badge { margin-right: auto; font-size: .66rem; font-weight: 700; color: #1a1205; background: linear-gradient(90deg, #c89b3c, #f0d070);
                  border-radius: 999px; padding: 2px 10px; align-self: center; }
+
+    /* ══ 디스코드 ══ */
+    .btn-dc { border-color: rgba(88,101,242,.55); color: #aab2ff; }
+    .btn-dc:hover { border-color: #5865f2; color: #fff; background: rgba(88,101,242,.25); }
+    .dh-dc { margin-left: auto; align-self: center; font-size: .68rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
+             background: rgba(88,101,242,.15); color: #aab2ff; border: 1px solid rgba(88,101,242,.5); border-radius: 999px; padding: 3px 11px; transition: all .15s; }
+    .dh-dc:hover { background: #5865f2; color: #fff; }
+    .dh-dc:disabled { opacity: .6; cursor: default; }
+    .dc-box { width: min(560px, 100%); }
+    .dc-input { width: 100%; text-align: left !important; font-size: .8rem !important; padding: 10px 12px !important; margin: 4px 0 10px; }
+    .dc-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .dc-save { border-color: var(--gold); color: var(--gold2); }
+    .dc-msg { font-size: .76rem; min-height: 1.2em; margin: 10px 0 4px; color: var(--gold2); }
+    .dc-msg.err { color: #ff7a7a; }
+    .dc-help { font-size: .7rem; color: #7d8aa0; line-height: 1.8; border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 6px; }
+    .dc-help b { color: #b9c2d0; }
+
+    /* ══ 승부 예측 ══ */
+    .pred { margin: 0 0 12px; }
+    .pred:empty { display: none; }
+    .pred-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .pred-top b { font-size: .85rem; color: var(--gold2); }
+    .pred-top span { font-size: .78rem; font-weight: 700; color: var(--text-bright); }
+    .pred-bar { display: flex; height: 26px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 0 16px rgba(0,0,0,.4); }
+    .pred-bar .pb { background: linear-gradient(90deg, #1f4f9a, #3f8cff); display: flex; align-items: center; padding-left: 10px; transition: width .8s cubic-bezier(.2,.8,.2,1); }
+    .pred-bar .pr { flex: 1; background: linear-gradient(90deg, #e04848, #8f2323); display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; }
+    .pred-bar b { color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+    .pred-sub { font-size: .66rem; color: var(--muted); margin-top: 5px; text-align: center; }
+    .pred-low { font-size: .72rem; color: var(--muted); text-align: center; padding: 6px; border: 1px dashed var(--border); border-radius: 8px; }
+    .mt-pred { display: inline-block; width: fit-content; font-size: .62rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; margin-top: 1px; }
+    .mt-pred.ok { color: #7ee2a8; background: rgba(72,187,120,.12); border: 1px solid rgba(72,187,120,.4); }
+    .mt-pred.no { color: #9aa6b8; background: rgba(160,174,192,.08); border: 1px solid rgba(160,174,192,.25); }
+
+    /* ══ 라이벌 · 천적 · 케미 ══ */
+    .hp-box { width: min(620px, 100%) !important; }
+    .rel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .rel-box { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+    .rel-h { font-size: .8rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
+    .rel-h small { display: block; font-size: .6rem; font-weight: 400; color: var(--muted); margin-top: 1px; }
+    .rel-row { display: flex; align-items: center; gap: 7px; padding: 4px 0; font-size: .76rem; min-width: 0; }
+    .rel-row b { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
+    .rel-v { white-space: nowrap; font-size: .7rem; color: #9aa6b8; }
+    .rel-v em { font-style: normal; font-weight: 700; margin-left: 3px; }
+    .rel-v.good em { color: #5fb6ff; } .rel-v.bad em { color: #ff6b6b; } .rel-v.lane em { color: var(--gold2); }
+    .rel-none { font-size: .7rem; color: var(--muted); padding: 4px 0; }
+    .hp-list-h { font-size: .78rem; font-weight: 700; color: var(--gold); margin: 4px 0 4px; }
+    @media (max-width: 520px) { .rel-grid { grid-template-columns: 1fr; } }
+
+    /* ══ 칭호 왕좌 변동 ══ */
+    .tcc-new { position: absolute; top: 10px; right: 12px; z-index: 5; font-size: .66rem; font-weight: 700; color: #1a1205;
+               background: linear-gradient(90deg, #f0c45a, #ffe39a); border-radius: 999px; padding: 2px 9px; box-shadow: 0 0 12px rgba(240,196,90,.5); animation: stkPulse 1.6s ease-in-out infinite; }
+    .car-dot.new { background: #f0c45a; box-shadow: 0 0 6px rgba(240,196,90,.8); }
+    .tchg { margin-top: 10px; background: var(--panel); border: 1px solid rgba(240,196,90,.3); border-radius: 12px; padding: 10px 14px; }
+    .tchg-h { font-size: .78rem; font-weight: 700; color: var(--gold2); margin-bottom: 8px; }
+    .tchg-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tchg-i { display: inline-flex; align-items: center; gap: 6px; background: var(--panel2); border: 1px solid var(--border); border-radius: 999px; padding: 4px 11px;
+              font-family: 'Noto Sans KR', sans-serif; font-size: .72rem; color: var(--text); cursor: pointer; transition: border-color .15s; }
+    .tchg-i:hover { border-color: var(--gold); }
+    .tchg-i b { color: #f0c45a; }
+    .tchg-i .tf { color: var(--muted); text-decoration: line-through; }
+    .tchg-i .ta { color: var(--gold); }
+    .tchg-i .tt2 { color: #fff; font-weight: 700; }
+    .tchg-i .tnew { font-size: .58rem; font-weight: 700; color: #1a1205; background: #f0c45a; border-radius: 4px; padding: 0 5px; }
+    .tchg-none { font-size: .74rem; color: var(--muted); }
+    .rk-one { gap: 6px; }
+    .rk-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+    .rk-lane { display: inline-flex; align-items: center; gap: 4px; }
+    .rk-lane img { width: 14px; height: 14px; opacity: .8; }
   </style>
 </head>
 <body>
@@ -1488,11 +1563,11 @@
 <aside class="sidebar">
   <nav class="side-nav">
     <div class="side-nav-title">MENU</div>
-    <button class="nav-btn active" onclick="switchPage('dash',this)"><span class="nav-ico">🏠</span>대시보드</button>
-    <button class="nav-btn" onclick="switchPage('assign',this)"><span class="nav-ico">⚔</span>팀 배정</button>
-    <button class="nav-btn" onclick="switchPage('record',this)"><span class="nav-ico">📊</span>내전 전적</button>
-    <button class="nav-btn" onclick="switchPage('rank',this)"><span class="nav-ico">🏆</span>개인 순위</button>
-    <button class="nav-btn" onclick="switchPage('summoner',this)"><span class="nav-ico">🧙</span>소환사 정보</button>
+    <button class="nav-btn active" onclick="switchPage('dash',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1.5"/><rect width="7" height="5" x="14" y="3" rx="1.5"/><rect width="7" height="9" x="14" y="12" rx="1.5"/><rect width="7" height="5" x="3" y="16" rx="1.5"/></svg></span>대시보드</button>
+    <button class="nav-btn" onclick="switchPage('assign',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></svg></span>팀 배정</button>
+    <button class="nav-btn" onclick="switchPage('record',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></span>전적</button>
+    <button class="nav-btn" onclick="switchPage('rank',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>순위</button>
+    <button class="nav-btn" onclick="switchPage('summoner',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></span>소환사</button>
   </nav>
 </aside>
 
@@ -1536,21 +1611,6 @@
       <div class="card-title"><span>▸ 참가자 10명 입력</span><button class="btn-tab-reset" onclick="resetTab('random')">↺ 초기화</button></div>
       <div class="fix-hint" id="randFixHint">라인 칩을 누르면 <b>보통 → 🚫제외 → 📌고정</b> 순으로 바뀌어요. 고정은 1개, 제외는 여러 개 가능해요. 같은 라인을 2명이 고정하면 그 라인은 팀만 랜덤으로 갈려요.</div>
       <div class="rand-grid" id="randGrid"></div>
-      <div class="card-title" style="margin-top:4px">▸ 배정 방식 선택</div>
-      <div class="option-row" id="optRand">
-        <button class="opt-btn selected" onclick="selectOpt('optRand',this)">
-          <div class="opt-radio"><div class="opt-radio-dot"></div></div>
-          <div class="opt-text">
-            <span class="opt-title">🎲 팀 + 포지션 모두 랜덤</span>
-            <span class="opt-desc">팀 배정 및 포지션 모두 무작위</span>
-          </div>
-        </button>
-        <button class="opt-btn" onclick="selectOpt('optRand',this)">
-          <div class="opt-radio"><div class="opt-radio-dot"></div></div>
-          <div class="opt-text">
-            <span class="opt-title">👥 팀만 랜덤 (포지션 없음)</span>
-            <span class="opt-desc">팀만 나누고 포지션은 미배정</span>
-          </div>
         </button>
       </div>
       <button class="btn-main" id="btnRand" onclick="doRandom()">⚔&nbsp; 팀 배정 시작</button>
@@ -1564,21 +1624,6 @@
     <div class="card">
       <div class="card-title"><span>▸ 참가자 이름 + 능력치 입력 (1~10)</span><button class="btn-tab-reset" onclick="resetTab('ability')">↺ 초기화</button></div>
       <div class="ability-grid" id="abilityGrid"></div>
-      <div class="card-title" style="margin-top:4px">▸ 배정 방식 선택</div>
-      <div class="option-row" id="optAbility">
-        <button class="opt-btn selected" onclick="selectOpt('optAbility',this)">
-          <div class="opt-radio"><div class="opt-radio-dot"></div></div>
-          <div class="opt-text">
-            <span class="opt-title">🎲 팀 + 포지션 모두 랜덤</span>
-            <span class="opt-desc">팀 배정 및 포지션 모두 무작위</span>
-          </div>
-        </button>
-        <button class="opt-btn" onclick="selectOpt('optAbility',this)">
-          <div class="opt-radio"><div class="opt-radio-dot"></div></div>
-          <div class="opt-text">
-            <span class="opt-title">👥 팀만 랜덤 (포지션 없음)</span>
-            <span class="opt-desc">팀만 나누고 포지션은 미배정</span>
-          </div>
         </button>
       </div>
       <button class="btn-main" id="btnAbility" onclick="doAbility()">⚔&nbsp; 팀 배정 시작</button>
@@ -1619,6 +1664,7 @@
     <span class="adm-badge" title="이 화면은 관리자 링크(?admin)로 들어왔을 때만 보여요">🔧 관리자 모드</span>
     <button class="adm-btn" onclick="document.getElementById('recFile').click()" title="리플레이 위치: 문서\League of Legends\Replays">📂 리플레이 올리기</button>
     <button class="adm-btn" onclick="exportMatches()" title="받은 matches.json을 GitHub에 올리면 모두에게 보여요">📤 공유용 파일 내보내기</button>
+    <button class="adm-btn" onclick="openDiscordSettings()" title="디스코드 채널로 결과 보내기 설정">🔔 디스코드 설정</button>
   </div>
   <input type="file" id="recFile" accept=".rofl,.json" multiple hidden onchange="handleRecFiles(this.files); this.value='';">
   <div class="rec-share" id="recShare"></div>
@@ -1692,9 +1738,31 @@
       <button class="hp-close" onclick="closeStreakHist()">✕</button>
       <div class="hp-title"></div>
       <div class="hp-sub"></div>
+      <div class="hp-rel"></div>
+      <div class="hp-list-h">📅 날짜별 기록</div>
       <div class="hp-list"></div>
     </div>
   </div>
+
+<!-- ══ 디스코드 설정 창 (관리자) ══ -->
+<div class="hist-pop" id="dcPop" onclick="if (event.target === this) closeDiscordSettings()">
+  <div class="hp-box dc-box">
+    <button class="hp-close" onclick="closeDiscordSettings()">✕</button>
+    <div class="hp-title">🔔 디스코드 연결</div>
+    <div class="hp-sub">디스코드 채널의 <b>웹후크 URL</b>을 붙여넣으면, 이 사이트에서 그 채널로 결과를 보낼 수 있어요.<br>
+      주소는 <b>지금 이 브라우저에만</b> 저장되고 사이트 파일이나 GitHub에는 올라가지 않아요.</div>
+    <input type="text" id="dcUrl" class="dc-input" placeholder="https://discord.com/api/webhooks/…" autocomplete="off" spellcheck="false">
+    <div class="dc-btns">
+      <button class="btn-copy" onclick="testDiscord()">🧪 테스트 메시지 보내기</button>
+      <button class="btn-copy dc-save" onclick="saveDiscord()">💾 저장</button>
+      <button class="btn-copy" onclick="clearDiscord()">🗑 연결 해제</button>
+    </div>
+    <div class="dc-msg" id="dcMsg"></div>
+    <div class="dc-help">연결하면 이렇게 쓸 수 있어요<br>
+      · <b>팀 배정</b> 결과 화면의 <b>📣 디스코드</b> → 블루/레드 팀 구성 + 캡쳐 이미지 전송<br>
+      · <b>전적</b>(관리자 모드)의 날짜 옆 <b>📣 디스코드로 보내기</b> → 그날 요약(MVP·연승·연패) + 판별 결과 전송</div>
+  </div>
+</div>
 
 <!-- ══ 배정 모달 ══ -->
 <div class="anim-modal" id="animModal">
@@ -1804,6 +1872,7 @@
     <!-- 결과 섹션 (애니 완료 후 교체) -->
     <div class="modal-result-section" id="modalResultSection">
       <div class="modal-hint">이름을 끌어서 다른 이름 위에 놓으면 서로 바뀌어요 (라인은 그대로). 바뀐 닉네임에는 🔄가 표시돼요</div>
+      <div class="pred" id="predBox"></div>
       <div class="modal-teams-row" id="modalTeamsRow"></div>
       <!-- 복사 버튼 -->
       <div class="modal-copy-row">
@@ -1815,6 +1884,9 @@
         </button>
         <button class="btn-copy" id="btnCopyImg" onclick="copyAsImage()">
           <span class="btn-copy-icon">📸</span> 캡쳐
+        </button>
+        <button class="btn-copy btn-dc" id="btnDcTeam" onclick="sendTeamToDiscord()" style="display:none">
+          <span class="btn-copy-icon">📣</span> 디스코드
         </button>
       </div>
       <div class="modal-action-row">
@@ -2075,7 +2147,9 @@ function selectOpt(groupId, btn) {
 
 // 옵션 그룹에서 몇 번째가 선택됐는지 반환 (0 = 첫번째, 1 = 두번째)
 function getOptIndex(groupId) {
-  return [...document.querySelectorAll(`#${groupId} .opt-btn`)].findIndex(b => b.classList.contains('selected'));
+  // '팀만 랜덤'을 없애서 항상 0(팀 + 포지션 모두 랜덤)
+  const i = [...document.querySelectorAll(`#${groupId} .opt-btn`)].findIndex(b => b.classList.contains('selected'));
+  return i < 0 ? 0 : i;
 }
 
 function shuffle(a) {
@@ -2647,6 +2721,7 @@ function showResultInModal(t1, t2, rerollFn, showScore) {
                   orig: { t1: t1.map(m => ({ ...m })), t2: t2.map(m => ({ ...m })) } };   // 원복용 처음 배정
   // 복사 버튼 초기화
   document.getElementById('btnCopyTxt').innerHTML = '<span class="btn-copy-icon">📋</span> 텍스트 복사';
+  if (typeof refreshDiscordButtons === 'function') refreshDiscordButtons();
   setCapBtn('📸', '캡쳐', '');
 
   // 애니 영역 숨기고 결과 영역 표시
@@ -2683,6 +2758,7 @@ function renderResultCards() {
   const sp = _lastResult.splash || {};
   row.appendChild(makeCard('블루팀','blue',t1,showScore,sp.blue));
   row.appendChild(makeCard('레드팀','red',t2,showScore,sp.red));
+  if (typeof renderPrediction === 'function') renderPrediction();
 }
 
 // ── 결과 화면: 이름을 끌어서 다른 사람과 교체 ──
@@ -3059,7 +3135,10 @@ let matches = [], recDeleted = [], recOpen = new Set(), recSort = 'games';
 let recMode = 'rift';                                 // 'rift' 소환사 협곡 / 'aram' 칼바람 증바람
 const MODE_NAME = { rift: '소환사 협곡', aram: '칼바람 증바람' };
 const modeOf = m => m.mode === 'aram' ? 'aram' : 'rift';
-const modeMatches = () => matches.filter(m => modeOf(m) === recMode);
+let _mmOverride = null;                               // 잠깐 다른 경기 목록으로 계산할 때 사용
+const modeMatches = () => _mmOverride ? _mmOverride.slice() : matches.filter(m => modeOf(m) === recMode);
+function withMatches(list, fn) { const prev = _mmOverride; _mmOverride = list; try { return fn(); } finally { _mmOverride = prev; } }
+const normName = v => String(v || '').toLowerCase().replace(/\s+/g, '');
 function switchRecMode(mode) {
   recMode = mode;
   document.querySelectorAll('.mode-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
@@ -3525,6 +3604,7 @@ function showStreakHist(i) {
   const tw = s.days.filter(d => d.res === 'w').length, tl = s.days.filter(d => d.res === 'l').length, td = s.days.length - tw - tl;
   pop.querySelector('.hp-title').innerHTML = `${escapeHtml(s.name)}<small>#${escapeHtml(s.tag)}</small>`;
   pop.querySelector('.hp-sub').textContent = `${MODE_NAME[recMode]} · 내전 ${s.days.length}일 · ${tw}승 ${tl}패 ${td}무 (날짜 기준)`;
+  pop.querySelector('.hp-rel').innerHTML = relationsHtml(s.key);
   pop.querySelector('.hp-list').innerHTML = all.map(d => `
     <div class="hp-row">
       <span class="hp-date">${d.day.slice(5).replace('.', '/')}<small>${d.day.slice(0, 4)}</small></span>
@@ -3697,6 +3777,7 @@ function renderMatchList() {
         <span class="dh-wd">${g.day.slice(0, 4)} · ${WD[d.getDay()]}요일</span>
         <span class="dh-chip">${g.ms.length}판</span>
         <span class="dh-len">총 ${Math.round(total / 60)}분</span>
+        <button class="dh-dc adm-only" onclick="sendDayToDiscord('${g.day}', this)" title="이 날 내전 결과를 디스코드 채널로 보내요">📣 디스코드로 보내기</button>
       </div>
       <div class="day-list">${g.ms.slice().reverse().map(m => matchCard(m)).join('')}</div>
     </div>`;
@@ -3748,6 +3829,8 @@ function matchCard(m) {
     <div class="mt-head" onclick="toggleMatch('${escapeHtml(m.id)}')">
       <div class="mt-meta">
         <span class="mt-win ${win}">${win === 'blue' ? '블루팀 승리' : win === 'red' ? '레드팀 승리' : '결과 없음'}</span>
+        ${(() => { const r = retroPredictions()[m.id]; if (!r) return ''; const b = Math.round(r.p * 100);
+          return `<span class="mt-pred ${r.ok ? 'ok' : 'no'}" title="이 경기 전까지의 기록으로 예측한 결과">🔮 예측 ${b >= 50 ? '블루 ' + b : '레드 ' + (100 - b)}% · ${r.ok ? '적중' : '빗나감'}</span>`; })()}
         <span><b class="mt-seq">${gameNo(m)}번째 판</b>${m.dayOnly ? '' : ' · ' + fmtDate(m.date).slice(11)}</span>
         <span>${fmtLen(m.len)}${m.surrender ? ' · 항복' : ''}${m.ver ? ' · ' + m.ver : ''}</span>
         ${sharedState !== 'none' && isLocalOnly(m) ? '<span class="mt-local" title="공유용 파일 내보내기 후 GitHub에 올리면 모두에게 보여요. 그 전에 새로고침하면 사라져요">📌 공유 전 · 새로고침하면 사라져요</span>' : ''}
@@ -3779,8 +3862,9 @@ const RK_SORTS = [['total','종합'], ['games','판수'], ['wr','승률'], ['kda
 const RK_LANES = [['ALL','전체'], ['TOP','탑'], ['JGL','정글'], ['MID','미드'], ['BOT','원딜'], ['SPT','서폿']];
 let recLane = 'ALL';
 recSort = 'total';
-function setRankSort(k) { recSort = k; renderRank(); }
-function setRankLane(l) { recLane = l; renderRank(); }
+// 정렬 한 줄: 종합·판수·승률·KDA·딜량·MVP는 전체 기준, 라인 버튼은 그 라인만 모아 '종합 점수'로 순위
+function setRankSort(k) { recSort = k; recLane = 'ALL'; renderRank(); }
+function setRankLane(l) { recLane = l; recSort = 'total'; renderRank(); }
 // 종합 점수 가중치 (합 100). 라인별로 그 라인에 중요한 지표를 더 봐요.
 const SCORE_W = {
   ALL: { wr: 30, kda: 25, dpm: 20, kp: 15, mvp: 10 },
@@ -3839,12 +3923,13 @@ function renderRank() {
   const sortBox = document.getElementById('rkSort');
   if (!box) return;
   const lane = recMode === 'rift' ? recLane : 'ALL';
+  if (lane !== 'ALL') recSort = 'total';
   sortBox.innerHTML =
-    '<div class="rk-group"><span>정렬</span>' + RK_SORTS.map(([k, t]) =>
-      `<button class="rk-btn${k === 'total' ? ' total' : ''}${recSort === k ? ' active' : ''}" onclick="setRankSort('${k}')">${k === 'total' ? '🏅 ' : ''}${t}</button>`).join('') + '</div>' +
-    (recMode === 'rift' ? '<div class="rk-group rk-lanes"><span>라인별</span>' + RK_LANES.map(([k, t]) =>
-      `<button class="rk-btn${lane === k ? ' active' : ''}" onclick="setRankLane('${k}')">${ICONS[k] ? `<img src="${ICONS[k]}" alt="" onerror="this.remove()">` : ''}${t}</button>`).join('') + '</div>' : '');
-  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.' : '내전 기록이 올라오면 순위가 나와요.'}</div>`; return; }
+    '<div class="rk-group rk-one"><span>정렬</span>' + RK_SORTS.map(([k, t]) =>
+      `<button class="rk-btn${k === 'total' ? ' total' : ''}${lane === 'ALL' && recSort === k ? ' active' : ''}" onclick="setRankSort('${k}')">${k === 'total' ? '🏅 ' : ''}${t}</button>`).join('') +
+    (recMode === 'rift' ? '<span class="rk-sep" title="라인별은 그 라인으로 뛴 판만 모아 종합 점수로 순위를 매겨요"></span>' + RK_LANES.filter(([k]) => k !== 'ALL').map(([k, t]) =>
+      `<button class="rk-btn rk-lane${lane === k ? ' active' : ''}" onclick="setRankLane('${k}')" title="${t} 라인 종합 점수 순위">${ICONS[k] ? `<img src="${ICONS[k]}" alt="" onerror="this.remove()">` : ''}${t}</button>`).join('') : '') + '</div>';
+  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.' : '내전 기록이 올라오면 순위가 나와요.'}</div>`; return; }
 
   const rows = rankRowsFor(lane);
   if (!rows.length) { box.innerHTML = `<div class="rec-empty">${RK_LANES.find(x => x[0] === lane)[1]} 라인으로 뛴 기록이 아직 없어요.</div>`; return; }
@@ -3969,7 +4054,7 @@ let _smList = [];
 function renderSummoners() {
   const box = document.getElementById('smGrid');
   if (!box) return;
-  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty" style="grid-column:1/-1">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>내전 전적</b> 메뉴에서 리플레이 파일을 올리면 소환사 카드가 나와요.' : '내전 기록이 올라오면 소환사 카드가 나와요.'}</div>`; return; }
+  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty" style="grid-column:1/-1">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>전적</b> 메뉴에서 리플레이 파일을 올리면 소환사 카드가 나와요.' : '내전 기록이 올라오면 소환사 카드가 나와요.'}</div>`; return; }
   const rows = summonerStats();
   const titleMap = computeTitles().byKey;
   const totalDays = new Set(modeMatches().map(dayKey)).size;
@@ -4158,7 +4243,7 @@ function renderDashboard() {
   if (!box) return;
   const ms = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
   if (!ms.length) {
-    box.innerHTML = `<div class="db-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>📊 내전 전적</b> 메뉴에서 리플레이 파일을 올리면 대시보드가 채워져요.' : '내전 기록이 올라오면 대시보드가 채워져요.'}</div>`;
+    box.innerHTML = `<div class="db-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>전적</b> 메뉴에서 리플레이 파일을 올리면 대시보드가 채워져요.' : '내전 기록이 올라오면 대시보드가 채워져요.'}</div>`;
     return;
   }
   const days = [...new Set(ms.map(dayKey))];
@@ -4176,6 +4261,9 @@ function renderDashboard() {
     <div class="kpi" data-ico="👥"><div class="kpi-l">참여 인원</div><div class="kpi-v">${people}<small>명</small></div><div class="kpi-s">한 번이라도 뛴 소환사</div></div>
     <div class="kpi" data-ico="⏱"><div class="kpi-l">총 플레이 시간</div><div class="kpi-v">${hm(totalSec)}</div><div class="kpi-s">평균 ${Math.round(totalSec / ms.length / 60)}분 / 판</div></div>
     <div class="kpi" data-ico="☠"><div class="kpi-l">총 킬</div><div class="kpi-v">${fmtNum(totalKills)}<small>킬</small></div><div class="kpi-s">판당 ${Math.round(totalKills / ms.length)}킬</div></div>
+    ${(() => { const R = Object.values(retroPredictions()); if (!R.length) return '';
+        const ok = R.filter(x => x.ok).length;
+        return `<div class="kpi" data-ico="🔮"><div class="kpi-l">승부 예측 적중률</div><div class="kpi-v">${Math.round(ok / R.length * 100)}<small>%</small></div><div class="kpi-s">${R.length}판 중 ${ok}판 적중</div></div>`; })()}
     <div class="kpi" data-ico="📅"><div class="kpi-l">최근 내전</div><div class="kpi-v">${lastDay.slice(5).replace('.', '/')}</div><div class="kpi-s">${lastMs.length}판 진행</div></div>
   </div></div>`;
 
@@ -4222,6 +4310,8 @@ function renderDashboard() {
 
   // ③ 칭호 캐러셀 (가운데 카드 크게 · 좌우로 넘기기)
   const { titles } = computeTitles();
+  const tc = titleChanges();
+  const changedK = new Set(tc ? tc.changes.map(c => c.k) : []);
   const missingX = ms.some(m => !(m.players[0] && m.players[0].x));
   const picked = x => !x.tie && x.winners && x.winners.length;
   const got = titles.filter(picked), notYet = titles.filter(x => !picked(x));
@@ -4232,7 +4322,9 @@ function renderDashboard() {
     const pics = winners.slice(0, 2).map(w => `<span class="tcc-pic">${w.lastM ? champIcon(w.lastM, w.mainChamp) : ''}</span>`).join('');
     const names = winners.map(w => escapeHtml(w.name)).join(t.duo ? ' & ' : ', ');
     const co = !t.duo && winners.length > 1 ? `<span class="tcc-co">공동 1등</span>` : '';
+    const ch = tc && tc.changes.find(c => c.k === t.k);
     return `<div class="tcc" data-i="${i}" style="--ac:${ac}" onclick="carGo(${i})">
+      ${ch ? `<span class="tcc-new">${ch.from ? '🔄 왕좌 탈환' : '🆕 첫 1등'}</span>` : ''}
       <div class="tcc-bg" style="background-image:url('${main.mainChamp ? splashOf(main.mainChamp) : ''}')"></div>
       <div class="tcc-in">
         <div class="tcc-pics${winners.length > 1 ? ' two' : ''}">${pics}<span class="tcc-badge">${t.ico}</span></div>
@@ -4251,7 +4343,11 @@ function renderDashboard() {
       <div class="car-stage" id="carStage">${cards}</div>
       <button class="car-nav next" onclick="carGo(_carIdx + 1)" aria-label="다음">›</button>
     </div>
-    <div class="car-dots">${got.map((x, i) => `<button class="car-dot" title="${x.t.name}" onclick="carGo(${i})"></button>`).join('')}</div>`
+    <div class="car-dots">${got.map((x, i) => `<button class="car-dot${changedK.has(x.t.k) ? ' new' : ''}" title="${x.t.name}" onclick="carGo(${i})"></button>`).join('')}</div>
+    ${tc ? `<div class="tchg"><div class="tchg-h">👑 ${tc.day.slice(5).replace('.', '/')} 내전 후 칭호 변동</div>
+      ${tc.changes.length ? `<div class="tchg-list">${tc.changes.map(c => `<button class="tchg-i" onclick="carGo(${got.findIndex(x => x.t.k === c.k)})"><span class="ti">${c.t.ico}</span><b>${c.t.name}</b>
+        ${c.from ? `<span class="tf">${escapeHtml(c.from)}</span><span class="ta">→</span>` : '<span class="tnew">NEW</span>'}<span class="tt2">${escapeHtml(c.to)}</span></button>`).join('')}</div>`
+        : '<div class="tchg-none">🛡 변동 없음 · 모든 1등이 왕좌를 지켰어요</div>'}</div>` : ''}`
     : '<div class="hot-none">아직 1등이 정해진 칭호가 없어요</div>'}
     ${notYet.length ? `<div class="db-note">⏳ 아직 1등이 없는 칭호: ${notYet.map(x => x.t.ico + ' ' + x.t.name).join(' · ')}</div>` : ''}
     ${missingX && IS_ADMIN ? '<div class="db-note">※ 일부 칭호(카나비 정신, 금방 가요~, 철거반장 등)는 예전에 올린 경기에 기록이 없어요. 리플레이를 한 번 더 올리면 채워져요.</div>' : ''}</div>`;
@@ -4347,6 +4443,279 @@ function initCarousel() {
   carAuto();
 }
 window.addEventListener('resize', () => carLayout());
+
+// ══════════════════ 디스코드 웹후크 ══════════════════
+// 웹후크 주소는 이 브라우저(localStorage)에만 저장 → 사이트 파일·GitHub에는 남지 않아요
+const DC_KEY = 'lol_discord_webhook';
+const DC_RE = /^https:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/api\/webhooks\/\d+\/[\w-]+\/?$/;
+const getWebhook = () => { try { return localStorage.getItem(DC_KEY) || ''; } catch (e) { return ''; } };
+function refreshDiscordButtons() {
+  const b = document.getElementById('btnDcTeam');
+  if (b) b.style.display = (getWebhook() || IS_ADMIN) ? '' : 'none';
+}
+function openDiscordSettings() {
+  document.getElementById('dcUrl').value = getWebhook();
+  const m = document.getElementById('dcMsg');
+  m.className = 'dc-msg'; m.textContent = getWebhook() ? '✅ 연결되어 있어요' : '아직 연결 안 됨';
+  document.getElementById('dcPop').classList.add('open');
+}
+function closeDiscordSettings() { document.getElementById('dcPop').classList.remove('open'); }
+function dcSay(t, err) { const m = document.getElementById('dcMsg'); m.className = 'dc-msg' + (err ? ' err' : ''); m.textContent = t; }
+function readDcInput() {
+  const u = document.getElementById('dcUrl').value.trim();
+  if (!DC_RE.test(u)) { dcSay('⚠️ 웹후크 URL 형식이 아니에요. https://discord.com/api/webhooks/… 로 시작하는 주소를 통째로 붙여넣어 주세요', true); return ''; }
+  return u;
+}
+function saveDiscord() {
+  const u = readDcInput(); if (!u) return;
+  try { localStorage.setItem(DC_KEY, u); } catch (e) { dcSay('⚠️ 이 브라우저에 저장할 수 없어요 (시크릿 창이면 일반 창에서 해 주세요)', true); return; }
+  dcSay('✅ 저장했어요. 이제 이 브라우저에서 디스코드로 보낼 수 있어요'); refreshDiscordButtons();
+}
+function clearDiscord() {
+  try { localStorage.removeItem(DC_KEY); } catch (e) {}
+  document.getElementById('dcUrl').value = ''; dcSay('연결을 해제했어요'); refreshDiscordButtons();
+}
+async function testDiscord() {
+  const u = readDcInput(); if (!u) return;
+  dcSay('⏳ 보내는 중...');
+  try {
+    await discordPost({ embeds: [{ title: '✅ 연결 테스트', description: '오늘의 LOL 내전 사이트와 연결됐어요!', color: 0xc89b3c }] }, null, u);
+    dcSay('✅ 보냈어요! 디스코드 채널을 확인해 보세요. 잘 왔으면 💾 저장을 눌러 주세요');
+  } catch (e) { dcSay('⚠️ 보내지 못했어요: ' + e.message, true); }
+}
+// 실제 전송 (이미지가 있으면 첨부)
+async function discordPost(payload, file, url) {
+  url = url || getWebhook();
+  if (!url) throw new Error('디스코드가 연결되어 있지 않아요');
+  const body = { username: '오늘의 LOL 내전', allowed_mentions: { parse: [] }, ...payload };
+  let res;
+  if (file) {
+    const fd = new FormData();
+    fd.append('payload_json', JSON.stringify(body));
+    fd.append('files[0]', file, file.name || 'image.png');
+    res = await fetch(url, { method: 'POST', body: fd });
+  } else {
+    res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  }
+  if (!res.ok) {
+    if (res.status === 404 || res.status === 401) throw new Error('웹후크가 삭제됐거나 주소가 틀렸어요 (다시 설정해 주세요)');
+    if (res.status === 429) throw new Error('너무 자주 보냈어요. 잠시 후 다시 해 주세요');
+    throw new Error('디스코드 응답 ' + res.status);
+  }
+}
+const dcChampIcon = (m, c) => `${DD_BASE}${ddVer(m)}/img/champion/${encodeURIComponent(champInfo(c).id)}.png`;
+
+// ① 팀 배정 결과 보내기 (팀 구성 + 캡쳐 이미지)
+async function sendTeamToDiscord() {
+  if (!_lastResult) return;
+  const btn = document.getElementById('btnDcTeam');
+  if (!getWebhook()) { if (IS_ADMIN) { openDiscordSettings(); } else alert('디스코드가 연결되어 있지 않아요'); return; }
+  const { t1, t2, showScore } = _lastResult;
+  const line = m => `${m.role ? `${ROLE_EMOJI[m.role] || ''} **${m.role}** ` : ''}${m.name}${showScore && m.score ? ` (${m.score})` : ''}`;
+  const avg = t => (t.reduce((x, m) => x + (m.score || 0), 0) / t.length).toFixed(1);
+  const set = (h, t) => { btn.innerHTML = `<span class="btn-copy-icon">${h}</span> ${t}`; };
+  btn.disabled = true; set('⏳', '보내는 중...');
+  let img = null;
+  try { img = await captureResultBlob(); } catch (e) { img = null; }
+  const embed = {
+    title: '⚔️ 내전 팀 배정 완료!', color: 0xc89b3c,
+    fields: [
+      { name: `🔵 블루팀${showScore ? ` · 평균 ${avg(t1)}` : ''}`, value: t1.map(line).join('\n') || '-', inline: true },
+      { name: `🔴 레드팀${showScore ? ` · 평균 ${avg(t2)}` : ''}`, value: t2.map(line).join('\n') || '-', inline: true },
+      ...(() => { const pr = predictCurrent(); return pr && pr.known >= 3 ? [{ name: '🔮 승부 예측', value: `블루 **${Math.round(pr.p * 100)}%** : **${100 - Math.round(pr.p * 100)}%** 레드`, inline: false }] : []; })()
+    ],
+    footer: { text: '오늘의 LOL 내전 · 팀 배정' }, timestamp: new Date().toISOString()
+  };
+  if (img) embed.image = { url: 'attachment://team.png' };
+  try {
+    await discordPost({ embeds: [embed] }, img ? new File([img], 'team.png', { type: 'image/png' }) : null);
+    set('✅', '보냈어요!');
+  } catch (e) { set('⚠️', '실패'); alert('디스코드로 보내지 못했어요\n' + e.message); }
+  btn.disabled = false;
+  setTimeout(() => set('📣', '디스코드'), 2500);
+}
+
+// ② 그날 내전 결과 보내기 (요약 + 판별 결과)
+function dayMvpOf(dayMs) {
+  const W = {};
+  dayMs.forEach(m => {
+    const sc = matchScores(m), bd = matchBadges(m);
+    m.players.forEach((p, i) => {
+      const k = p.puuid || p.name;
+      const d = W[k] || (W[k] = { p, m, w: 0, g: 0, mvp: 0, sc: 0, k: 0, d: 0, a: 0 });
+      d.g++; if (p.win) d.w++; if (bd[i] === 'mvp') d.mvp++;
+      d.sc += sc[i]; d.k += p.k; d.d += p.d; d.a += p.a; d.p = p; d.m = m;
+    });
+  });
+  return Object.values(W).sort((a, b) => b.w - a.w || b.mvp - a.mvp || b.sc - a.sc)[0];
+}
+async function sendDayToDiscord(day, btn) {
+  if (!IS_ADMIN) return;
+  if (!getWebhook()) { openDiscordSettings(); return; }
+  const dayMs = modeMatches().filter(m => dayKey(m) === day).sort((a, b) => (a.date || 0) - (b.date || 0));
+  if (!dayMs.length) return;
+  if (!confirm(`${day.slice(5).replace('.', '/')} ${MODE_NAME[recMode]} 내전 결과 ${dayMs.length}판을 디스코드로 보낼까요?`)) return;
+  const WD = ['일', '월', '화', '수', '목', '금', '토'];
+  const d0 = new Date(dayMs[0].date);
+  const mvp = dayMvpOf(dayMs);
+  const st = calcStreaks();
+  const hot = st.filter(s => s.kind === 'win' && s.n >= 2).sort((a, b) => b.n - a.n).slice(0, 3);
+  const cold = st.filter(s => s.kind === 'lose' && s.n >= 2).sort((a, b) => b.n - a.n).slice(0, 3);
+  const totalMin = Math.round(dayMs.reduce((t, m) => t + m.len, 0) / 60);
+  const summary = {
+    title: `📅 ${day.slice(5).replace('.', '/')} (${WD[d0.getDay()]}) ${MODE_NAME[recMode]} 내전 결과`,
+    description: `총 **${dayMs.length}판** · ${totalMin}분`,
+    color: 0xc89b3c,
+    thumbnail: mvp ? { url: dcChampIcon(mvp.m, mvp.p.champ) } : undefined,
+    fields: [
+      mvp ? { name: '👑 오늘의 MVP', value: `**${mvp.p.name}** · ${mvp.w}승 ${mvp.g - mvp.w}패 · MVP ${mvp.mvp}회 · ${mvp.k}/${mvp.d}/${mvp.a}`, inline: false } : null,
+      { name: '🔥 연승 중', value: hot.length ? hot.map(s => `**${s.name}** ${s.n}연승`).join('\n') : '없음', inline: true },
+      { name: '🧊 연패 중', value: cold.length ? cold.map(s => `**${s.name}** ${s.n}연패`).join('\n') : '없음', inline: true }
+    ].filter(Boolean),
+    footer: { text: '오늘의 LOL 내전 · 연승·연패는 내전 날짜 기준' }
+  };
+  const gameEmbed = m => {
+    const win = winnerOf(m), bd = matchBadges(m);
+    const tk = t => m.players.filter(p => p.team === t).reduce((x, p) => x + p.k, 0);
+    const who = t => m.players.map((p, i) => p.team !== t ? '' :
+      `${p.pos && ROLE_EMOJI[p.pos] ? ROLE_EMOJI[p.pos] + ' ' : ''}**${p.name}** ${champInfo(p.champ).name} ${p.k}/${p.d}/${p.a}${bd[i] ? ` · ${bd[i].toUpperCase()}` : ''}`).filter(Boolean).join('\n');
+    return {
+      title: `${gameNo(m)}번째 판 · ${win === 'blue' ? '🔵 블루팀' : '🔴 레드팀'} 승리  ${tk('blue')} : ${tk('red')}`,
+      color: win === 'blue' ? 0x4a9eff : 0xe84040,
+      fields: [{ name: '🔵 블루팀', value: who('blue') || '-', inline: true }, { name: '🔴 레드팀', value: who('red') || '-', inline: true }],
+      footer: { text: `${fmtLen(m.len)}${m.surrender ? ' · 항복' : ''}` }
+    };
+  };
+  const old = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ 보내는 중...';
+  try {
+    const embeds = [summary, ...dayMs.map(gameEmbed)];
+    for (let i = 0; i < embeds.length; i += 10) await discordPost({ embeds: embeds.slice(i, i + 10) });   // 한 메시지에 최대 10개
+    btn.textContent = '✅ 보냈어요';
+  } catch (e) { btn.textContent = '⚠️ 실패'; alert('디스코드로 보내지 못했어요\n' + e.message); }
+  setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 2500);
+}
+refreshDiscordButtons();
+
+// ══════════════════ 승부 예측 ══════════════════
+// 소환사별 전력 = 개인 순위 종합 점수(0~100). 라인이 정해지면 그 라인 점수를 우선 사용. 기록 없는 사람은 50(보통)
+function ratingTableFrom(list, mode) {
+  return withMatches(list, () => {
+    const T = {};
+    const add = lane => rankRowsFor(lane).forEach(r => { const k = normName(r.name); (T[k] = T[k] || { name: r.name })[lane] = r.score; });
+    add('ALL');
+    if (mode === 'rift') ['TOP', 'JGL', 'MID', 'BOT', 'SPT'].forEach(add);
+    return T;
+  });
+}
+function predictWith(T, blue, red) {
+  let known = 0;
+  const r = m => { const e = T[normName(m.name)]; if (!e || e.ALL == null) return 50; known++; const role = m.role || m.pos; return role && e[role] != null ? e[role] : e.ALL; };
+  const a1 = blue.reduce((t, m) => t + r(m), 0) / blue.length, a2 = red.reduce((t, m) => t + r(m), 0) / red.length;
+  const p = 1 / (1 + Math.exp(-(a1 - a2) / 18));                     // 평균 전력 10점 차이 ≈ 64%, 20점 ≈ 75%
+  return { p: Math.min(.92, Math.max(.08, p)), a1, a2, known };
+}
+function predictCurrent() {
+  if (!_lastResult) return null;
+  const pref = _lastResult.showScore ? 'aram' : 'rift';               // 증바람 능력치 탭 → 칼바람 전적, 올 랜덤 → 협곡 전적
+  const other = pref === 'rift' ? 'aram' : 'rift';
+  let mode = pref, pr = predictWith(ratingTableFrom(matches.filter(m => modeOf(m) === pref), pref), _lastResult.t1, _lastResult.t2);
+  if (pr.known < 3) {
+    const alt = predictWith(ratingTableFrom(matches.filter(m => modeOf(m) === other), other), _lastResult.t1, _lastResult.t2);
+    if (alt.known > pr.known) { pr = alt; mode = other; }
+  }
+  return { ...pr, mode };
+}
+function renderPrediction() {
+  const box = document.getElementById('predBox');
+  if (!box) return;
+  const pr = predictCurrent();
+  if (!pr || !matches.length) { box.innerHTML = ''; return; }
+  if (pr.known < 3) { box.innerHTML = `<div class="pred-low">🔮 승부 예측 · 기록이 있는 소환사가 ${pr.known}/10명이라 아직 예측하기 어려워요</div>`; return; }
+  const b = Math.round(pr.p * 100), rd = 100 - b;
+  const fav = Math.abs(b - 50) < 4 ? '⚖️ 막상막하!' : b > 50 ? '🔵 블루팀 우세' : '🔴 레드팀 우세';
+  box.innerHTML = `<div class="pred-top"><b>🔮 승부 예측</b><span>${fav}</span></div>
+    <div class="pred-bar"><div class="pb" style="width:${b}%"><b>${b}%</b></div><div class="pr"><b>${rd}%</b></div></div>
+    <div class="pred-sub">평균 전력 블루 ${pr.a1.toFixed(1)} · 레드 ${pr.a2.toFixed(1)} · 기록 있는 소환사 ${pr.known}/10명 · ${MODE_NAME[pr.mode]} 전적${pr.mode === 'rift' ? '·라인 점수' : ''} 기준</div>`;
+}
+// 지난 경기들을 '그 전까지의 기록만으로' 예측했을 때 맞았는지 (경기 카드 · 대시보드 적중률)
+let _retroCache = { key: '', map: {} };
+function retroPredictions() {
+  const list = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
+  const key = recMode + '|' + list.map(m => m.id + ':' + (m.mode || '')).join(',');
+  if (_retroCache.key === key) return _retroCache.map;
+  const out = {};
+  list.forEach((m, i) => {
+    const prev = list.slice(0, i);
+    if (prev.length < 3) return;                                        // 3판은 쌓여야 예측
+    const T = ratingTableFrom(prev, recMode);
+    const blue = m.players.filter(p => p.team === 'blue'), red = m.players.filter(p => p.team === 'red');
+    const pr = predictWith(T, blue, red);
+    if (pr.known < 6) return;
+    const w = winnerOf(m);
+    out[m.id] = { p: pr.p, ok: (pr.p >= 0.5) === (w === 'blue') };
+  });
+  _retroCache = { key, map: out };
+  return out;
+}
+
+// ══════════════════ 라이벌 · 천적 · 케미 ══════════════════
+function relationsHtml(key) {
+  const mates = {}, opps = {}, lanes = {};
+  modeMatches().forEach(m => {
+    const me = m.players.find(p => (p.puuid || p.name) === key);
+    if (!me) return;
+    m.players.forEach(p => {
+      const k = p.puuid || p.name;
+      if (k === key) return;
+      const bag = p.team === me.team ? mates : opps;
+      const x = bag[k] || (bag[k] = { name: p.name, g: 0, w: 0, m, champ: p.champ });
+      x.g++; if (me.win) x.w++; x.m = m; x.champ = p.champ;
+      if (p.team !== me.team && me.pos && p.pos === me.pos) {
+        const l = lanes[k] || (lanes[k] = { name: p.name, g: 0, w: 0, pos: me.pos, m, champ: p.champ });
+        l.g++; if (me.win) l.w++; l.m = m; l.champ = p.champ;
+      }
+    });
+  });
+  const min = o => Math.min(2, Math.max(0, ...Object.values(o).map(x => x.g)));
+  const pick = (o, dir) => { const mn = min(o); return Object.values(o).filter(x => x.g >= mn)
+    .sort((a, b) => dir * (a.w / a.g - b.w / b.g) || b.g - a.g).slice(0, 3); };
+  const row = (x, kind) => `<div class="rel-row">${champIcon(x.m, x.champ, 'sm')}<b>${escapeHtml(x.name)}</b>
+      <span class="rel-v ${kind}">${x.w}승 ${x.g - x.w}패 <em>${Math.round(x.w / x.g * 100)}%</em></span></div>`;
+  const box = (title, sub, list, kind) => `<div class="rel-box"><div class="rel-h">${title}<small>${sub}</small></div>
+      ${list.length ? list.map(x => row(x, kind)).join('') : '<div class="rel-none">아직 기록이 부족해요</div>'}</div>`;
+  const chem = pick(mates, -1), nemesis = pick(opps, 1);
+  const mnO = min(opps);
+  const prey = Object.values(opps).filter(x => x.g >= mnO && !nemesis.includes(x)).sort((a, b) => (b.w / b.g - a.w / a.g) || b.g - a.g).slice(0, 3);
+  const laneList = Object.values(lanes).sort((a, b) => b.g - a.g || b.w / b.g - a.w / a.g).slice(0, 4);
+  return `<div class="rel-grid">
+      ${box('🤝 케미 짝꿍', '같은 팀일 때 승률 높은 순', chem, 'good')}
+      ${box('😈 천적', '상대로 만나면 승률 낮은 순', nemesis, 'bad')}
+      ${box('🍖 먹잇감', '상대로 만나면 승률 높은 순', prey, 'good')}
+      ${recMode === 'rift' ? box('⚔️ 맞라인 전적', '같은 라인 상대와의 승패', laneList.map(x => ({ ...x, name: `${POS_KO[x.pos] || ''} vs ${x.name}` })), 'lane') : ''}
+    </div>`;
+}
+
+// ══════════════════ 칭호 왕좌 변동 ══════════════════
+// 가장 최근 내전 날짜 전/후의 칭호 1등을 비교
+function titleChanges() {
+  const ms = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
+  const days = [...new Set(ms.map(dayKey))];
+  if (days.length < 2) return null;
+  const last = days[days.length - 1];
+  const before = withMatches(ms.filter(m => dayKey(m) !== last), () => computeTitles().titles);
+  const after = computeTitles().titles;
+  const sig = x => (x && !x.tie && x.winners && x.winners.length) ? x.winners.map(w => w.key).sort().join('|') : '';
+  const names = x => x.winners.map(w => w.name).join(x.t.duo ? ' & ' : ', ');
+  const prevBy = {}; before.forEach(x => { prevBy[x.t.k] = x; });
+  const changes = [];
+  after.forEach(x => {
+    const now = sig(x), was = sig(prevBy[x.t.k]);
+    if (!now || now === was) return;
+    changes.push({ k: x.t.k, t: x.t, to: names(x), from: was ? names(prevBy[x.t.k]) : '' });
+  });
+  return { day: last, changes };
+}
 
 loadRec();
 renderRecord();
