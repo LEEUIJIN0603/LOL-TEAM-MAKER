@@ -4802,7 +4802,7 @@ function titleChanges() {
 
 // ══════════════════ 접속 기록 (Supabase) ══════════════════
 // ▼ Supabase 연결 정보: Project URL 과 Publishable(anon) 키를 넣으면 기록이 시작돼요. (비밀 키는 절대 넣지 마세요)
-const VISIT_CFG = { url: '', key: '' };
+const VISIT_CFG = { url: 'https://zubgxqtpnmcawijgtzbg.supabase.co', key: 'sb_publishable_6zVG1tewpqWqJxzZ7g2GCQ_rGdg6xMb' };
 const VISIT_READY = !!(VISIT_CFG.url && VISIT_CFG.key);
 // 관리자 링크 방문, 내 컴퓨터 파일로 열었을 때는 기록하지 않아요
 const VISIT_ON = VISIT_READY && /^https?:$/.test(location.protocol) && !IS_ADMIN && !/^(localhost|127\.)/.test(location.hostname);
