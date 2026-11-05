@@ -1539,6 +1539,63 @@
     .rk-sep { width: 1px; height: 20px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
     .rk-lane { display: inline-flex; align-items: center; gap: 4px; }
     .rk-lane img { width: 14px; height: 14px; opacity: .8; }
+
+    /* ══ 접속통계 ══ */
+    .visit-note { font-size: .62rem; color: #3d4b60; text-align: center; margin-top: 26px; }
+    .visit-note:empty { display: none; }
+    .st-conn { font-family: 'Noto Sans KR', sans-serif; font-size: .7rem; letter-spacing: 0; font-weight: 700; border-radius: 999px; padding: 2px 10px; }
+    .st-conn.on { color: #7ee2a8; background: rgba(72,187,120,.12); border: 1px solid rgba(72,187,120,.4); }
+    .st-conn.off { color: #ff9a9a; background: rgba(232,64,64,.1); border: 1px solid rgba(232,64,64,.35); }
+    .st-login { display: flex; gap: 8px; align-items: center; }
+    .st-login .dc-input { margin: 0; flex: 1; }
+    input[type=password] { background: #06101a; border: 1px solid var(--border); border-radius: 7px; color: var(--text-bright); font-family: 'Noto Sans KR', sans-serif; padding: 10px 12px; }
+    input[type=password]:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(200,155,60,0.1); }
+    .st-load { width: auto; margin: 0; padding: 10px 22px; font-size: .9rem; }
+    .st-msg { font-size: .76rem; min-height: 1.2em; margin: 8px 0; color: var(--gold2); }
+    .st-msg.err { color: #ff7a7a; }
+    .st-periods { display: flex; gap: 6px; flex-wrap: wrap; }
+    .st-refresh { margin-left: auto; }
+    .st-kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+    .st-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .st-grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
+    /* 세로 막대 (날짜/시간별 방문) */
+    .vbar { display: flex; align-items: flex-end; gap: 3px; height: 150px; padding: 6px 2px 0; border-bottom: 1px solid #22324a; }
+    .vbar-c { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; cursor: default; }
+    .vbar-c i { display: block; width: 100%; max-width: 26px; background: var(--gold); border-radius: 4px 4px 0 0; transition: background .15s; }
+    .vbar-c i.has { min-height: 3px; }
+    .vbar-c:hover i { background: var(--gold2); }
+    .vbar-c b { font-size: .58rem; color: var(--text); font-weight: 700; margin-bottom: 2px; }
+    .vbar-x { display: flex; gap: 3px; padding: 4px 2px 0; }
+    .vbar-x span { flex: 1; min-width: 0; text-align: center; font-size: .56rem; color: var(--muted); white-space: nowrap; overflow: hidden; }
+    /* 가로 막대 (순위) */
+    .hbar { display: flex; flex-direction: column; gap: 7px; }
+    .hbar-r { display: grid; grid-template-columns: 84px 1fr 34px; align-items: center; gap: 8px; font-size: .74rem; }
+    .hbar-r > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+    .hbar-t { height: 10px; background: #0a1422; border-radius: 4px; overflow: hidden; }
+    .hbar-t i { display: block; height: 100%; background: var(--gold); border-radius: 4px; }
+    .hbar-r > b { text-align: right; color: var(--text-bright); font-size: .74rem; }
+    /* 방문 흐름 목록 */
+    .st-list { display: flex; flex-direction: column; gap: 6px; }
+    .st-v { display: grid; grid-template-columns: 112px 150px 1fr; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; }
+    .st-when b { display: block; color: var(--text-bright); font-size: .82rem; }
+    .st-when small { color: var(--muted); font-size: .64rem; }
+    .st-who { font-size: .72rem; color: #9aa6b8; line-height: 1.5; }
+    .st-who b { color: var(--gold2); }
+    .st-flow { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+    .st-flow span { font-size: .68rem; padding: 2px 8px; border-radius: 999px; background: var(--panel2); border: 1px solid var(--border); color: var(--text); white-space: nowrap; }
+    .st-flow span.ev { border-color: rgba(200,155,60,.45); color: var(--gold2); }
+    .st-flow em { color: var(--muted); font-style: normal; font-size: .6rem; }
+    .st-more { display: block; margin: 10px auto 0; }
+    .st-empty { text-align: center; color: var(--muted); padding: 30px 10px; font-size: .84rem; line-height: 1.8; background: var(--panel); border: 1px dashed var(--border); border-radius: 12px; }
+    @media (max-width: 760px) {
+      .st-kpi { grid-template-columns: repeat(2, 1fr); }
+      .st-grid, .st-grid3 { grid-template-columns: 1fr; }
+      .st-login { flex-direction: column; align-items: stretch; }
+      .st-load { width: 100%; }
+      .st-v { grid-template-columns: 1fr; gap: 6px; }
+      .st-when b { display: inline; margin-right: 6px; }
+      .vbar-c b { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -1568,6 +1625,7 @@
     <button class="nav-btn" onclick="switchPage('record',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></span>전적</button>
     <button class="nav-btn" onclick="switchPage('rank',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>순위</button>
     <button class="nav-btn" onclick="switchPage('summoner',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></span>소환사</button>
+    <button class="nav-btn adm-only" onclick="switchPage('stats',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6" rx="1"/><rect x="12" y="8" width="3" height="10" rx="1"/><rect x="17" y="5" width="3" height="13" rx="1"/></svg></span>접속통계</button>
   </nav>
 </aside>
 
@@ -1719,12 +1777,33 @@
   <div class="sm-grid" id="smGrid"></div>
 </div><!-- /view-summoner -->
 
+<!-- ▣ 접속통계 (관리자 링크에서만) -->
+<div class="page-view" id="view-stats">
+  <div class="card st-setup">
+    <div class="card-title"><span>▸ 접속통계</span><span class="st-conn" id="stConn"></span></div>
+    <div class="st-login">
+      <input type="password" id="stPass" class="dc-input" placeholder="Supabase 설정 때 정한 통계 비밀번호" autocomplete="off">
+      <button class="btn-main st-load" onclick="loadStats()">불러오기</button>
+    </div>
+    <div class="st-msg" id="stMsg"></div>
+    <div class="st-periods" id="stPeriods">
+      <button class="rk-btn" data-d="0" onclick="setStatPeriod(0)">오늘</button>
+      <button class="rk-btn active" data-d="7" onclick="setStatPeriod(7)">최근 7일</button>
+      <button class="rk-btn" data-d="30" onclick="setStatPeriod(30)">최근 30일</button>
+      <button class="rk-btn" data-d="3650" onclick="setStatPeriod(3650)">전체</button>
+      <button class="rk-btn st-refresh" onclick="loadStats()">↻ 새로고침</button>
+    </div>
+  </div>
+  <div id="stBody"></div>
+</div><!-- /view-stats -->
+
 <!-- ▣ 메뉴를 추가하면 이 자리에 화면을 넣어요
 <div class="page-view" id="view-새기능">
   ... 내용 ...
 </div>
 -->
 
+  <div class="visit-note" id="visitNote"></div>
 </div><!-- page -->
 </main>
 </div><!-- app -->
@@ -2120,6 +2199,8 @@ function switchPage(id, btn) {
   if (view) view.classList.add('active');
   setTimeout(renderMembers, 50);
   setTimeout(carLayout, 30);
+  if (typeof logVisit === 'function' && PAGE_NAME[id]) logVisit(PAGE_NAME[id]);
+  if (id === 'stats' && typeof initStatsView === 'function') initStatsView();
 }
 
 function switchTab(id, btn) {
@@ -2859,6 +2940,7 @@ function skipAnim() {
 }
 
 function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
+  if (typeof logVisit === 'function') logVisit('팀 배정 실행', mode === 'ability-scale' ? '증바람 능력치' : '올 랜덤');
   const btn = document.getElementById(btnId);
   resEl.style.display = 'none';
   btn.disabled = true;
@@ -3136,6 +3218,7 @@ const modeMatches = () => _mmOverride ? _mmOverride.slice() : matches.filter(m =
 function withMatches(list, fn) { const prev = _mmOverride; _mmOverride = list; try { return fn(); } finally { _mmOverride = prev; } }
 const normName = v => String(v || '').toLowerCase().replace(/\s+/g, '');
 function switchRecMode(mode) {
+  if (typeof logVisit === 'function' && mode !== recMode) logVisit('탭 전환', MODE_NAME[mode]);
   recMode = mode;
   document.querySelectorAll('.mode-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
   const msg = document.getElementById('recMsg'); if (msg) msg.textContent = '';
@@ -3595,6 +3678,7 @@ let _streakCache = [];
 function showStreakHist(i) {
   const s = _streakCache[i];
   if (!s) return;
+  if (typeof logVisit === 'function') logVisit('소환사 상세', s.name);
   const pop = document.getElementById('histPop');
   const all = s.days.slice().reverse();
   const tw = s.days.filter(d => d.res === 'w').length, tl = s.days.filter(d => d.res === 'l').length, td = s.days.length - tw - tl;
@@ -4715,6 +4799,172 @@ function titleChanges() {
   });
   return { day: last, changes };
 }
+
+// ══════════════════ 접속 기록 (Supabase) ══════════════════
+// ▼ Supabase 연결 정보: Project URL 과 Publishable(anon) 키를 넣으면 기록이 시작돼요. (비밀 키는 절대 넣지 마세요)
+const VISIT_CFG = { url: '', key: '' };
+const VISIT_READY = !!(VISIT_CFG.url && VISIT_CFG.key);
+// 관리자 링크 방문, 내 컴퓨터 파일로 열었을 때는 기록하지 않아요
+const VISIT_ON = VISIT_READY && /^https?:$/.test(location.protocol) && !IS_ADMIN && !/^(localhost|127\.)/.test(location.hostname);
+const sbHeaders = () => {
+  const h = { apikey: VISIT_CFG.key, 'Content-Type': 'application/json' };
+  if (/^eyJ/.test(VISIT_CFG.key)) h.Authorization = 'Bearer ' + VISIT_CFG.key;     // 예전 형식(anon JWT) 키일 때만
+  return h;
+};
+const rid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+function stGet(store, k, make) { try { let v = store.getItem(k); if (!v) { v = make(); store.setItem(k, v); } return v; } catch (e) { return make(); } }
+const VISIT_SID = stGet(sessionStorage, 'lol_sid', rid);        // 이번 방문(창)
+const VISIT_VID = stGet(localStorage, 'lol_vid', rid);          // 같은 기기 재방문 구분용 (이름 아님)
+function visitDevice() {
+  const u = navigator.userAgent;
+  const dev = /iPhone/.test(u) ? '아이폰' : /iPad/.test(u) || (/Macintosh/.test(u) && navigator.maxTouchPoints > 1) ? '아이패드'
+    : /Android/.test(u) ? (/Mobile/.test(u) ? '안드로이드폰' : '안드로이드 태블릿') : /Windows/.test(u) ? '윈도우 PC' : /Macintosh/.test(u) ? '맥' : /Linux/.test(u) ? '리눅스 PC' : '기타';
+  const app = /KAKAOTALK/i.test(u) ? ' · 카톡' : /Discord/i.test(u) ? ' · 디스코드' : /Instagram/i.test(u) ? ' · 인스타' : '';
+  return dev + app;
+}
+const REGION_KO = { Seoul: '서울', Busan: '부산', Incheon: '인천', Daegu: '대구', Daejeon: '대전', Gwangju: '광주', Ulsan: '울산', Sejong: '세종',
+  'Gyeonggi-do': '경기', Gyeonggi: '경기', 'Gangwon-do': '강원', Gangwon: '강원', 'North Chungcheong': '충북', 'Chungcheongbuk-do': '충북',
+  'South Chungcheong': '충남', 'Chungcheongnam-do': '충남', 'North Jeolla': '전북', 'Jeollabuk-do': '전북', 'South Jeolla': '전남', 'Jeollanam-do': '전남',
+  'North Gyeongsang': '경북', 'Gyeongsangbuk-do': '경북', 'South Gyeongsang': '경남', 'Gyeongsangnam-do': '경남', Jeju: '제주', 'Jeju-do': '제주' };
+// 대략적인 지역 (인터넷 주소 기준, 시·도 수준). 주소 자체는 저장하지 않아요
+let _geoP = null;
+function visitRegion() {
+  if (_geoP) return _geoP;
+  try { const c = sessionStorage.getItem('lol_geo'); if (c) return (_geoP = Promise.resolve(c)); } catch (e) {}
+  const timeout = new Promise(r => setTimeout(() => r(''), 3000));
+  const look = fetch('https://get.geojs.io/v1/ip/geo.json').then(r => r.json()).then(g => {
+    const reg = REGION_KO[g.region] || g.region || '';
+    const v = g.country_code === 'KR' ? (reg || '국내') : [g.country || g.country_code, reg].filter(Boolean).join(' ');
+    try { sessionStorage.setItem('lol_geo', v); } catch (e) {}
+    return v;
+  }).catch(() => '');
+  return (_geoP = Promise.race([look, timeout]));
+}
+let _lastLog = '';
+async function logVisit(menu, detail) {
+  if (!VISIT_ON) return;
+  const sig = menu + '|' + (detail || '');
+  if (sig === _lastLog && menu !== '팀 배정 실행') return;      // 같은 메뉴를 연달아 누른 건 한 번만
+  _lastLog = sig;
+  try {
+    const region = await visitRegion();
+    await fetch(VISIT_CFG.url.replace(/\/$/, '') + '/rest/v1/lol_visits', {
+      method: 'POST', headers: { ...sbHeaders(), Prefer: 'return=minimal' }, keepalive: true,
+      body: JSON.stringify({ sid: VISIT_SID, vid: VISIT_VID, menu: String(menu).slice(0, 30), detail: detail ? String(detail).slice(0, 60) : null, region: region || null, device: visitDevice() })
+    });
+  } catch (e) { /* 기록 실패해도 사이트는 그대로 */ }
+}
+const PAGE_NAME = { dash: '대시보드', assign: '팀 배정', record: '전적', rank: '순위', summoner: '소환사', stats: '접속통계' };
+if (VISIT_ON) {
+  const note = document.getElementById('visitNote');
+  if (note) note.textContent = '이 사이트는 더 나은 운영을 위해 방문 통계(접속 시간 · 대략적인 지역 · 기기 종류 · 본 메뉴)를 익명으로 기록해요.';
+  setTimeout(() => logVisit('대시보드', '첫 화면'), 400);
+}
+
+// ══════════════════ 접속통계 화면 (관리자) ══════════════════
+const ST_PASS_KEY = 'lol_stats_pass';
+let _stRows = null, _stDays = 7, _stShow = 40;
+function initStatsView() {
+  const conn = document.getElementById('stConn');
+  if (!conn) return;
+  conn.className = 'st-conn ' + (VISIT_READY ? 'on' : 'off');
+  conn.textContent = VISIT_READY ? '● 기록 연결됨' : '● 아직 연결 전';
+  try { document.getElementById('stPass').value = localStorage.getItem(ST_PASS_KEY) || ''; } catch (e) {}
+  if (!VISIT_READY) { stSay('Supabase 설정을 마치고 Project URL과 Publishable 키를 사이트에 넣으면 기록이 시작돼요.', true); return; }
+  if (!_stRows && document.getElementById('stPass').value) loadStats();
+}
+function stSay(t, err) { const m = document.getElementById('stMsg'); m.className = 'st-msg' + (err ? ' err' : ''); m.textContent = t; }
+function setStatPeriod(d) {
+  _stDays = d; _stShow = 40;
+  document.querySelectorAll('#stPeriods .rk-btn[data-d]').forEach(b => b.classList.toggle('active', Number(b.dataset.d) === d));
+  renderStats();
+}
+async function loadStats() {
+  if (!VISIT_READY) return;
+  const pass = document.getElementById('stPass').value.trim();
+  if (!pass) { stSay('통계 비밀번호를 넣어 주세요', true); return; }
+  stSay('⏳ 불러오는 중...');
+  try {
+    const since = new Date(Date.now() - 400 * 86400000).toISOString();
+    const res = await fetch(VISIT_CFG.url.replace(/\/$/, '') + '/rest/v1/rpc/lol_visit_log', {
+      method: 'POST', headers: sbHeaders(), body: JSON.stringify({ pass, since })
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error(/wrong password/i.test(t) ? '비밀번호가 틀렸어요' : /lol_visit_log/.test(t) && res.status === 404 ? 'Supabase에 통계 함수가 없어요 (SQL을 실행했는지 확인해 주세요)' : '불러오기 실패 (' + res.status + ')');
+    }
+    _stRows = await res.json();
+    try { localStorage.setItem(ST_PASS_KEY, pass); } catch (e) {}
+    stSay(`✅ 기록 ${_stRows.length}건을 불러왔어요 · ${new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })} 기준`);
+    renderStats();
+  } catch (e) { stSay('⚠️ ' + e.message, true); }
+}
+const pad2 = n => String(n).padStart(2, '0');
+const stDayKey = d => `${pad2(d.getMonth() + 1)}/${pad2(d.getDate())}`;
+function hbarHtml(entries, unit) {
+  const max = Math.max(1, ...entries.map(e => e[1]));
+  return `<div class="hbar">${entries.map(([k, v]) => `<div class="hbar-r" title="${escapeHtml(k)} · ${v}${unit}"><span>${escapeHtml(k)}</span><div class="hbar-t"><i style="width:${Math.max(3, v / max * 100)}%"></i></div><b>${v}</b></div>`).join('') || '<div class="rel-none">기록 없음</div>'}</div>`;
+}
+function renderStats() {
+  const box = document.getElementById('stBody');
+  if (!box || !_stRows) return;
+  const now = new Date();
+  const start = _stDays === 0 ? new Date(now.getFullYear(), now.getMonth(), now.getDate()) : new Date(now.getTime() - _stDays * 86400000);
+  const rows = _stRows.map(r => ({ ...r, t: new Date(r.created_at) })).filter(r => r.t >= start).sort((a, b) => a.t - b.t);
+  if (!rows.length) { box.innerHTML = '<div class="st-empty">이 기간에는 방문 기록이 없어요.<br><small>지인이 일반 링크로 들어오면 여기에 쌓여요 (관리자 링크 방문은 기록하지 않아요)</small></div>'; return; }
+  // 방문(세션)별로 묶기
+  const S = {};
+  rows.forEach(r => { const v = S[r.sid] || (S[r.sid] = { sid: r.sid, vid: r.vid, start: r.t, region: r.region, device: r.device, ev: [] }); v.ev.push(r); if (!v.region && r.region) v.region = r.region; });
+  const visits = Object.values(S).sort((a, b) => a.start - b.start);
+  const nth = {}; visits.forEach(v => { nth[v.vid] = (nth[v.vid] || 0) + 1; v.nth = nth[v.vid]; });
+  const vids = new Set(visits.map(v => v.vid));
+  const menuViews = rows.filter(r => PAGE_ROW.has(r.menu));
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayVisits = visits.filter(v => v.start >= todayStart).length;
+  const kpi = `<div class="st-kpi">
+    <div class="kpi" data-ico="👀"><div class="kpi-l">방문</div><div class="kpi-v">${visits.length}<small>회</small></div><div class="kpi-s">오늘 ${todayVisits}회</div></div>
+    <div class="kpi" data-ico="📱"><div class="kpi-l">방문한 기기</div><div class="kpi-v">${vids.size}<small>대</small></div><div class="kpi-s">같은 기기 재방문은 1대로</div></div>
+    <div class="kpi" data-ico="🧭"><div class="kpi-l">메뉴 조회</div><div class="kpi-v">${menuViews.length}<small>회</small></div><div class="kpi-s">방문당 ${(menuViews.length / visits.length).toFixed(1)}개</div></div>
+    <div class="kpi" data-ico="🔍"><div class="kpi-l">소환사 상세 열람</div><div class="kpi-v">${rows.filter(r => r.menu === '소환사 상세').length}<small>회</small></div><div class="kpi-s">팀 배정 실행 ${rows.filter(r => r.menu === '팀 배정 실행').length}회</div></div>
+  </div>`;
+  // 날짜(또는 오늘은 시간)별 방문
+  let buckets;
+  if (_stDays === 0) {
+    buckets = Array.from({ length: 24 }, (_, h) => [`${h}시`, visits.filter(v => v.start.getHours() === h).length]);
+  } else {
+    const n = Math.min(_stDays, Math.max(7, Math.ceil((now - visits[0].start) / 86400000) + 1), 31);
+    buckets = Array.from({ length: n }, (_, i) => { const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (n - 1 - i)); const k = stDayKey(d);
+      return [k, visits.filter(v => stDayKey(v.start) === k && v.start.getFullYear() === d.getFullYear()).length]; });
+  }
+  const vmax = Math.max(1, ...buckets.map(b => b[1]));
+  const every = Math.ceil(buckets.length / 12);
+  const chart = `<div class="db-box"><div class="db-h"><b>📈 ${_stDays === 0 ? '오늘 시간대별 방문' : '날짜별 방문'}</b><span>막대에 마우스를 올리면 숫자가 보여요</span></div>
+    <div class="vbar">${buckets.map(([k, v]) => `<div class="vbar-c" title="${k} · 방문 ${v}회">${v ? `<b>${v}</b>` : ''}<i class="${v ? 'has' : ''}" style="height:${v / vmax * 100}%"></i></div>`).join('')}</div>
+    <div class="vbar-x">${buckets.map(([k], i) => `<span>${i % every === 0 ? k : ''}</span>`).join('')}</div></div>`;
+  const cnt = (arr, f) => { const o = {}; arr.forEach(x => { const k = f(x) || '알 수 없음'; o[k] = (o[k] || 0) + 1; }); return Object.entries(o).sort((a, b) => b[1] - a[1]); };
+  const menuRank = `<div class="db-box"><div class="db-h"><b>🧭 많이 본 메뉴</b></div>${hbarHtml(cnt(menuViews, r => r.menu).slice(0, 8), '회')}</div>`;
+  const region = `<div class="db-box"><div class="db-h"><b>📍 지역</b><span>대략적인 시·도</span></div>${hbarHtml(cnt(visits, v => v.region).slice(0, 8), '회')}</div>`;
+  const device = `<div class="db-box"><div class="db-h"><b>📱 기기</b></div>${hbarHtml(cnt(visits, v => v.device).slice(0, 8), '회')}</div>`;
+  const viewed = `<div class="db-box"><div class="db-h"><b>🔍 많이 열어본 소환사</b></div>${hbarHtml(cnt(rows.filter(r => r.menu === '소환사 상세'), r => r.detail).slice(0, 8), '회')}</div>`;
+  // 방문 흐름 목록 (최근 방문이 위)
+  const chip = r => r.menu === '소환사 상세' ? `<span class="ev">🔍 ${escapeHtml(r.detail || '')}</span>`
+    : r.menu === '팀 배정 실행' ? `<span class="ev">⚔️ 배정 실행${r.detail ? ' · ' + escapeHtml(r.detail) : ''}</span>`
+    : r.menu === '탭 전환' ? `<span class="ev">↔ ${escapeHtml(r.detail || '')}</span>`
+    : `<span>${escapeHtml(r.menu)}</span>`;
+  const list = visits.slice().reverse();
+  const items = list.slice(0, _stShow).map(v => {
+    const last = v.ev[v.ev.length - 1].t, dur = Math.round((last - v.start) / 60000);
+    return `<div class="st-v">
+      <div class="st-when"><b>${stDayKey(v.start)} ${pad2(v.start.getHours())}:${pad2(v.start.getMinutes())}</b><small>${dur >= 1 ? `약 ${dur}분 머묾` : '1분 미만'}</small></div>
+      <div class="st-who"><b>방문자 ${escapeHtml(String(v.vid).slice(0, 4).toUpperCase())}</b>${v.nth > 1 ? ` · ${v.nth}번째 방문` : ' · 첫 방문'}<br>📍 ${escapeHtml(v.region || '지역 모름')} · ${escapeHtml(v.device || '')}</div>
+      <div class="st-flow">${v.ev.map(chip).join('<em>→</em>')}</div>
+    </div>`;
+  }).join('');
+  box.innerHTML = kpi + `<div class="st-grid">${chart}${menuRank}</div>` + `<div class="st-grid3">${region}${device}${viewed}</div>` +
+    `<div class="db-sec"><div class="db-h"><b>🕒 방문 기록</b><span>최근 방문이 위 · '방문자' 코드는 같은 기기를 구분하는 임의 코드예요</span></div><div class="st-list">${items}</div>
+     ${list.length > _stShow ? `<button class="rk-btn st-more" onclick="_stShow += 40; renderStats()">더 보기 (${list.length - _stShow}개 남음)</button>` : ''}</div>`;
+}
+const PAGE_ROW = new Set(['대시보드', '팀 배정', '전적', '순위', '소환사']);
 
 loadRec();
 renderRecord();
