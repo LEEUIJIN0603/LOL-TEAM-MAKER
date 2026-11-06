@@ -5033,48 +5033,91 @@ function dayMvpOf(dayMs) {
   });
   return Object.values(W).sort((a, b) => b.w - a.w || b.mvp - a.mvp || b.sc - a.sc)[0];
 }
+// 그날 기준으로 다시 계산하기 (그날까지의 전적 / 그 전날까지의 전적)
+function dayDigest(day) {
+  const all = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
+  const dayMs = all.filter(m => dayKey(m) === day);
+  const upTo = all.filter(m => dayKey(m) <= day), before = all.filter(m => dayKey(m) < day);
+  const out = { dayMs, mvp: dayMvpOf(dayMs), hot: [], cold: [], broke: [], titles: [], records: [], upsets: [] };
+  // 연승 · 연패 (그날까지 기준) + 연패 탈출 (그 전날까지 2연패 이상이었는데 그날 이김)
+  const stNow = withMatches(upTo, calcStreaks), stBefore = before.length ? withMatches(before, calcStreaks) : [];
+  const playedToday = new Set(dayMs.flatMap(m => m.players.map(p => p.puuid || p.name)));
+  stNow.forEach(s => {
+    if (!playedToday.has(s.key) || s.n < 2) return;
+    if (s.kind === 'win') out.hot.push(s); else if (s.kind === 'lose') out.cold.push(s);
+  });
+  stNow.forEach(s => {
+    const b = stBefore.find(x => x.key === s.key);
+    if (b && b.kind === 'lose' && b.n >= 2 && playedToday.has(s.key) && s.kind === 'win') out.broke.push({ name: s.name, n: b.n });
+  });
+  out.hot.sort((a, b) => b.n - a.n); out.cold.sort((a, b) => b.n - a.n); out.broke.sort((a, b) => b.n - a.n);
+  // 칭호 왕좌 변동 (그 전날까지 → 그날까지)
+  if (before.length) {
+    const tb = withMatches(before, () => computeTitles().titles), ta = withMatches(upTo, () => computeTitles().titles);
+    const sig = x => (x && !x.tie && x.winners && x.winners.length) ? x.winners.map(w => w.key).sort().join('|') : '';
+    const names = x => x.winners.map(w => w.name).join(x.t.duo ? ' & ' : ', ');
+    const prev = {}; tb.forEach(x => { prev[x.t.k] = x; });
+    ta.forEach(x => { const now = sig(x), was = sig(prev[x.t.k]); if (now && now !== was) out.titles.push({ t: x.t, to: names(x), isNew: !was }); });
+  }
+  // 역대 한 판 기록 경신 (그 전날까지의 최고 기록을 넘었을 때)
+  if (before.length) {
+    [['k', '최다 킬', v => v + '킬'], ['a', '최다 어시스트', v => v + '어시'], ['dmg', '최다 딜량', v => v.toLocaleString()]].forEach(([key, label, f]) => {
+      const prevMax = Math.max(0, ...before.flatMap(m => m.players.map(p => p[key] || 0)));
+      let best = null;
+      dayMs.forEach(m => m.players.forEach(p => { if ((p[key] || 0) > prevMax && (!best || p[key] > best.p[key])) best = { p, m }; }));
+      if (best) out.records.push(`한 판 ${label} **${f(best.p[key])}** · ${best.p.name} (${champInfo(best.p.champ).name})`);
+    });
+  }
+  // 이변: 승부 예측 35% 이하였던 팀이 이긴 판
+  const retro = retroPredictions();
+  dayMs.forEach(m => {
+    const r = retro[m.id]; if (!r) return;
+    const w = winnerOf(m), pw = w === 'blue' ? r.p : 1 - r.p;
+    if (pw <= 0.35) out.upsets.push({ m, w, pct: Math.round(pw * 100) });
+  });
+  return out;
+}
+// 사이트 주소 (관리자 표시 없이 · 전적 화면으로 바로)
+const siteRecordUrl = () => location.origin + location.pathname + '#record' + (recMode === 'aram' ? '-aram' : '');
 async function sendDayToDiscord(day, btn) {
   if (!IS_ADMIN) return;
   if (!getWebhook()) { openDiscordSettings(); return; }
-  const dayMs = modeMatches().filter(m => dayKey(m) === day).sort((a, b) => (a.date || 0) - (b.date || 0));
+  const g = dayDigest(day), dayMs = g.dayMs;
   if (!dayMs.length) return;
   if (!confirm(`${day.slice(5).replace('.', '/')} ${MODE_NAME[recMode]} 내전 결과 ${dayMs.length}판을 디스코드로 보낼까요?`)) return;
   const WD = ['일', '월', '화', '수', '목', '금', '토'];
   const d0 = new Date(dayMs[0].date);
-  const mvp = dayMvpOf(dayMs);
-  const st = calcStreaks();
-  const hot = st.filter(s => s.kind === 'win' && s.n >= 2).sort((a, b) => b.n - a.n).slice(0, 3);
-  const cold = st.filter(s => s.kind === 'lose' && s.n >= 2).sort((a, b) => b.n - a.n).slice(0, 3);
-  const totalMin = Math.round(dayMs.reduce((t, m) => t + m.len, 0) / 60);
-  const summary = {
-    title: `📅 ${day.slice(5).replace('.', '/')} (${WD[d0.getDay()]}) ${MODE_NAME[recMode]} 내전 결과`,
-    description: `총 **${dayMs.length}판** · ${totalMin}분`,
-    color: 0xc89b3c,
-    thumbnail: mvp ? { url: dcChampIcon(mvp.m, mvp.p.champ) } : undefined,
-    fields: [
-      mvp ? { name: '👑 오늘의 MVP', value: `**${mvp.p.name}** · ${mvp.w}승 ${mvp.g - mvp.w}패 · MVP ${mvp.mvp}회 · ${mvp.k}/${mvp.d}/${mvp.a}`, inline: false } : null,
-      { name: '🔥 연승 중', value: hot.length ? hot.map(s => `**${s.name}** ${s.n}연승`).join('\n') : '없음', inline: true },
-      { name: '🧊 연패 중', value: cold.length ? cold.map(s => `**${s.name}** ${s.n}연패`).join('\n') : '없음', inline: true }
-    ].filter(Boolean),
-    footer: { text: '오늘의 LOL 내전 · 연승·연패는 내전 날짜 기준' }
+  const B = s => `**${s}**`;
+  const lines = [];
+  if (g.mvp) lines.push(`👑 MVP ${B(g.mvp.p.name)} · ${g.mvp.w}승 ${g.mvp.g - g.mvp.w}패`);
+  if (g.hot.length) lines.push('🔥 ' + g.hot.map(s => `${B(s.name)} ${s.n}연승`).join(' · '));
+  if (g.cold.length) lines.push('🧊 ' + g.cold.map(s => `${B(s.name)} ${s.n}연패`).join(' · '));
+  if (g.broke.length) lines.push('🎉 ' + g.broke.map(s => `${B(s.name)} ${s.n}연패 탈출`).join(' · '));
+  g.titles.forEach(x => lines.push(`👑 ${x.t.ico} ${x.t.name} → ${B(x.to)}${x.isNew ? ' 🆕' : ''}`));
+  g.records.forEach(r => lines.push('📈 ' + r));
+  g.upsets.forEach(u => lines.push(`😱 이변 · ${gameNo(u.m)}번째 판, 예측 ${u.pct}% ${u.w === 'blue' ? '블루팀' : '레드팀'} 역전승`));
+  const games = dayMs.map(m => {
+    const w = winnerOf(m), tk = t => m.players.filter(p => p.team === t).reduce((x, p) => x + p.k, 0);
+    const multi = m.players.filter(p => (p.penta || 0) > 0 || (p.multi || 0) >= 4)
+      .map(p => `🔥 ${(p.penta || 0) > 0 || p.multi >= 5 ? '펜타킬' : '쿼드라킬'} ${p.name}`);
+    return [`${w === 'blue' ? '🔵' : '🔴'} ${gameNo(m)}판 · ${w === 'blue' ? '블루' : '레드'} 승 ${tk('blue')} : ${tk('red')}`, ...multi].join(' · ');
+  });
+  const url = siteRecordUrl();
+  const embed = {
+    title: `📅 ${day.slice(5).replace('.', '/')} (${WD[d0.getDay()]}) ${MODE_NAME[recMode]} 내전 · ${dayMs.length}판`,
+    url, color: 0xc89b3c,
+    description: (lines.length ? lines.join('\n') + '\n\n' : '') + games.join('\n'),
+    thumbnail: g.mvp ? { url: dcChampIcon(g.mvp.m, g.mvp.p.champ) } : undefined,
+    footer: { text: '오늘의 LOL 내전' }
   };
-  const gameEmbed = m => {
-    const win = winnerOf(m), bd = matchBadges(m);
-    const tk = t => m.players.filter(p => p.team === t).reduce((x, p) => x + p.k, 0);
-    const who = t => m.players.map((p, i) => p.team !== t ? '' :
-      `${p.pos && ROLE_EMOJI[p.pos] ? ROLE_EMOJI[p.pos] + ' ' : ''}**${p.name}** ${champInfo(p.champ).name} ${p.k}/${p.d}/${p.a}${bd[i] ? ` · ${bd[i].toUpperCase()}` : ''}`).filter(Boolean).join('\n');
-    return {
-      title: `${gameNo(m)}번째 판 · ${win === 'blue' ? '🔵 블루팀' : '🔴 레드팀'} 승리  ${tk('blue')} : ${tk('red')}`,
-      color: win === 'blue' ? 0x4a9eff : 0xe84040,
-      fields: [{ name: '🔵 블루팀', value: who('blue') || '-', inline: true }, { name: '🔴 레드팀', value: who('red') || '-', inline: true }],
-      footer: { text: `${fmtLen(m.len)}${m.surrender ? ' · 항복' : ''}` }
-    };
-  };
+  const components = [{ type: 1, components: [{ type: 2, style: 5, label: '📊 사이트에서 자세히 보기', url }] }];
   const old = btn.textContent;
   btn.disabled = true; btn.textContent = '⏳ 보내는 중...';
   try {
-    const embeds = [summary, ...dayMs.map(gameEmbed)];
-    for (let i = 0; i < embeds.length; i += 10) await discordPost({ embeds: embeds.slice(i, i + 10) });   // 한 메시지에 최대 10개
+    const hook = getWebhook();
+    const withComp = hook + (hook.includes('?') ? '&' : '?') + 'with_components=true';
+    try { await discordPost({ embeds: [embed], components }, null, withComp); }
+    catch (e) { if (/응답 400/.test(e.message)) await discordPost({ embeds: [embed] }); else throw e; }   // 버튼이 안 되면 버튼 없이 (제목을 누르면 사이트로)
     btn.textContent = '✅ 보냈어요';
   } catch (e) { btn.textContent = '⚠️ 실패'; alert('디스코드로 보내지 못했어요\n' + e.message); }
   setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 2500);
@@ -5324,7 +5367,7 @@ const PAGE_NAME = { dash: '대시보드', assign: '팀 배정', record: '전적'
 if (VISIT_ON) {
   const note = document.getElementById('visitNote');
   if (note) note.textContent = '이 사이트는 더 나은 운영을 위해 방문 통계(접속 시간 · 대략적인 지역 · 기기 종류 · 본 메뉴)를 익명으로 기록해요.';
-  setTimeout(() => logVisit('대시보드', '첫 화면'), 400);
+  setTimeout(() => { if (!location.hash) logVisit('대시보드', '첫 화면'); }, 400);
 }
 
 // ══════════════════ 접속통계 화면 (관리자) ══════════════════
@@ -5436,6 +5479,16 @@ loadRec();
 renderRecord();
 loadDD();
 loadSharedMatches();
+// 주소 끝 #record 처럼 붙어 있으면 그 메뉴로 바로 열기 (디스코드 '자세히 보기' 버튼)
+(function openFromHash() {
+  const h = (location.hash || '').replace('#', '');
+  if (!h) return;
+  const [id, sub] = h.split('-');
+  const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => (b.getAttribute('onclick') || '').includes(`'${id}'`));
+  if (!btn || btn.classList.contains('adm-only') && !IS_ADMIN) return;
+  switchPage(id, btn);
+  if (id === 'record' && sub === 'aram') switchRecMode('aram');
+})();
 </script>
 </body>
 </html>
