@@ -110,7 +110,7 @@
     .adm-bar { display: none; }
     html.admin .adm-bar { display: flex; align-items: center; justify-content: center; gap: 10px; position: sticky; top: 0; z-index: 1000;
       padding: 6px 12px; background: linear-gradient(90deg, #7a5518, #c89b3c 50%, #7a5518); color: #1a1205; font-size: .78rem; font-weight: 700; letter-spacing: .02em; }
-    .adm-bar b { background: #1a1205; color: var(--gold2); padding: 2px 9px; border-radius: 5px; font-size: .74rem; letter-spacing: .06em; }
+    .adm-bar b { white-space: nowrap; flex-shrink: 0; background: #1a1205; color: var(--gold2); padding: 2px 9px; border-radius: 5px; font-size: .74rem; letter-spacing: .06em; }
     .adm-bar span { opacity: .8; font-weight: 600; }
     /* 리플레이 끌어다 놓기 */
     .rec-drop { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 4px 0 14px; padding: 16px; cursor: pointer;
@@ -1257,7 +1257,7 @@
       .nav-btn .nav-ico svg { width: 21px; height: 21px; }
       .nav-btn.active { border-top-color: var(--gold); color: var(--gold2); font-weight: 700; }
       .nav-sep { width: 1px; height: auto; margin: 10px 2px; align-self: stretch; }
-      .adm-bar span { display: none; }
+      .adm-bar { gap: 6px; padding: 5px 8px; } .adm-bar span { font-size: .64rem; line-height: 1.3; text-align: left; word-break: keep-all; }
       .rec-drop { display: none; }
       .main { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
       .app { min-height: 0; }
@@ -1578,58 +1578,70 @@
       font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; letter-spacing: 1px; color: var(--gold2);
       background: var(--panel); border: 1.5px solid rgba(200,155,60,.6); box-shadow: 0 0 0 4px rgba(0,0,0,.25), 0 4px 14px rgba(0,0,0,.5); }
     .match-board .modal-teams-row { position: relative; }
-    /* 새 보드 (라인 가운데 1개) */
+    /* 새 보드: 팀 칸에 승부 예측(%) · 라인은 가운데 1개 · 양쪽에 이름 */
+    .match-board { background: var(--panel); box-shadow: none; }
+    .match-board .pred { display: none; }
     .match-board .modal-teams-row { display: block; }
     .match-board .modal-teams-row::after { display: none; }
     .mb-head { position: relative; display: grid; grid-template-columns: 1fr 1fr; }
-    .mb-head .team-head.banner { min-height: 66px; border-bottom: 2px solid; }
-    .mb-head .team-head.banner.blue { border-bottom-color: var(--blue-team);
-      background: radial-gradient(120% 140% at 100% 50%, rgba(80,150,255,.45) 0%, rgba(80,150,255,0) 60%), linear-gradient(90deg, #06132b 0%, #0b2552 48%, #1a4a9a 100%); }
-    .mb-head .team-head.banner.red { border-bottom-color: var(--red-team); flex-direction: row-reverse;
-      background: radial-gradient(120% 140% at 0% 50%, rgba(255,90,90,.42) 0%, rgba(255,90,90,0) 60%), linear-gradient(270deg, #22060a 0%, #4f0f16 48%, #9a2226 100%); }
+    .mb-head .team-head.banner { min-height: 0; padding: 18px 24px 16px; align-items: center; border-bottom: none; }
     .mb-head .team-head.banner::before { display: none; }
+    .mb-head .team-head.banner.blue { background: linear-gradient(90deg, rgba(74,158,255,.12), rgba(74,158,255,.22)); }
+    .mb-head .team-head.banner.red { background: linear-gradient(270deg, rgba(232,64,64,.12), rgba(232,64,64,.22)); flex-direction: row-reverse; }
     .mb-head .team-head.banner.red .side-left { flex-direction: row-reverse; text-align: right; }
+    .mb-head .sidemap { display: none; }
+    .mb-head .side-en { font-size: 1rem; letter-spacing: 4px; text-shadow: none; }
     .mb-head .team-head.banner.blue .side-en { color: #7db8ff; } .mb-head .team-head.banner.red .side-en { color: #ff7b7b; }
-    .mb-vs { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; width: 40px; height: 40px; border-radius: 50%;
-      display: grid; place-items: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; letter-spacing: 1px; color: var(--gold2);
-      background: var(--panel); border: 1.5px solid rgba(200,155,60,.6); box-shadow: 0 0 0 4px rgba(0,0,0,.2), 0 4px 14px rgba(0,0,0,.45); }
-    .mb-rows { padding: 2px 0 4px; }
-    .mb-line { display: grid; grid-template-columns: 1fr 104px 1fr; align-items: stretch; border-top: 1px solid rgba(255,255,255,.05); animation: slideIn .35s ease both; }
+    .mb-head .side-ko { color: var(--muted); letter-spacing: 1px; text-shadow: none; }
+    .mb-head .side-ko em { font-style: normal; color: var(--gold2); margin-left: 6px; }
+    .mb-pct { font-family: 'Rajdhani', 'Bebas Neue', sans-serif; font-size: 1.55rem; font-weight: 700; line-height: 1; opacity: .5; }
+    .mb-pct.win { opacity: 1; }
+    .mb-head .team-head.banner.blue .mb-pct { color: #7db8ff; margin-left: auto; margin-right: 34px; }
+    .mb-head .team-head.banner.red .mb-pct { color: #ff7b7b; margin-right: auto; margin-left: 34px; }
+    .mb-vs { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; width: 30px; height: 30px; border-radius: 50%;
+      display: grid; place-items: center; font-family: 'Bebas Neue', sans-serif; font-size: .78rem; letter-spacing: 1px; color: var(--text);
+      background: var(--panel); border: 1px solid rgba(255,255,255,.14); }
+    .mb-split { display: flex; height: 4px; }
+    .mb-split i { display: block; transition: flex .8s cubic-bezier(.2,.8,.2,1); }
+    .mb-split .b { background: var(--blue-team); } .mb-split .r { background: var(--red-team); }
+    .mb-sub { padding: 7px 12px; font-size: .66rem; color: var(--muted); text-align: center; background: rgba(0,0,0,.12); border-bottom: 1px solid rgba(255,255,255,.05); }
+    .mb-sub b { color: var(--gold2); font-weight: 600; }
+    .mb-rows { padding: 0; }
+    .mb-line { display: grid; grid-template-columns: 1fr 96px 1fr; align-items: stretch; border-top: 1px solid rgba(255,255,255,.05); animation: slideIn .35s ease both; }
     #modalTeamsRow.no-anim .mb-line { animation: none; }
     .mb-line:first-child { border-top: none; }
-    .mb-lane { display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0,0,0,.14); border-left: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255,255,255,.05); }
-    .mb-lane .ri { width: 20px; height: 20px; object-fit: contain; opacity: .9; }
-    .mb-lane .rn { font-family: 'Bebas Neue', sans-serif; font-size: .92rem; letter-spacing: 1.5px; color: var(--gold2); opacity: .9; }
-    .mb-cell.role-row { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 0; background: none; animation: none; min-width: 0; }
-    .mb-cell.blue { flex-direction: row; justify-content: flex-end; }
-    .mb-cell.red { flex-direction: row-reverse; justify-content: flex-end; }
+    .mb-lane { display: flex; align-items: center; justify-content: center; gap: 6px; border-left: 1px solid rgba(255,255,255,.06); border-right: 1px solid rgba(255,255,255,.06); }
+    .mb-lane .ri { width: 20px; height: 20px; object-fit: contain; opacity: .7; }
+    .mb-lane .rn { font-family: 'Bebas Neue', sans-serif; font-size: .84rem; letter-spacing: 1.5px; color: var(--text); opacity: .7; }
+    .mb-cell.role-row { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 16px; border-radius: 0; animation: none; min-width: 0; }
+    .mb-cell.blue { background: rgba(74,158,255,.075); }
+    .mb-cell.red { background: rgba(232,64,64,.075); flex-direction: row-reverse; }
+    .mb-cell.blue:hover { background: rgba(74,158,255,.14); } .mb-cell.red:hover { background: rgba(232,64,64,.14); }
     .mb-cell .pname-wrap { flex: 0 1 auto; min-width: 0; gap: 6px; }
     .mb-cell.blue .pname-wrap { flex-direction: row; }            /* 🔄 = 바깥쪽(왼쪽) 끝 */
     .mb-cell.red .pname-wrap { flex-direction: row-reverse; }      /* 🔄 = 바깥쪽(오른쪽) 끝 */
-    .mb-cell .pname { font-size: 1rem; font-weight: 700; color: var(--text-bright); }
-    .mb-cell.blue:hover { background: linear-gradient(270deg, rgba(74,158,255,.14), rgba(74,158,255,0) 85%); }
-    .mb-cell.red:hover { background: linear-gradient(90deg, rgba(232,64,64,.14), rgba(232,64,64,0) 85%); }
-    .mb-score { display: flex; align-items: center; gap: 6px; margin-right: auto; flex-shrink: 0; }
-    .mb-cell.red .mb-score { margin-right: 0; margin-left: auto; flex-direction: row-reverse; }
-    .mb-bar { display: block; width: 44px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.08); overflow: hidden; }
+    .mb-cell .pname { font-size: 1.05rem; font-weight: 700; color: var(--text-bright); }
+    .mb-cell .swap-mark { filter: none; opacity: .85; font-size: .8rem; }
+    .mb-score { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .mb-cell.red .mb-score { flex-direction: row-reverse; }
+    .mb-bar { display: block; width: 40px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.08); overflow: hidden; }
     .mb-bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), var(--gold2)); }
     .mb-cell.blue .mb-bar { transform: scaleX(-1); }
     .mb-score b { font-family: 'Rajdhani', sans-serif; font-size: .9rem; color: var(--gold2); min-width: 22px; text-align: center; }
-    .mb-cell.empty { min-height: 46px; }
+    .mb-cell.empty { min-height: 48px; }
     @media (max-width: 600px) {
+      .mb-head .team-head.banner { padding: 14px 14px 12px; flex-direction: column !important; align-items: flex-start; gap: 8px; }
+      .mb-head .team-head.banner.red { align-items: flex-end; }
+      .mb-head .team-head.banner.blue .mb-pct, .mb-head .team-head.banner.red .mb-pct { margin: 0; align-self: center; font-size: 1.35rem; }
+      .mb-head .side-en { font-size: .9rem; letter-spacing: 3px; }
+      .mb-head .side-ko { font-size: .66rem; }
       .mb-line { grid-template-columns: 1fr 58px 1fr; }
       .mb-lane { flex-direction: column; gap: 1px; }
       .mb-lane .role-emoji-sm { display: none; }
       .mb-lane .ri { width: 17px; height: 17px; }
       .mb-lane .rn { font-size: .74rem; }
-      .mb-cell.role-row { padding: 10px 10px; gap: 6px; }
-      .mb-cell .pname { font-size: .86rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .mb-head .team-head.banner { min-height: 54px; padding: 8px 10px; }
-      .mb-head .sidemap { display: none; }
-      .mb-head .side-en { font-size: 1.05rem; letter-spacing: 2px; }
-      .mb-head .side-ko { font-size: .66rem; }
-      .mb-head .team-avg { display: none; }
-      .mb-vs { width: 32px; height: 32px; font-size: .85rem; }
+      .mb-cell.role-row { padding: 10px 8px; gap: 6px; }
+      .mb-cell .pname { font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .mb-bar { display: none; }
     }
     @media (max-width: 500px) {
@@ -1742,7 +1754,7 @@
 </head>
 <body>
 
-<div class="adm-bar"><b>관리자 모드</b></div>
+<div class="adm-bar"><b>관리자 모드</b><span>전적 관리 및 통계 등을 관리합니다. (관리자 외 접속 금지)</span></div>
 <div class="drop-veil" id="dropVeil"><div>📂 여기에 놓으면 전적이 올라가요<small>리플레이(.rofl) 파일 여러 개를 한 번에 놓아도 돼요</small></div></div>
 <div class="hero">
   <img class="hero-img" id="heroBg" src="" alt="">
@@ -3323,13 +3335,25 @@ function escapeHtml(str) {
 // 결과 보드: 라인은 가운데 한 번만, 양쪽에 블루/레드 이름 (맞라인이 한 줄에)
 function makeBoard(t1, t2, showScore) {
   const avg = list => parseFloat((list.reduce((s, m) => s + (m.score || 0), 0) / list.length).toFixed(2)).toString();
-  const head = (cls, ko) => `
+  // 승부 예측 (전적이 쌓인 소환사가 3명 이상일 때)
+  let pr = null;
+  try { pr = (typeof predictCurrent === 'function' && matches.length) ? predictCurrent() : null; } catch (e) { pr = null; }
+  const ok = pr && pr.known >= 3;
+  const pb = ok ? Math.round(pr.p * 100) : 50, prd = 100 - pb;
+  const head = (cls, ko) => {
+    const v = cls === 'blue' ? pb : prd, o = cls === 'blue' ? prd : pb;
+    return `
     <div class="team-head banner mb-banner ${cls}">
-      <div class="side-left">${miniMapSVG(cls)}
-        <div class="side-text"><span class="side-en">${cls === 'blue' ? 'BLUE SIDE' : 'RED SIDE'}</span><span class="side-ko">${ko}</span></div>
+      <div class="side-left">
+        <div class="side-text"><span class="side-en">${cls === 'blue' ? 'BLUE SIDE' : 'RED SIDE'}</span><span class="side-ko">${ko}${showScore ? `<em>평균 ${avg(cls === 'blue' ? t1 : t2)}</em>` : ''}</span></div>
       </div>
-      ${showScore ? `<span class="team-avg">평균 능력치 ${avg(cls === 'blue' ? t1 : t2)}</span>` : ''}
+      ${ok ? `<span class="mb-pct${v > o ? ' win' : ''}">${v}%</span>` : ''}
     </div>`;
+  };
+  const fav = !ok ? '' : Math.abs(pb - 50) < 4 ? '막상막하' : pb > 50 ? '블루팀 우세' : '레드팀 우세';
+  const sub = !pr || !matches.length ? '' : ok
+    ? `🔮 승부 예측 · <b>${fav}</b> · 평균 전력 ${pr.a1.toFixed(1)} : ${pr.a2.toFixed(1)} · 기록 있는 소환사 ${pr.known}/10명 · ${MODE_NAME[pr.mode]} 전적${pr.mode === 'rift' ? '·라인 점수' : ''} 기준`
+    : `🔮 승부 예측 · 기록이 있는 소환사가 ${pr.known}/10명이라 아직 예측하기 어려워요`;
   // 같은 라인끼리 한 줄로 (라인이 없으면 순서대로)
   const hasRole = t1[0] && t1[0].role;
   const order = hasRole ? ROLES.filter(r => t1.some(m => m.role === r) || t2.some(m => m.role === r)) : t1.map((_, i) => i);
@@ -3350,7 +3374,9 @@ function makeBoard(t1, t2, showScore) {
   }).join('');
   const b = document.createElement('div');
   b.className = 'mb';
-  b.innerHTML = `<div class="mb-head">${head('blue', '블루팀')}<span class="mb-vs">VS</span>${head('red', '레드팀')}</div><div class="mb-rows">${lines}</div>`;
+  b.innerHTML = `<div class="mb-head">${head('blue', '블루팀')}<span class="mb-vs">VS</span>${head('red', '레드팀')}</div>` +
+    `<div class="mb-split"><i class="b" style="flex:${pb}"></i><i class="r" style="flex:${prd}"></i></div>` +
+    (sub ? `<div class="mb-sub">${sub}</div>` : '') + `<div class="mb-rows">${lines}</div>`;
   return b;
 }
 
