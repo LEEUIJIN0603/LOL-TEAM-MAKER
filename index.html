@@ -1539,6 +1539,55 @@
     .pred-bar b { color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
     .pred-sub { font-size: .66rem; color: var(--muted); margin-top: 5px; text-align: center; }
     .pred-low { font-size: .72rem; color: var(--muted); text-align: center; padding: 6px; border: 1px dashed var(--border); border-radius: 8px; }
+
+    /* ══ 팀 배정 결과: 승부 예측 + 두 팀을 한 판(보드)으로 ══ */
+    .match-board { position: relative; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; overflow: hidden; margin-bottom: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015)); box-shadow: 0 12px 34px rgba(0,0,0,.35); }
+    .match-board .pred { margin: 0; padding: 12px 18px 10px; background: rgba(0,0,0,.16); border-bottom: 1px solid rgba(255,255,255,.06); }
+    .match-board .pred-top { align-items: center; margin-bottom: 7px; }
+    .match-board .pred-top b { font-size: .8rem; color: var(--text); font-weight: 600; }
+    .match-board .pred-top b em { font-style: normal; color: var(--gold2); font-weight: 700; }
+    .match-board .pv { font-family: 'Rajdhani', 'Bebas Neue', sans-serif; font-size: 1.15rem; font-weight: 700; opacity: .65; }
+    .match-board .pv.b { color: #7db8ff; } .match-board .pv.r { color: #ff7b7b; } .match-board .pv.win { opacity: 1; }
+    .match-board .pred-bar { height: 6px; border: none; border-radius: 99px; box-shadow: none; gap: 3px; background: none; }
+    .match-board .pred-bar .pb, .match-board .pred-bar .pr { padding: 0; border-radius: 99px; }
+    .match-board .pred-sub { margin-top: 7px; }
+    .match-board .pred-low { border: none; padding: 2px; }
+    .match-board .modal-teams-row { gap: 0; margin: 0; }
+    .match-board .team-card { border: none; border-radius: 0; box-shadow: none; background: transparent; }
+    .match-board .team-card.blue { border-right: 1px solid rgba(255,255,255,.07); }
+    .match-board .team-head.banner { min-height: 68px; border-bottom-width: 2px; }
+    .match-board .team-card.red .team-head.banner { flex-direction: row-reverse; }
+    .match-board .team-card.red .side-left { flex-direction: row-reverse; text-align: right; }
+    .match-board .team-card.red .team-head.banner::before { background: linear-gradient(270deg, rgba(24,5,7,.95) 0%, rgba(66,12,16,.82) 45%, rgba(150,30,34,.22) 100%); }
+    .match-board .team-card .role-list { padding: 2px 0 4px; gap: 0; }
+    .match-board .team-card .role-row { border-left: none; border-radius: 0; padding: 11px 16px; background: none; border-top: 1px solid rgba(255,255,255,.045); }
+    .match-board .team-card .role-row:first-of-type { border-top: none; }
+    .match-board .team-card.blue .role-row:hover { background: linear-gradient(270deg, rgba(74,158,255,.14), rgba(74,158,255,0) 80%); }
+    .match-board .team-card.red  .role-row:hover { background: linear-gradient(90deg, rgba(232,64,64,.14), rgba(232,64,64,0) 80%); }
+    /* 라인 표시가 가운데에서 마주 보도록: 블루는 이름이 왼쪽, 라인이 가운데 쪽 */
+    .match-board .team-card.blue .role-row { flex-direction: row-reverse; }
+    .match-board .team-card.blue .role-tag { flex-direction: row-reverse; justify-content: flex-start; }
+    .match-board .team-card.blue .pname-wrap { justify-content: flex-end; text-align: right; }
+    .match-board .team-card .role-tag { min-width: 84px; }
+    .match-board .team-card .ri { width: 22px; height: 22px; opacity: .9; }
+    .match-board .team-card .rn { font-size: .88rem; opacity: .85; }
+    /* 가운데 VS */
+    .match-board .modal-teams-row::after { content: 'VS'; position: absolute; left: 50%; top: 34px; transform: translate(-50%, -50%); z-index: 2;
+      width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; pointer-events: none;
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; letter-spacing: 1px; color: var(--gold2);
+      background: var(--panel); border: 1.5px solid rgba(200,155,60,.6); box-shadow: 0 0 0 4px rgba(0,0,0,.25), 0 4px 14px rgba(0,0,0,.5); }
+    .match-board .modal-teams-row { position: relative; }
+    @media (max-width: 500px) {
+      .match-board .team-card.blue { border-right: none; }
+      .match-board .team-card.blue .role-row { flex-direction: row; }
+      .match-board .team-card.blue .role-tag { flex-direction: row; }
+      .match-board .team-card.blue .pname-wrap { justify-content: flex-start; text-align: left; }
+      .match-board .team-card.red .team-head.banner, .match-board .team-card.red .side-left { flex-direction: row; text-align: left; }
+      .match-board .team-card.red .team-head.banner::before { background: linear-gradient(90deg, rgba(24,5,7,.95) 0%, rgba(66,12,16,.82) 45%, rgba(150,30,34,.22) 100%); }
+      .match-board .modal-teams-row::after { display: none; }
+      .match-board .team-card .role-row { padding: 9px 14px; }
+    }
     .mt-pred { display: inline-block; width: fit-content; font-size: .62rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; margin-top: 1px; }
     .mt-pred.ok { color: #7ee2a8; background: rgba(72,187,120,.12); border: 1px solid rgba(72,187,120,.4); }
     .mt-pred.no { color: #b7c1d0; background: rgba(160,174,192,.08); border: 1px solid rgba(160,174,192,.25); }
@@ -1995,8 +2044,10 @@
     <!-- 결과 섹션 (애니 완료 후 교체) -->
     <div class="modal-result-section" id="modalResultSection">
       <div class="modal-hint">이름을 끌어서 다른 이름 위에 놓으면 서로 바뀌어요 (라인은 그대로). 바뀐 닉네임에는 🔄가 표시돼요</div>
-      <div class="pred" id="predBox"></div>
-      <div class="modal-teams-row" id="modalTeamsRow"></div>
+      <div class="match-board" id="matchBoard">
+        <div class="pred" id="predBox"></div>
+        <div class="modal-teams-row" id="modalTeamsRow"></div>
+      </div>
       <!-- 복사 버튼 -->
       <div class="modal-copy-row">
         <button class="btn-copy" id="btnModalRestore" onclick="restoreAssignment()" disabled>
@@ -2761,9 +2812,9 @@ function setCapBtn(icon, text, state) {
 function captureResultBlob() {
   return new Promise((resolve, reject) => {
     if (typeof html2canvas !== 'function') { reject(new Error('html2canvas 로드 실패')); return; }
-    const target = document.getElementById('modalTeamsRow');
+    const target = document.getElementById('matchBoard') || document.getElementById('modalTeamsRow');
     html2canvas(target, {
-      backgroundColor: '#050910',
+      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#121c2d',
       scale: Math.max(2, window.devicePixelRatio || 1),   // 선명하게
       useCORS: true,                                       // 챔피언 일러스트/라인 아이콘 포함
       logging: false,
@@ -2771,7 +2822,7 @@ function captureResultBlob() {
         // 복제된 화면에서 등장 애니메이션을 꺼야 글자가 투명하게 찍히지 않아요
         const st = doc.createElement('style');
         st.textContent = '*{animation:none!important;transition:none!important}' +
-                         '#modalTeamsRow{padding:12px;margin:0!important}';
+                         '#matchBoard{margin:0!important}';
         doc.head.appendChild(st);
         doc.querySelectorAll('#modalTeamsRow .role-row').forEach(r => r.classList.remove('dragging','drop-target','swapped'));
       }
@@ -2838,89 +2889,131 @@ const Bgm = (() => {
   const KEY = 'lol_bgm';
   const isTouch = () => matchMedia('(hover: none) and (pointer: coarse)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
   let on = (() => { try { const v = localStorage.getItem(KEY); if (v) return v === 'on'; } catch (e) {} return !isTouch(); })();
-  let ctx = null, master = null, timer = null, stopT = null, playing = false;
-  let step = 0, nextT = 0, level = 1;                       // level 1 = 배정 중(긴장), 0 = 결과 나온 뒤(잔잔)
-  const BPM = 138, S16 = 60 / BPM / 4;
+  let ctx = null, master = null, dry = null, wet = null, timer = null, stopT = null, playing = false;
+  let step = 0, nextT = 0, level = 1;                       // level 1 = 배정 중(웅장·긴장), 0 = 결과 나온 뒤(여운)
+  const BPM = 96, S16 = 60 / BPM / 4;
   const hz = n => 440 * Math.pow(2, (n - 69) / 12);
-  // D 단조 + 반음(Eb) 긴장감 베이스 16칸
-  const BASS = [38, 38, 50, 38, 38, 41, 38, 39, 38, 38, 50, 38, 41, 39, 38, 36];
-  const PAD = [[50, 53, 57], [50, 53, 57], [51, 55, 58], [49, 52, 57]];   // Dm · Dm · Eb · A (마디마다)
+  // 2마디마다 바뀌는 화음: Dm → B♭ → Gm → A (영화 음악식 진행)
+  const CH = [
+    { root: 38, chord: [50, 53, 57], arp: [62, 57, 62, 65, 62, 57, 62, 69] },
+    { root: 34, chord: [46, 50, 53], arp: [62, 58, 62, 65, 62, 58, 62, 70] },
+    { root: 31, chord: [43, 46, 50], arp: [62, 58, 62, 67, 62, 58, 62, 70] },
+    { root: 33, chord: [45, 49, 52], arp: [61, 57, 61, 64, 61, 57, 61, 69] }
+  ];
   function ensure() {
     if (ctx) return true;
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return false;
     ctx = new AC();
-    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -16; comp.ratio.value = 4;
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 5; comp.attack.value = .005; comp.release.value = .2;
     master = ctx.createGain(); master.gain.value = 0;
     master.connect(comp); comp.connect(ctx.destination);
+    dry = ctx.createGain(); dry.gain.value = 1; dry.connect(master);
+    // 넓은 공간 울림 (리버브): 3초짜리 잔향을 직접 만들어 써요
+    const rv = ctx.createConvolver(), len = ctx.sampleRate * 3.2, ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
+    rv.buffer = ir; wet = ctx.createGain(); wet.gain.value = .55; rv.connect(wet); wet.connect(master);
+    wet._in = rv;
     return true;
   }
+  const out = (node, send) => { node.connect(dry); if (send) { const s = ctx.createGain(); s.gain.value = send; node.connect(s); s.connect(wet._in); } };
   let _noise = null;
   function noiseBuf() {
     if (_noise) return _noise;
-    _noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+    _noise = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
     const d = _noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     return _noise;
   }
   function env(g, t, a, peak, dec) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec); }
-  function kick(t, v) {
+  // 큰 북 (타이코): 낮은 울림 + 가죽 때리는 소리
+  function taiko(t, v, pitch) {
     const o = ctx.createOscillator(), g = ctx.createGain();
-    o.frequency.setValueAtTime(130, t); o.frequency.exponentialRampToValueAtTime(42, t + .18);
-    env(g, t, .004, v, .32); o.connect(g); g.connect(master); o.start(t); o.stop(t + .4);
+    o.frequency.setValueAtTime(pitch || 95, t); o.frequency.exponentialRampToValueAtTime(38, t + .35);
+    env(g, t, .004, v, .7); o.connect(g); out(g, .35); o.start(t); o.stop(t + .8);
+    const n = ctx.createBufferSource(), lp = ctx.createBiquadFilter(), g2 = ctx.createGain();
+    n.buffer = noiseBuf(); lp.type = 'lowpass'; lp.frequency.value = 900;
+    env(g2, t, .002, v * .5, .12); n.connect(lp); lp.connect(g2); out(g2, .5); n.start(t, Math.random()); n.stop(t + .2);
   }
-  function tick(t, v, f) {
+  // 작은 북 (림·스네어 느낌)
+  function hit(t, v) {
     const n = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
-    n.buffer = noiseBuf(); bp.type = 'highpass'; bp.frequency.value = f || 7000;
-    env(g, t, .002, v, .045); n.connect(bp); bp.connect(g); g.connect(master); n.start(t, Math.random() * .5); n.stop(t + .07);
+    n.buffer = noiseBuf(); bp.type = 'bandpass'; bp.frequency.value = 1400; bp.Q.value = .9;
+    env(g, t, .002, v, .14); n.connect(bp); bp.connect(g); out(g, .45); n.start(t, Math.random()); n.stop(t + .2);
   }
-  function snare(t, v) {
-    const n = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
-    n.buffer = noiseBuf(); bp.type = 'bandpass'; bp.frequency.value = 1800; bp.Q.value = .7;
-    env(g, t, .003, v, .16); n.connect(bp); bp.connect(g); g.connect(master); n.start(t, Math.random() * .5); n.stop(t + .2);
-  }
-  function bass(t, note, v) {
-    const o = ctx.createOscillator(), lp = ctx.createBiquadFilter(), g = ctx.createGain();
-    o.type = 'sawtooth'; o.frequency.value = hz(note);
-    lp.type = 'lowpass'; lp.frequency.setValueAtTime(900, t); lp.frequency.exponentialRampToValueAtTime(180, t + .12); lp.Q.value = 6;
-    env(g, t, .005, v, .13); o.connect(lp); lp.connect(g); g.connect(master); o.start(t); o.stop(t + .18);
-  }
-  function pad(t, notes, dur, v) {
+  // 현악기처럼 몰아치는 16분음표 반주
+  function str(t, note, v) {
     const lp = ctx.createBiquadFilter(), g = ctx.createGain();
-    lp.type = 'lowpass'; lp.frequency.setValueAtTime(500, t); lp.frequency.linearRampToValueAtTime(1600, t + dur);
-    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + dur * .4); g.gain.linearRampToValueAtTime(0.0001, t + dur);
-    lp.connect(g); g.connect(master);
-    notes.forEach(n => [-6, 6].forEach(det => {
-      const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(n); o.detune.value = det;
-      o.connect(lp); o.start(t); o.stop(t + dur + .05);
-    }));
+    lp.type = 'lowpass'; lp.frequency.setValueAtTime(2400, t); lp.frequency.exponentialRampToValueAtTime(700, t + .12);
+    env(g, t, .006, v, .14); lp.connect(g); out(g, .3);
+    [-7, 7].forEach(det => { const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(note); o.detune.value = det; o.connect(lp); o.start(t); o.stop(t + .2); });
   }
+  // 낮은 금관 화음 (브라스): 천천히 열리는 묵직한 소리
+  function brass(t, notes, dur, v) {
+    const lp = ctx.createBiquadFilter(), g = ctx.createGain();
+    lp.type = 'lowpass'; lp.Q.value = 1.5;
+    lp.frequency.setValueAtTime(250, t); lp.frequency.exponentialRampToValueAtTime(1800, t + .18); lp.frequency.exponentialRampToValueAtTime(600, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .06); g.gain.setValueAtTime(v, t + dur * .7); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    lp.connect(g); out(g, .4);
+    notes.forEach(n => [-9, 0, 9].forEach(det => { const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(n); o.detune.value = det; o.connect(lp); o.start(t); o.stop(t + dur + .05); }));
+  }
+  // 합창 같은 긴 화음 (패드)
+  function choir(t, notes, dur, v) {
+    const lp = ctx.createBiquadFilter(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
+    lp.type = 'lowpass'; lp.frequency.value = 1300;
+    lfo.frequency.value = 5; lg.gain.value = 6; lfo.connect(lg);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + dur * .35); g.gain.linearRampToValueAtTime(0.0001, t + dur);
+    lp.connect(g); out(g, .9); lfo.start(t); lfo.stop(t + dur + .05);
+    notes.forEach(n => [-12, 12].forEach(det => { const o = ctx.createOscillator(); o.type = det < 0 ? 'sawtooth' : 'triangle'; o.frequency.value = hz(n); o.detune.value = det; lg.connect(o.detune); o.connect(lp); o.start(t); o.stop(t + dur + .05); }));
+  }
+  // 아주 낮은 베이스
+  function sub(t, note, dur, v) {
+    const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.value = hz(note);
+    env(g, t, .01, v, dur); o.connect(g); out(g, 0); o.start(t); o.stop(t + dur + .05);
+  }
+  // 심벌이 점점 커지는 소리 (다음 구간으로 넘어가기 직전)
+  function swell(t, dur, v) {
+    const n = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), g = ctx.createGain();
+    n.buffer = noiseBuf(); n.loop = true; hp.type = 'highpass'; hp.frequency.setValueAtTime(2000, t); hp.frequency.linearRampToValueAtTime(6000, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + dur); g.gain.linearRampToValueAtTime(0.0001, t + dur + .03);
+    n.connect(hp); hp.connect(g); out(g, .6); n.start(t); n.stop(t + dur + .05);
+  }
+  function crash(t, v) {
+    const n = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), g = ctx.createGain();
+    n.buffer = noiseBuf(); hp.type = 'highpass'; hp.frequency.value = 3500; env(g, t, .005, v, 2.2);
+    n.connect(hp); hp.connect(g); out(g, .7); n.start(t); n.stop(t + 2.3);
+  }
+  const TAIKO = { 0: 1, 3: .45, 6: .8, 8: .9, 11: .4, 12: .75, 14: .5 };   // 한 마디 북 리듬
   function schedule() {
-    while (nextT < ctx.currentTime + 0.15) {
-      const t = nextT, i = step % 16, bar = Math.floor(step / 16);
+    while (nextT < ctx.currentTime + 0.2) {
+      const t = nextT, i = step % 16, bar = Math.floor(step / 16), c = CH[Math.floor(bar / 2) % 4], phraseEnd = bar % 8 === 7;
       if (level) {
-        if (i % 4 === 0) kick(t, .9);
-        if (i === 4 || i === 12) snare(t, .18);
-        if (bar % 4 === 3 && i >= 12) snare(t, .1 + (i - 12) * .05);          // 4마디마다 몰아치는 북
-        tick(t, i % 2 ? .05 : .11);
-        bass(t, BASS[i], .32);
-        if (i === 0) pad(t, PAD[bar % 4], S16 * 16, .045);
+        if (TAIKO[i] != null) taiko(t, TAIKO[i], i === 0 ? 110 : 90);
+        if (phraseEnd && i >= 8) taiko(t, .35 + (i - 8) * .08, 120);          // 8마디마다 북이 몰아쳐요
+        if (i === 4 || i === 12) hit(t, .12);
+        str(t, c.arp[i % 8], bar < 2 ? .05 : .08);                             // 처음 2마디는 작게 시작
+        if (i === 0) sub(t, c.root, S16 * 14, .55);
+        if (bar % 2 === 0 && i === 0 && bar >= 2) brass(t, [c.root + 12, c.chord[0], c.chord[2]], S16 * 12, .16);
+        if (bar % 2 === 1 && (i === 10 || i === 14) && bar >= 2) brass(t, [c.root + 12, c.chord[0]], S16 * 2, .1);
+        if (bar % 2 === 0 && i === 0) choir(t, c.chord.map(n => n + 12), S16 * 32, bar >= 4 ? .05 : .03);
+        if (phraseEnd && i === 0) swell(t, S16 * 16, .12);
+        if (bar % 8 === 0 && i === 0 && bar > 0) crash(t, .16);
       } else {
-        if (i === 0 || i === 8) kick(t, .5);
-        if (i % 4 === 0) tick(t, .05, 5000);
-        if (i % 2 === 0) bass(t, BASS[i], .16);
-        if (i === 0) pad(t, PAD[bar % 2 ? 0 : 3], S16 * 16, .035);
+        if (i === 0) taiko(t, .55, 90);
+        if (i === 8 && bar % 2) taiko(t, .3, 80);
+        if (i === 0) sub(t, c.root, S16 * 14, .35);
+        if (bar % 2 === 0 && i === 0) choir(t, c.chord.map(n => n + 12), S16 * 32, .045);
+        if (i % 4 === 0) str(t, c.arp[i % 8], .025);
       }
       step++; nextT += S16;
     }
   }
-  function sting() {                                                       // 결과 공개 순간: 쾅 + 화음
+  function sting() {                                                       // 결과 공개 순간: 크게 쾅 + 장엄한 장조 화음
     if (!ctx || !playing) return;
-    const t = ctx.currentTime + .02;
-    kick(t, 1.2); kick(t + .09, .7);
-    const n = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), g = ctx.createGain();
-    n.buffer = noiseBuf(); hp.type = 'highpass'; hp.frequency.value = 3000; env(g, t, .01, .18, 1.4);
-    n.connect(hp); hp.connect(g); g.connect(master); n.start(t); n.stop(t + 1.5);
-    pad(t, [38, 50, 57, 62, 65], 2.2, .09);
+    const t = ctx.currentTime + .03;
+    taiko(t, 1.4, 120); taiko(t + .11, .8, 100); crash(t, .3);
+    brass(t, [38, 50, 54, 57, 62], 2.8, .2);                               // D 장조로 끝맺음
+    choir(t, [62, 66, 69], 4, .08); sub(t, 26, 2.5, .7);
+    step = 0; nextT = t + 2.6;                                              // 여운 뒤에 잔잔한 부분 시작
   }
   function paint() {
     const b = document.getElementById('bgmBtn'); if (!b) return;
@@ -2932,7 +3025,7 @@ const Bgm = (() => {
     clearTimeout(stopT); stopT = null;
     if (ctx.state === 'suspended') ctx.resume();
     master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.setTargetAtTime(.55, ctx.currentTime, .08);
+    master.gain.setTargetAtTime(.36, ctx.currentTime, .08);
     if (playing) return;
     playing = true; step = 0; nextT = ctx.currentTime + .06;
     timer = setInterval(schedule, 25); schedule();
@@ -2940,13 +3033,13 @@ const Bgm = (() => {
   function halt(fast) {
     if (!ctx || !playing) return;
     master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.setTargetAtTime(0, ctx.currentTime, fast ? .05 : .15);
+    master.gain.setTargetAtTime(0, ctx.currentTime, fast ? .05 : .2);
     clearTimeout(stopT);
-    stopT = setTimeout(() => { clearInterval(timer); timer = null; playing = false; stopT = null; }, fast ? 300 : 700);
+    stopT = setTimeout(() => { clearInterval(timer); timer = null; playing = false; stopT = null; }, fast ? 300 : 900);
   }
   const modalOpen = () => document.getElementById('animModal').classList.contains('open');
   return {
-    start() { level = 1; paint(); play(); },
+    start() { if (level === 0 && playing) { step = 0; nextT = ctx.currentTime + .06; } level = 1; paint(); play(); },
     reveal() { sting(); level = 0; },
     stop() { if (stopT) clearTimeout(stopT); stopT = setTimeout(() => { stopT = null; if (!modalOpen()) halt(false); }, 120); },
     toggle() {
@@ -4913,8 +5006,8 @@ function renderPrediction() {
   if (pr.known < 3) { box.innerHTML = `<div class="pred-low">🔮 승부 예측 · 기록이 있는 소환사가 ${pr.known}/10명이라 아직 예측하기 어려워요</div>`; return; }
   const b = Math.round(pr.p * 100), rd = 100 - b;
   const fav = Math.abs(b - 50) < 4 ? '⚖️ 막상막하!' : b > 50 ? '🔵 블루팀 우세' : '🔴 레드팀 우세';
-  box.innerHTML = `<div class="pred-top"><b>🔮 승부 예측</b><span>${fav}</span></div>
-    <div class="pred-bar"><div class="pb" style="width:${b}%"><b>${b}%</b></div><div class="pr"><b>${rd}%</b></div></div>
+  box.innerHTML = `<div class="pred-top"><span class="pv b${b > rd ? ' win' : ''}">${b}%</span><b>🔮 승부 예측 · <em>${fav}</em></b><span class="pv r${rd > b ? ' win' : ''}">${rd}%</span></div>
+    <div class="pred-bar"><div class="pb" style="width:${b}%"></div><div class="pr"></div></div>
     <div class="pred-sub">평균 전력 블루 ${pr.a1.toFixed(1)} · 레드 ${pr.a2.toFixed(1)} · 기록 있는 소환사 ${pr.known}/10명 · ${MODE_NAME[pr.mode]} 전적${pr.mode === 'rift' ? '·라인 점수' : ''} 기준</div>`;
 }
 // 지난 경기들을 '그 전까지의 기록만으로' 예측했을 때 맞았는지 (경기 카드 · 대시보드 적중률)
