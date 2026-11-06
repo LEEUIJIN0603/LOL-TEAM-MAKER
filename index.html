@@ -1582,9 +1582,11 @@
     .match-board .modal-teams-row { display: block; }
     .match-board .modal-teams-row::after { display: none; }
     .mb-head { position: relative; display: grid; grid-template-columns: 1fr 1fr; }
-    .mb-head .team-head.banner { min-height: 66px; background-image: none !important; border-bottom: 2px solid; }
-    .mb-head .team-head.banner.blue { background: linear-gradient(90deg, rgba(74,158,255,.20), rgba(74,158,255,.05)); border-bottom-color: var(--blue-team); }
-    .mb-head .team-head.banner.red { background: linear-gradient(270deg, rgba(232,64,64,.20), rgba(232,64,64,.05)); border-bottom-color: var(--red-team); flex-direction: row-reverse; }
+    .mb-head .team-head.banner { min-height: 66px; border-bottom: 2px solid; }
+    .mb-head .team-head.banner.blue { border-bottom-color: var(--blue-team);
+      background: radial-gradient(120% 140% at 100% 50%, rgba(80,150,255,.45) 0%, rgba(80,150,255,0) 60%), linear-gradient(90deg, #06132b 0%, #0b2552 48%, #1a4a9a 100%); }
+    .mb-head .team-head.banner.red { border-bottom-color: var(--red-team); flex-direction: row-reverse;
+      background: radial-gradient(120% 140% at 0% 50%, rgba(255,90,90,.42) 0%, rgba(255,90,90,0) 60%), linear-gradient(270deg, #22060a 0%, #4f0f16 48%, #9a2226 100%); }
     .mb-head .team-head.banner::before { display: none; }
     .mb-head .team-head.banner.red .side-left { flex-direction: row-reverse; text-align: right; }
     .mb-head .team-head.banner.blue .side-en { color: #7db8ff; } .mb-head .team-head.banner.red .side-en { color: #ff7b7b; }
