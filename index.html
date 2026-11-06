@@ -1578,6 +1578,58 @@
       font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; letter-spacing: 1px; color: var(--gold2);
       background: var(--panel); border: 1.5px solid rgba(200,155,60,.6); box-shadow: 0 0 0 4px rgba(0,0,0,.25), 0 4px 14px rgba(0,0,0,.5); }
     .match-board .modal-teams-row { position: relative; }
+    /* 새 보드 (라인 가운데 1개) */
+    .match-board .modal-teams-row { display: block; }
+    .match-board .modal-teams-row::after { display: none; }
+    .mb-head { position: relative; display: grid; grid-template-columns: 1fr 1fr; }
+    .mb-head .team-head.banner { min-height: 66px; background-image: none !important; border-bottom: 2px solid; }
+    .mb-head .team-head.banner.blue { background: linear-gradient(90deg, rgba(74,158,255,.20), rgba(74,158,255,.05)); border-bottom-color: var(--blue-team); }
+    .mb-head .team-head.banner.red { background: linear-gradient(270deg, rgba(232,64,64,.20), rgba(232,64,64,.05)); border-bottom-color: var(--red-team); flex-direction: row-reverse; }
+    .mb-head .team-head.banner::before { display: none; }
+    .mb-head .team-head.banner.red .side-left { flex-direction: row-reverse; text-align: right; }
+    .mb-head .team-head.banner.blue .side-en { color: #7db8ff; } .mb-head .team-head.banner.red .side-en { color: #ff7b7b; }
+    .mb-vs { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; width: 40px; height: 40px; border-radius: 50%;
+      display: grid; place-items: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; letter-spacing: 1px; color: var(--gold2);
+      background: var(--panel); border: 1.5px solid rgba(200,155,60,.6); box-shadow: 0 0 0 4px rgba(0,0,0,.2), 0 4px 14px rgba(0,0,0,.45); }
+    .mb-rows { padding: 2px 0 4px; }
+    .mb-line { display: grid; grid-template-columns: 1fr 104px 1fr; align-items: stretch; border-top: 1px solid rgba(255,255,255,.05); animation: slideIn .35s ease both; }
+    #modalTeamsRow.no-anim .mb-line { animation: none; }
+    .mb-line:first-child { border-top: none; }
+    .mb-lane { display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0,0,0,.14); border-left: 1px solid rgba(255,255,255,.05); border-right: 1px solid rgba(255,255,255,.05); }
+    .mb-lane .ri { width: 20px; height: 20px; object-fit: contain; opacity: .9; }
+    .mb-lane .rn { font-family: 'Bebas Neue', sans-serif; font-size: .92rem; letter-spacing: 1.5px; color: var(--gold2); opacity: .9; }
+    .mb-cell.role-row { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 0; background: none; animation: none; min-width: 0; }
+    .mb-cell.blue { flex-direction: row; justify-content: flex-end; }
+    .mb-cell.red { flex-direction: row-reverse; justify-content: flex-end; }
+    .mb-cell .pname-wrap { flex: 0 1 auto; min-width: 0; gap: 6px; }
+    .mb-cell.blue .pname-wrap { flex-direction: row; }            /* 🔄 = 바깥쪽(왼쪽) 끝 */
+    .mb-cell.red .pname-wrap { flex-direction: row-reverse; }      /* 🔄 = 바깥쪽(오른쪽) 끝 */
+    .mb-cell .pname { font-size: 1rem; font-weight: 700; color: var(--text-bright); }
+    .mb-cell.blue:hover { background: linear-gradient(270deg, rgba(74,158,255,.14), rgba(74,158,255,0) 85%); }
+    .mb-cell.red:hover { background: linear-gradient(90deg, rgba(232,64,64,.14), rgba(232,64,64,0) 85%); }
+    .mb-score { display: flex; align-items: center; gap: 6px; margin-right: auto; flex-shrink: 0; }
+    .mb-cell.red .mb-score { margin-right: 0; margin-left: auto; flex-direction: row-reverse; }
+    .mb-bar { display: block; width: 44px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.08); overflow: hidden; }
+    .mb-bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+    .mb-cell.blue .mb-bar { transform: scaleX(-1); }
+    .mb-score b { font-family: 'Rajdhani', sans-serif; font-size: .9rem; color: var(--gold2); min-width: 22px; text-align: center; }
+    .mb-cell.empty { min-height: 46px; }
+    @media (max-width: 600px) {
+      .mb-line { grid-template-columns: 1fr 58px 1fr; }
+      .mb-lane { flex-direction: column; gap: 1px; }
+      .mb-lane .role-emoji-sm { display: none; }
+      .mb-lane .ri { width: 17px; height: 17px; }
+      .mb-lane .rn { font-size: .74rem; }
+      .mb-cell.role-row { padding: 10px 10px; gap: 6px; }
+      .mb-cell .pname { font-size: .86rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .mb-head .team-head.banner { min-height: 54px; padding: 8px 10px; }
+      .mb-head .sidemap { display: none; }
+      .mb-head .side-en { font-size: 1.05rem; letter-spacing: 2px; }
+      .mb-head .side-ko { font-size: .66rem; }
+      .mb-head .team-avg { display: none; }
+      .mb-vs { width: 32px; height: 32px; font-size: .85rem; }
+      .mb-bar { display: none; }
+    }
     @media (max-width: 500px) {
       .match-board .team-card.blue { border-right: none; }
       .match-board .team-card.blue .role-row { flex-direction: row; }
@@ -3104,9 +3156,7 @@ function renderResultCards() {
   if (restoreBtn) restoreBtn.disabled = changed === 0;      // 바꾼 게 없으면 원복 버튼 비활성
   const row = document.getElementById('modalTeamsRow');
   row.innerHTML = '';
-  const sp = _lastResult.splash || {};
-  row.appendChild(makeCard('블루팀','blue',t1,showScore,sp.blue));
-  row.appendChild(makeCard('레드팀','red',t2,showScore,sp.red));
+  row.appendChild(makeBoard(t1, t2, showScore));
   if (typeof renderPrediction === 'function') renderPrediction();
 }
 
@@ -3266,6 +3316,40 @@ function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
 
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+// 결과 보드: 라인은 가운데 한 번만, 양쪽에 블루/레드 이름 (맞라인이 한 줄에)
+function makeBoard(t1, t2, showScore) {
+  const avg = list => parseFloat((list.reduce((s, m) => s + (m.score || 0), 0) / list.length).toFixed(2)).toString();
+  const head = (cls, ko) => `
+    <div class="team-head banner mb-banner ${cls}">
+      <div class="side-left">${miniMapSVG(cls)}
+        <div class="side-text"><span class="side-en">${cls === 'blue' ? 'BLUE SIDE' : 'RED SIDE'}</span><span class="side-ko">${ko}</span></div>
+      </div>
+      ${showScore ? `<span class="team-avg">평균 능력치 ${avg(cls === 'blue' ? t1 : t2)}</span>` : ''}
+    </div>`;
+  // 같은 라인끼리 한 줄로 (라인이 없으면 순서대로)
+  const hasRole = t1[0] && t1[0].role;
+  const order = hasRole ? ROLES.filter(r => t1.some(m => m.role === r) || t2.some(m => m.role === r)) : t1.map((_, i) => i);
+  const idxOf = (list, key, n) => hasRole ? list.findIndex(m => m.role === key) : n;
+  const cell = (cls, list, i) => {
+    const m = list[i];
+    if (!m) return `<div class="mb-cell ${cls} empty"></div>`;
+    const sc = showScore && m.score ? `<span class="mb-score"><span class="mb-bar"><i style="width:${m.score * 10}%"></i></span><b>${m.score}</b></span>` : '';
+    const sw = m.moved ? '<span class="swap-mark" title="자리가 바뀐 닉네임">🔄</span>' : '';
+    return `<div class="role-row mb-cell ${cls}" data-team="${cls}" data-idx="${i}">${sc}<span class="pname-wrap">${sw}<span class="pname">${escapeHtml(m.name)}</span></span></div>`;
+  };
+  const lines = order.map((key, n) => {
+    const bi = idxOf(t1, key, n), ri = idxOf(t2, key, n);
+    const lane = hasRole
+      ? `<img class="ri" src="${ICONS[key]}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'role-emoji-sm',textContent:'${ROLE_EMOJI[key]}'}))"><span class="rn">${key}</span>`
+      : `<span class="rn">${n + 1}</span>`;
+    return `<div class="mb-line" style="animation-delay:${n * 0.07}s">${cell('blue', t1, bi)}<div class="mb-lane">${lane}</div>${cell('red', t2, ri)}</div>`;
+  }).join('');
+  const b = document.createElement('div');
+  b.className = 'mb';
+  b.innerHTML = `<div class="mb-head">${head('blue', '블루팀')}<span class="mb-vs">VS</span>${head('red', '레드팀')}</div><div class="mb-rows">${lines}</div>`;
+  return b;
 }
 
 function makeCard(teamName, cls, members, showScore, splashId) {
