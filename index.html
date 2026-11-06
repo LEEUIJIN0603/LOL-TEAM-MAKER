@@ -104,6 +104,25 @@
     .nav-btn:hover:not(.active):not(:disabled) { color: var(--text); background: var(--panel2); }
     .nav-btn.active { color: var(--gold2); background: var(--gold-dim); border-left-color: var(--gold); }
     .nav-btn:disabled { opacity: 0.35; cursor: default; }
+    /* 전적 집계 메뉴와 팀 배정(도구) 사이 구분선 */
+    .nav-sep { height: 1px; background: var(--border); margin: 10px 14px; flex-shrink: 0; }
+    /* 관리자 링크 표시 띠 */
+    .adm-bar { display: none; }
+    html.admin .adm-bar { display: flex; align-items: center; justify-content: center; gap: 10px; position: sticky; top: 0; z-index: 1000;
+      padding: 6px 12px; background: linear-gradient(90deg, #7a5518, #c89b3c 50%, #7a5518); color: #1a1205; font-size: .78rem; font-weight: 700; letter-spacing: .02em; }
+    .adm-bar b { background: #1a1205; color: var(--gold2); padding: 2px 9px; border-radius: 5px; font-size: .74rem; letter-spacing: .06em; }
+    .adm-bar span { opacity: .8; font-weight: 600; }
+    /* 리플레이 끌어다 놓기 */
+    .rec-drop { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 4px 0 14px; padding: 16px; cursor: pointer;
+      border: 2px dashed rgba(200,155,60,.4); border-radius: 12px; background: rgba(200,155,60,.04); color: var(--text); font-size: .86rem; transition: all .2s; text-align: center; }
+    .rec-drop:hover, .rec-drop.on { border-color: var(--gold2); background: rgba(200,155,60,.12); }
+    .rec-drop .ic { font-size: 1.5rem; }
+    .rec-drop small { display: block; color: var(--muted); font-size: .72rem; margin-top: 2px; }
+    .drop-veil { position: fixed; inset: 0; z-index: 2000; display: none; align-items: center; justify-content: center; pointer-events: none;
+      background: rgba(5,9,16,.82); border: 3px dashed var(--gold2); }
+    .drop-veil.on { display: flex; }
+    .drop-veil div { text-align: center; color: var(--gold2); font-size: 1.3rem; font-weight: 800; }
+    .drop-veil small { display: block; color: var(--text); font-size: .85rem; font-weight: 500; margin-top: 8px; }
     .main { flex: 1; min-width: 0; }
 
     /* 메뉴별 화면 */
@@ -118,6 +137,7 @@
       .side-nav-title { display: none; }
       .nav-btn { width: auto; border-left: none; border-bottom: 2px solid transparent; border-radius: 6px 6px 0 0; }
       .nav-btn.active { border-bottom-color: var(--gold); }
+      .nav-sep { width: 1px; height: auto; margin: 8px 6px; }
     }
 
     /* PAGE — 2컬럼 레이아웃 */
@@ -1220,6 +1240,9 @@
       .nav-btn .nav-ico { width: 22px; height: 22px; }
       .nav-btn .nav-ico svg { width: 21px; height: 21px; }
       .nav-btn.active { border-top-color: var(--gold); color: var(--gold2); font-weight: 700; }
+      .nav-sep { width: 1px; height: auto; margin: 10px 2px; align-self: stretch; }
+      .adm-bar span { display: none; }
+      .rec-drop { display: none; }
       .main { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
       .app { min-height: 0; }
       /* 팀 배정: 멤버 리스트를 입력칸 위로, 이름은 칩 모양으로 */
@@ -1600,6 +1623,8 @@
 </head>
 <body>
 
+<div class="adm-bar"><b>관리자 모드</b><span>전적 올리기 · 수정 · 접속통계를 쓸 수 있는 링크예요. 다른 사람에게 공유하지 마세요</span></div>
+<div class="drop-veil" id="dropVeil"><div>📂 여기에 놓으면 전적이 올라가요<small>리플레이(.rofl) 파일 여러 개를 한 번에 놓아도 돼요</small></div></div>
 <div class="hero">
   <img class="hero-img" id="heroBg" src="" alt="">
   <div class="hero-overlay"></div>
@@ -1621,10 +1646,11 @@
   <nav class="side-nav">
     <div class="side-nav-title">MENU</div>
     <button class="nav-btn active" onclick="switchPage('dash',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1.5"/><rect width="7" height="5" x="14" y="3" rx="1.5"/><rect width="7" height="9" x="14" y="12" rx="1.5"/><rect width="7" height="5" x="3" y="16" rx="1.5"/></svg></span>대시보드</button>
-    <button class="nav-btn" onclick="switchPage('assign',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></svg></span>팀 배정</button>
     <button class="nav-btn" onclick="switchPage('record',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></span>전적</button>
     <button class="nav-btn" onclick="switchPage('rank',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>순위</button>
     <button class="nav-btn" onclick="switchPage('summoner',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></span>소환사</button>
+    <div class="nav-sep" aria-hidden="true"></div>
+    <button class="nav-btn" onclick="switchPage('assign',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></svg></span>팀 배정</button>
     <button class="nav-btn adm-only" onclick="switchPage('stats',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6" rx="1"/><rect x="12" y="8" width="3" height="10" rx="1"/><rect x="17" y="5" width="3" height="13" rx="1"/></svg></span>접속통계</button>
   </nav>
 </aside>
@@ -1719,6 +1745,9 @@
     <button class="adm-btn" onclick="document.getElementById('recFile').click()" title="리플레이 위치: 문서\League of Legends\Replays">📂 리플레이 올리기</button>
     <button class="adm-btn" onclick="exportMatches()" title="지금 전적 전체를 내 컴퓨터에 백업 파일로 받아요 (올릴 필요 없어요)">💾 백업 받기</button>
     <button class="adm-btn" onclick="openDiscordSettings()" title="디스코드 채널로 결과 보내기 설정">🔔 디스코드 설정</button>
+  </div>
+  <div class="rec-drop adm-only" id="recDrop" onclick="document.getElementById('recFile').click()">
+    <span class="ic">📂</span><div><b>리플레이 파일을 여기로 끌어다 놓으세요</b><small>또는 클릭해서 고르기 · 여러 개 한 번에 가능 · 위치: 문서\League of Legends\Replays</small></div>
   </div>
   <input type="file" id="recFile" accept=".rofl,.json" multiple hidden onchange="handleRecFiles(this.files); this.value='';">
   <div class="rec-share" id="recShare"></div>
@@ -3404,11 +3433,24 @@ async function handleRecFiles(fileList) {
 }
 // 내전 전적 화면 아무 곳에나 파일을 끌어다 놓아도 올라가요
 (function initRecDrop() {
-  const view = document.getElementById('view-record');
-  if (!view || !IS_ADMIN) return;
-  ['dragenter','dragover'].forEach(ev => view.addEventListener(ev, e => { e.preventDefault(); view.classList.add('drag-over'); }));
-  view.addEventListener('dragleave', e => { if (!view.contains(e.relatedTarget)) view.classList.remove('drag-over'); });
-  view.addEventListener('drop', e => { e.preventDefault(); view.classList.remove('drag-over'); handleRecFiles(e.dataTransfer.files); });
+  if (!IS_ADMIN) return;
+  const veil = document.getElementById('dropVeil'), zone = document.getElementById('recDrop');
+  const hasFiles = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
+  let depth = 0;
+  const show = on => { veil.classList.toggle('on', on); if (zone) zone.classList.toggle('on', on); };
+  window.addEventListener('dragenter', e => { if (!hasFiles(e)) return; e.preventDefault(); depth++; show(true); });
+  window.addEventListener('dragover', e => { if (!hasFiles(e)) return; e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
+  window.addEventListener('dragleave', e => { if (!hasFiles(e)) return; if (--depth <= 0) { depth = 0; show(false); } });
+  window.addEventListener('drop', e => {
+    if (!hasFiles(e)) return;
+    e.preventDefault(); depth = 0; show(false);
+    const files = e.dataTransfer.files;
+    if (!document.getElementById('view-record').classList.contains('active')) {
+      const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => /'record'/.test(b.getAttribute('onclick') || ''));
+      switchPage('record', btn);
+    }
+    handleRecFiles(files);
+  });
 })();
 // 잘못 들어간 경기를 다른 탭으로 옮기기
 function moveMatch(id) {
