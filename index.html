@@ -1210,6 +1210,14 @@
     .hc-v { margin-left: auto; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.6rem; }
     .hc.win .hc-v { color: #ffb45a; } .hc.lose .hc-v { color: #9db8ec; }
     .hc-none { font-size: .74rem; color: var(--muted); padding: 10px; }
+    .hc-list { flex-direction: column; align-items: stretch; gap: 0; padding: 8px 12px 6px; }
+    .hc-list .hc-head { margin-bottom: 4px; font-weight: 700; }
+    .hcl { display: flex; align-items: center; gap: 10px; padding: 5px 0; border-top: 1px solid rgba(255,255,255,.06); }
+    .hcl:first-of-type { border-top: none; }
+    .hcl .ch-box { width: 30px; height: 30px; flex-shrink: 0; }
+    .hcl .hc-n { font-size: .86rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hcl .hc-v { font-size: 1.15rem; line-height: 1; white-space: nowrap; }
+    .hcl .hc-v small { font-family: 'Noto Sans KR', sans-serif; font-size: .62rem; font-weight: 600; margin-left: 2px; opacity: .85; }
     /* 칭호 보드 */
     .tt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 10px; }
     .tt { display: grid; grid-template-columns: 38px 1fr; gap: 10px; align-items: center; background: var(--panel); border: 1px solid var(--border);
@@ -4766,10 +4774,12 @@ function renderDashboard() {
     </div>`;
   };
   const st = calcStreaks();
-  const hot = st.filter(s => s.kind === 'win' && s.n >= 2).sort((a, b) => b.n - a.n)[0];
-  const cold = st.filter(s => s.kind === 'lose' && s.n >= 2).sort((a, b) => b.n - a.n)[0];
-  const hcRow = (s, kind) => s
-    ? `<div class="hc ${kind}">${champIcon(s.last.m, s.last.p.champ)}<div><div class="hc-t">${kind === 'win' ? '🔥 지금 가장 뜨거운' : '🧊 지금 가장 차가운'}</div><div class="hc-n">${escapeHtml(s.name)}</div></div><div class="hc-v">${s.n}${kind === 'win' ? '연승' : '연패'}</div></div>`
+  const hot = st.filter(s => s.kind === 'win' && s.n >= 2).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
+  const cold = st.filter(s => s.kind === 'lose' && s.n >= 2).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
+  // 2연승 · 2연패 이상인 사람 전부 (많은 순)
+  const hcRow = (list, kind) => list.length
+    ? `<div class="hc hc-list ${kind}"><div class="hc-t hc-head">${kind === 'win' ? '🔥 연승 중' : '🧊 연패 중'} · ${list.length}명</div>
+        ${list.map(s => `<div class="hcl">${champIcon(s.last.m, s.last.p.champ)}<span class="hc-n">${escapeHtml(s.name)}</span><span class="hc-v">${s.n}<small>${kind === 'win' ? '연승' : '연패'}</small></span></div>`).join('')}</div>`
     : `<div class="hc ${kind}"><div class="hc-none">${kind === 'win' ? '🔥 2연승 이상 없음' : '🧊 2연패 이상 없음'}</div></div>`;
   // 최근 내전 MVP: ① 그날 승 수 → ② 그날 MVP 횟수 → ③ 그날 경기별 활약 점수 합 (같은 팀이라 승 수가 같아도 활약으로 갈려요)
   const dayWin = {};
