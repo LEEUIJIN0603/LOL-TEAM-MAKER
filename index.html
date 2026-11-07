@@ -1782,7 +1782,108 @@
       .st-when b { display: inline; margin-right: 6px; }
       .vbar-c b { display: none; }
     }
-      /* 디스코드 미리보기 창 */
+      /* 명예의 전당 (트로피 전시관) */
+    .hx-pre { margin: 0 0 14px; padding: 10px 14px; border-radius: 10px; font-size: .78rem; color: #ffd98a; background: rgba(255,190,70,.1); border: 1px dashed rgba(255,190,70,.55); }
+    .hx-pre b { color: #ffe9b0; }
+    .hx { position: relative; overflow: hidden; border-radius: 20px; padding: 34px 26px 30px; margin-top: 6px;
+          background: radial-gradient(120% 70% at 50% 0%, rgba(240,190,80,.22), transparent 60%), linear-gradient(180deg, #17120a 0%, #0f1220 55%, #0c101c 100%);
+          border: 1px solid rgba(240,200,110,.35); box-shadow: inset 0 0 80px rgba(240,180,60,.08), 0 20px 60px rgba(0,0,0,.45); }
+    .hx-rays { position: absolute; left: 50%; top: -60%; width: 160%; aspect-ratio: 1; transform: translateX(-50%); pointer-events: none; opacity: .22;
+               background: repeating-conic-gradient(from 0deg, rgba(255,215,120,.55) 0deg 4deg, transparent 4deg 16deg); animation: hxRot 60s linear infinite;
+               -webkit-mask: radial-gradient(circle, #000 0%, transparent 55%); mask: radial-gradient(circle, #000 0%, transparent 55%); }
+    @keyframes hxRot { to { transform: translateX(-50%) rotate(360deg); } }
+    .hx-spark { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+    .hx-spark i { position: absolute; bottom: -10px; width: 4px; height: 4px; border-radius: 50%; background: radial-gradient(circle, #fff6d0, #ffc24a 60%, transparent 70%);
+                  box-shadow: 0 0 8px #ffcf5a; animation: hxUp 5s linear infinite; opacity: 0; }
+    @keyframes hxUp { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: .9; } 100% { transform: translateY(-520px); opacity: 0; } }
+    .hx > *:not(.hx-rays):not(.hx-spark) { position: relative; z-index: 2; }
+    .hx-hero { text-align: center; margin-bottom: 26px; }
+    .hx-laurel { font-size: 3rem; filter: drop-shadow(0 0 18px rgba(255,200,80,.8)); animation: hxBob 3s ease-in-out infinite; }
+    @keyframes hxBob { 50% { transform: translateY(-6px); } }
+    .hx-title { font-family: 'Bebas Neue', sans-serif; font-size: 3.4rem; letter-spacing: 12px; line-height: 1; margin: 6px 0 6px;
+                background: linear-gradient(100deg, #8a5a16 0%, #f7d77a 25%, #fff4c8 38%, #e3a93a 52%, #fff1b8 66%, #b47a22 85%); background-size: 220% 100%;
+                -webkit-background-clip: text; background-clip: text; color: transparent; animation: hxShine 5s linear infinite; filter: drop-shadow(0 4px 14px rgba(240,170,50,.35)); }
+    @keyframes hxShine { to { background-position: -220% 0; } }
+    .hx-sub { color: #d8c7a0; font-size: .84rem; letter-spacing: 1px; }
+    .hx-chips { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .hx-chips span { font-size: .72rem; color: #e8dcc0; padding: 5px 12px; border-radius: 999px; background: rgba(255,210,120,.08); border: 1px solid rgba(255,210,120,.3); }
+    .hx-chips b { color: #ffd77a; font-family: 'Rajdhani', sans-serif; font-size: .9rem; }
+    /* 스포트라이트 */
+    .hx-spot { position: relative; border-radius: 18px; overflow: hidden; min-height: 230px; margin-bottom: 30px; padding: 2px;
+               background: linear-gradient(120deg, #6b4510, #ffe08a, #b07a1e, #fff2c0, #8a5a16); box-shadow: 0 0 40px rgba(255,190,70,.3); }
+    .hx-spot-bg { position: absolute; inset: 2px; border-radius: 16px; background-size: cover; background-position: center 22%; animation: tcZoom 14s ease-in-out infinite alternate; }
+    .hx-spot-sh { position: absolute; inset: 2px; border-radius: 16px; background: linear-gradient(90deg, rgba(12,9,4,.96) 0%, rgba(12,9,4,.82) 45%, rgba(12,9,4,.15) 100%); }
+    .hx-spot-in { position: relative; z-index: 2; padding: 26px 30px; }
+    .hx-crown { display: inline-block; font-family: 'Bebas Neue', sans-serif; letter-spacing: 3px; font-size: .9rem; color: #2a1800; padding: 3px 12px 1px; border-radius: 4px;
+                background: linear-gradient(90deg, #f0c45a, #fff1b8, #e0a83a); box-shadow: 0 0 16px rgba(255,200,80,.6); }
+    .hx-spot-lab { color: #f0d9a0; font-weight: 700; margin: 14px 0 0; font-size: 1rem; }
+    .hx-spot-val { font-family: 'Rajdhani', 'Bebas Neue', sans-serif; font-weight: 700; font-size: 5rem; line-height: 1; color: #fff3cc;
+                   text-shadow: 0 0 24px rgba(255,190,70,.7), 0 4px 0 #8a5a16; }
+    .hx-spot-who { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+    .hx-spot-who .ch-box { width: 48px; height: 48px; border-radius: 50%; box-shadow: 0 0 0 2px #ffd77a, 0 0 18px rgba(255,200,80,.6); }
+    .hx-spot-who b { display: block; color: #fff; font-size: 1.25rem; } .hx-spot-who span { color: #d6c49a; font-size: .74rem; }
+    .hx-spot-prev { margin-top: 14px; font-size: .74rem; color: #b9a982; }
+    .hx s { color: #8f8570; } .hx em { font-style: normal; color: #ffd77a; font-weight: 700; margin-left: 4px; } .hx-first { color: #e6c770; }
+    /* 섹션 제목 */
+    .hx-sec { text-align: center; margin: 4px 0 16px; }
+    .hx-sec span { display: block; font-family: 'Bebas Neue', sans-serif; letter-spacing: 6px; font-size: .9rem; color: #c9a14a; }
+    .hx-sec b { font-size: 1.15rem; color: #fff1cc; letter-spacing: 2px; }
+    /* 트로피 명판 */
+    .hx-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 30px; }
+    .hx-grid > .hx-pl { flex: 0 1 calc(25% - 12px); min-width: 190px; }
+    .hx-pl { padding: 1.5px; border-radius: 16px; background: linear-gradient(160deg, #ffe7a0, #8a5a16 40%, #3a2a10 60%, #e0b050); animation: tcDeal .7s cubic-bezier(.2,.9,.3,1.2) both;
+             transition: transform .25s ease, box-shadow .25s ease; }
+    .hx-pl:hover { transform: translateY(-6px); box-shadow: 0 14px 34px rgba(255,180,60,.28); }
+    .hx-pl-in { position: relative; overflow: hidden; height: 100%; border-radius: 15px; padding: 34px 14px 14px; text-align: center;
+                background: radial-gradient(120% 60% at 50% 0%, rgba(255,210,120,.16), transparent 60%), linear-gradient(180deg, #1d1810, #121521); }
+    .hx-pl-in::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; pointer-events: none;
+                       background: linear-gradient(100deg, transparent, rgba(255,235,180,.16), transparent); animation: stkSweep 4.5s ease-in-out infinite; }
+    .hx-medal { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); width: 46px; height: 30px; border-radius: 0 0 24px 24px;
+                background: linear-gradient(180deg, #ffe08a, #b07a1e); display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0,0,0,.4); }
+    .hx-medal span { font-size: 1rem; margin-top: -2px; }
+    .hx-pl-lab { color: #e8cf8c; font-size: .78rem; font-weight: 700; letter-spacing: 1px; }
+    .hx-pl-val { font-family: 'Rajdhani', 'Bebas Neue', sans-serif; font-weight: 700; font-size: 2.3rem; line-height: 1.15; margin: 4px 0 10px;
+                 background: linear-gradient(180deg, #fff6d6, #f0c45a 60%, #b07a1e); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hx-pl-val small { display: block; font-family: 'Noto Sans KR', sans-serif; font-size: .7rem; color: #cbb98f; -webkit-text-fill-color: #cbb98f; margin-top: -2px; }
+    .hx-pl-who { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .hx-pl-who .ch-box { width: 30px; height: 30px; border-radius: 50%; box-shadow: 0 0 0 1.5px #e0b050; }
+    .hx-pl-who b { color: #fff; font-size: .92rem; }
+    .hx-pl-when { color: #a99a78; font-size: .66rem; margin-top: 4px; }
+    .hx-pl-prev { margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(224,176,80,.3); font-size: .66rem; color: #a99a78; }
+    /* 희귀 업적 */
+    .hx-lens { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .hx-len { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: 14px; background: linear-gradient(135deg, rgba(255,210,120,.1), rgba(255,255,255,.02)); border: 1px solid rgba(224,176,80,.35); }
+    .hx-len-ico { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 1.4rem; background: radial-gradient(circle, #3a2a10, #1a140a); box-shadow: 0 0 0 2px #c9a14a, 0 0 16px rgba(255,190,70,.35); }
+    .hx-len small { display: block; color: #d8c08a; font-size: .72rem; } .hx-len b { display: block; font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; color: #fff1cc; line-height: 1.1; }
+    .hx-len span { color: #a99a78; font-size: .66rem; }
+    .hx-mos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .hx-mo { padding: 1.5px; border-radius: 16px; }
+    .hx-mo.fire { background: linear-gradient(160deg, #ffb347, #8a2a08 50%, #ff6a1f); box-shadow: 0 0 26px rgba(255,110,30,.25); }
+    .hx-mo.shield { background: linear-gradient(160deg, #9fd0ff, #1d3a6a 50%, #5a9cff); box-shadow: 0 0 26px rgba(90,150,255,.22); }
+    .hx-mo.upset { background: linear-gradient(160deg, #d9a6ff, #3e1a6a 50%, #a46bff); box-shadow: 0 0 26px rgba(170,110,255,.22); }
+    .hx-mo-in { height: 100%; border-radius: 15px; padding: 14px 16px; background: linear-gradient(180deg, #161a28, #10131e); }
+    .hx-mo-h { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .hx-mo-ico { font-size: 1.6rem; filter: drop-shadow(0 0 10px rgba(255,255,255,.35)); }
+    .hx-mo-h b { display: block; color: #fff; font-size: .95rem; } .hx-mo-h small { color: #9aa4b6; font-size: .66rem; }
+    .hx-mo-n { margin-left: auto; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.6rem; color: #fff; opacity: .9; }
+    .hx-mr { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px solid rgba(255,255,255,.07); }
+    .hx-mr .ch-box { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; }
+    .hx-mn { flex: 1; min-width: 0; } .hx-mn b { display: block; color: #fff; font-size: .84rem; } .hx-mn span { display: block; color: #8f9ab0; font-size: .64rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hx-mv { font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #ffd77a; }
+    .hx-pct { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.15rem; width: 44px; text-align: center; } .hx-pct.blue { color: #7db8ff; } .hx-pct.red { color: #ff7b7b; }
+    .hx-mo-none { color: #8f9ab0; font-size: .76rem; text-align: center; padding: 18px 0 10px; line-height: 1.6; }
+    @media (max-width: 1100px) { .hx-mos { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) {
+      .hx { padding: 24px 14px 20px; border-radius: 16px; }
+      .hx-title { font-size: 2.3rem; letter-spacing: 6px; }
+      .hx-spot-in { padding: 20px 18px; } .hx-spot-val { font-size: 3.6rem; }
+      .hx-spot-sh { background: linear-gradient(180deg, rgba(12,9,4,.55) 0%, rgba(12,9,4,.92) 60%); }
+      .hx-grid { gap: 10px; } .hx-grid > .hx-pl { flex: 0 1 calc(50% - 5px); min-width: 0; }
+      .hx-pl-val { font-size: 1.8rem; }
+      .hx-lens { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) { .hx *, .hx *::after { animation: none !important; } }
+    /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
     .dcp-top { padding: 14px 18px 10px; display: flex; flex-direction: column; gap: 2px; }
@@ -1848,6 +1949,7 @@
     <button class="nav-btn" onclick="switchPage('record',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></span>전적</button>
     <button class="nav-btn" onclick="switchPage('rank',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>순위</button>
     <button class="nav-btn" onclick="switchPage('summoner',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></span>소환사</button>
+    <button class="nav-btn adm-only" onclick="switchPage('hall',this)" title="관리자만 보이는 미리보기 (아직 일반 링크에는 안 보여요)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M4 18h16"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 3 3 8.5V11h18V8.5z"/></svg></span>명예의 전당</button>
     <div class="nav-sep" aria-hidden="true"></div>
     <button class="nav-btn" onclick="switchPage('assign',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></svg></span>팀 배정</button>
     <button class="nav-btn adm-only" onclick="switchPage('stats',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6" rx="1"/><rect x="12" y="8" width="3" height="10" rx="1"/><rect x="17" y="5" width="3" height="13" rx="1"/></svg></span>접속통계</button>
@@ -2004,6 +2106,12 @@
   <div class="sm-head"><span class="rec-list-title">▸ 소환사 정보</span><span class="sm-sub">판수 많은 순 · 카드를 누르면 날짜별 전체 기록이 나와요</span></div>
   <div class="sm-grid" id="smGrid"></div>
 </div><!-- /view-summoner -->
+
+<!-- ▣ 명예의 전당 -->
+<div class="page-view" id="view-hall">
+  <div class="hx-pre">🚧 <b>실제 반영 전</b> · 관리자 링크에서만 보이는 미리보기예요. 일반 링크에는 아직 이 메뉴가 없어요.</div>
+  <div id="hallBody"></div>
+</div><!-- /view-hall -->
 
 <!-- ▣ 접속통계 (관리자 링크에서만) -->
 <div class="page-view" id="view-stats">
@@ -4073,6 +4181,7 @@ function renderRecord() {
   renderRank();
   renderSummoners();
   renderDashboard();
+  if (typeof renderHall === 'function') renderHall();
 }
 function renderRecSummary() {
   const box = document.getElementById('recSum');
@@ -4797,6 +4906,99 @@ function computeTitles() {
   return { titles: out, byKey, rows };
 }
 
+// ══════════════════ 명예의 전당 ══════════════════
+// ① 역대 한 판 최고 기록 (깨지기 전까지 남는 기록 + 경신 이력)  ② 희귀 업적 명단 (펜타킬 · 노데스 · 대역전승 · 최단/최장)
+const HALL_RECORDS = [
+  { k: 'k',    ico: '⚔️', name: '최다 킬',       v: p => p.k,   f: v => v + '킬' },
+  { k: 'a',    ico: '🤝', name: '최다 어시스트', v: p => p.a,   f: v => v + '어시' },
+  { k: 'dmg',  ico: '💥', name: '최다 딜량',     v: p => p.dmg, f: v => fmtNum(v) },
+  { k: 'kda',  ico: '🎯', name: '최고 KDA',      v: p => p.d ? (p.k + p.a) / p.d : (p.k + p.a) ? (p.k + p.a) * 1.2 : 0, f: (v, p) => p && !p.d ? 'Perfect' : v.toFixed(2), sub: p => `${p.k}/${p.d}/${p.a}` },
+  { k: 'gold', ico: '💰', name: '최다 골드',     v: p => p.gold, f: v => fmtNum(v) },
+  { k: 'cs',   ico: '🌾', name: '최다 CS',       v: p => p.cs,  f: v => v + ' CS', rift: true },
+  { k: 'vis',  ico: '👁️', name: '최고 시야점수', v: p => p.vis, f: v => v + '점', rift: true },
+  { k: 'taken',ico: '🛡️', name: '최다 받은 피해', v: p => p.taken, f: v => fmtNum(v) }
+];
+const hallWhen = m => `${fmtDate(m.date).slice(5, 10).replace('.', '/')} · ${gameNo(m)}번째 판`;
+function renderHall() {
+  const box = document.getElementById('hallBody');
+  if (!box) return;
+  // 명예의 전당은 소환사 협곡 기록만 (지금 보고 있는 탭과 상관없이)
+  const prevMode = recMode; recMode = 'rift';
+  try { _renderHall(box); } finally { recMode = prevMode; }
+}
+function _renderHall(box) {
+  const ms = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
+  if (!ms.length) { box.innerHTML = `<div class="db-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.</div>`; return; }
+  const recs = HALL_RECORDS.map(r => {
+    const hist = [];
+    ms.forEach(m => {
+      let best = null;
+      m.players.forEach(p => { const v = r.v(p); if (v > 0 && (!best || v > best.v)) best = { v, p, m }; });
+      if (best && (!hist.length || best.v > hist[hist.length - 1].v)) hist.push(best);
+    });
+    return { r, hist };
+  }).filter(x => x.hist.length);
+  const pentas = [], nodeath = [];
+  ms.forEach(m => m.players.forEach(p => {
+    if ((p.penta || 0) > 0 || (p.multi || 0) >= 5) pentas.push({ m, p });
+    if (p.d === 0 && p.k + p.a >= 5) nodeath.push({ m, p });
+  }));
+  const retro = retroPredictions();
+  const upsets = ms.map(m => { const r = retro[m.id]; if (!r) return null; const w = winnerOf(m), pw = w === 'blue' ? r.p : 1 - r.p; return pw <= 0.25 ? { m, w, pct: Math.round(pw * 100) } : null; }).filter(Boolean);
+  const byLen = ms.slice().sort((a, b) => a.len - b.len);
+  const broken = recs.reduce((t, x) => t + x.hist.length - 1, 0);
+  const spark = n => '<div class="hx-spark">' + Array.from({ length: n }, (_, i) => `<i style="left:${(i * 37 + 11) % 100}%;animation-delay:${((i * .61) % 4).toFixed(2)}s;animation-duration:${(4 + (i % 4)).toFixed(1)}s"></i>`).join('') + '</div>';
+  const prevTxt = (r, hist) => { const prev = hist[hist.length - 2]; return prev ? `<s>${escapeHtml(prev.p.name)} ${r.f(prev.v, prev.p)}</s> <em>${hist.length - 1}번 경신</em>` : '<span class="hx-first">👑 최초 기록 · 아직 깨진 적 없음</span>'; };
+  // 스포트라이트: 최다 킬 기록
+  const [hero, ...rest] = recs;
+  const heroCur = hero.hist[hero.hist.length - 1];
+  const spotlight = `<div class="hx-spot">
+    <div class="hx-spot-bg" style="background-image:url('${splashOf(heroCur.p.champ)}')"></div><div class="hx-spot-sh"></div>${spark(14)}
+    <div class="hx-spot-in">
+      <div class="hx-crown">👑 LEGENDARY RECORD</div>
+      <div class="hx-spot-lab">${hero.r.ico} ${hero.r.name}</div>
+      <div class="hx-spot-val">${hero.r.f(heroCur.v, heroCur.p)}</div>
+      <div class="hx-spot-who">${champIcon(heroCur.m, heroCur.p.champ)}<div><b>${escapeHtml(heroCur.p.name)}</b><span>${escapeHtml(champInfo(heroCur.p.champ).name)} · ${hallWhen(heroCur.m)}</span></div></div>
+      <div class="hx-spot-prev">${prevTxt(hero.r, hero.hist)}</div>
+    </div>
+  </div>`;
+  const plaque = ({ r, hist }, i) => {
+    const cur = hist[hist.length - 1];
+    return `<div class="hx-pl" style="animation-delay:${(i * .07).toFixed(2)}s"><div class="hx-pl-in">
+      <div class="hx-medal"><span>${r.ico}</span></div>
+      <div class="hx-pl-lab">${r.name}</div>
+      <div class="hx-pl-val">${r.f(cur.v, cur.p)}${r.sub ? `<small>${r.sub(cur.p)}</small>` : ''}</div>
+      <div class="hx-pl-who">${champIcon(cur.m, cur.p.champ)}<b>${escapeHtml(cur.p.name)}</b></div>
+      <div class="hx-pl-when">${escapeHtml(champInfo(cur.p.champ).name)} · ${hallWhen(cur.m)}</div>
+      <div class="hx-pl-prev">${prevTxt(r, hist)}</div>
+    </div></div>`;
+  };
+  const mrow = (m, p, right) => `<div class="hx-mr">${champIcon(m, p.champ)}<div class="hx-mn"><b>${escapeHtml(p.name)}</b><span>${escapeHtml(champInfo(p.champ).name)} · ${hallWhen(m)}</span></div><div class="hx-mv">${right}</div></div>`;
+  const moment = (cls, ico, title, sub, items, empty) => `<div class="hx-mo ${cls}"><div class="hx-mo-in">
+      <div class="hx-mo-h"><span class="hx-mo-ico">${ico}</span><div><b>${title}</b><small>${sub}</small></div><span class="hx-mo-n">${items.length}</span></div>
+      ${items.length ? items.join('') : `<div class="hx-mo-none">${empty}</div>`}</div></div>`;
+  const lenMedal = (m, label, ico) => `<div class="hx-len"><span class="hx-len-ico">${ico}</span><div><small>${label}</small><b>${fmtLen(m.len)}</b><span>${hallWhen(m)} · ${winnerOf(m) === 'blue' ? '🔵 블루' : '🔴 레드'} 승</span></div></div>`;
+  box.innerHTML = `<div class="hx">
+    <div class="hx-rays"></div>${spark(24)}
+    <div class="hx-hero">
+      <div class="hx-laurel">🏆</div>
+      <div class="hx-title">HALL OF FAME</div>
+      <div class="hx-sub">깨지기 전까지 영원히 남는 ${MODE_NAME[recMode]} 내전의 전설들</div>
+      <div class="hx-chips"><span>📜 기록 <b>${recs.length}</b></span><span>⚡ 총 경신 <b>${broken}</b>회</span><span>🔥 펜타킬 <b>${pentas.length}</b></span><span>🎮 ${ms.length}판 기준</span></div>
+    </div>
+    ${spotlight}
+    <div class="hx-sec"><span>✦ RECORD PLAQUES ✦</span><b>역대 한 판 최고 기록</b></div>
+    <div class="hx-grid">${rest.map(plaque).join('')}</div>
+    <div class="hx-sec"><span>✦ LEGENDARY MOMENTS ✦</span><b>희귀 업적</b></div>
+    <div class="hx-lens">${lenMedal(byLen[0], '최단 경기', '⚡')}${lenMedal(byLen[byLen.length - 1], '최장 경기', '⏳')}</div>
+    <div class="hx-mos">
+      ${moment('fire', '🔥', '펜타킬 달성자', '전설의 다섯 킬', pentas.slice().reverse().map(x => mrow(x.m, x.p, `${x.p.k}/${x.p.d}/${x.p.a}`)), '아직 펜타킬이 없어요<br>첫 번째 전설은 누구?')}
+      ${moment('shield', '🛡️', '노데스 게임', '0데스로 끝낸 판', nodeath.slice().reverse().sort((a, b) => (b.p.k + b.p.a) - (a.p.k + a.p.a)).slice(0, 6).map(x => mrow(x.m, x.p, `${x.p.k}/0/${x.p.a}`)), '아직 노데스 게임이 없어요')}
+      ${moment('upset', '😱', '대역전승', '예측 25% 이하 팀의 승리', upsets.slice().reverse().map(u => `<div class="hx-mr"><div class="hx-pct ${u.w}">${u.pct}%</div><div class="hx-mn"><b>${u.w === 'blue' ? '🔵 블루팀' : '🔴 레드팀'} 역전승</b><span>${hallWhen(u.m)} · ${u.m.players.filter(p => p.team === u.w).map(p => escapeHtml(p.name)).join(', ')}</span></div></div>`), '아직 대역전승이 없어요')}
+    </div>
+  </div>`;
+}
+
 // ══════════════════ 대시보드 ══════════════════
 function renderDashboard() {
   const box = document.getElementById('dashBody');
@@ -5506,7 +5708,7 @@ async function logVisit(menu, detail) {
     });
   } catch (e) { /* 기록 실패해도 사이트는 그대로 */ }
 }
-const PAGE_NAME = { dash: '대시보드', assign: '팀 배정', record: '전적', rank: '순위', summoner: '소환사', stats: '접속통계' };
+const PAGE_NAME = { dash: '대시보드', assign: '팀 배정', record: '전적', rank: '순위', summoner: '소환사', hall: '명예의 전당', stats: '접속통계' };
 if (VISIT_ON) {
   const note = document.getElementById('visitNote');
   if (note) note.textContent = '이 사이트는 더 나은 운영을 위해 방문 통계(접속 시간 · 대략적인 지역 · 기기 종류 · 본 메뉴)를 익명으로 기록해요.';
