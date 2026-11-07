@@ -1081,6 +1081,28 @@
     @keyframes tcDeal { 0% { opacity: 0; transform: translateY(26px) rotateY(75deg) scale(.9); } 100% { opacity: 1; transform: none; } }
     @keyframes tcZoom { from { transform: scale(1.04); } to { transform: scale(1.14) translateY(-2%); } }
     @media (prefers-reduced-motion: reduce) { .hot-sec *, .hot-sec *::after { animation: none !important; } }
+    /* 휴대폰: 연승·연패 카드를 가로로 긴 한 줄 카드로 (세로로 길게 늘어지지 않게) */
+    @media (max-width: 760px) {
+      .hot-row, .hot-row.wide { flex-direction: column; flex-wrap: nowrap; gap: 10px; padding: 8px 0 14px; }
+      .hot-row .tcard, .hot-row.c2 .tcard, .hot-row.c3 .tcard, .hot-row.c4 .tcard, .hot-row.wide .tcard { flex: 0 0 auto; width: 100%; height: 128px; }
+      .hot-row .tcard:hover { transform: none; }
+      .hot-row .tc-art { background-position: center 18%; }
+      .hot-row .tcard.win .tc-shade, .hot-row.wide .tcard.win .tc-shade { background: linear-gradient(90deg, rgba(23,7,1,.96) 0%, rgba(30,10,2,.86) 55%, rgba(40,14,2,.35) 100%); }
+      .hot-row .tcard.lose .tc-shade, .hot-row.wide .tcard.lose .tc-shade { background: linear-gradient(90deg, rgba(4,11,26,.96) 0%, rgba(6,14,32,.86) 55%, rgba(10,24,52,.35) 100%); }
+      .hot-row .tc-ribbon, .hot-row.wide .tc-ribbon { top: 10px; left: 12px; font-size: .62rem; padding: 1px 6px 0; }
+      .hot-row .tc-num, .hot-row.wide .tc-num { top: 50%; right: 16px; transform: translateY(-50%); }
+      .hot-row .tc-num b, .hot-row.wide .tc-num b { font-size: 2.9rem; }
+      .hot-row .tc-num span, .hot-row.wide .tc-num span { font-size: .62rem; }
+      .hot-row .tc-body, .hot-row.wide .tc-body { top: 30px; bottom: auto; right: 84px; padding: 0 12px; }
+      .hot-row .tc-tag, .hot-row.wide .tc-tag { display: none; }
+      .hot-row .tc-name, .hot-row.wide .tc-name { font-size: 1.02rem; }
+      .hot-row .tc-champ, .hot-row.wide .tc-champ { display: inline; font-size: .62rem; }
+      .hot-row .tc-quote, .hot-row.wide .tc-quote { font-size: .72rem; margin-top: 3px; -webkit-line-clamp: 1; }
+      .hot-row .tc-body .stk-dots { margin-top: 6px; }
+      .hot-row .tcard.ghost { height: 64px; }
+      .hot-row .tcard.ghost br { display: none; }
+      .hot-vs { display: none; }
+    }
 
     /* 개인 순위: 정렬 / 라인별 */
     .rk-sort { justify-content: space-between; }
@@ -1489,6 +1511,8 @@
     .tcc-txt { min-width: 0; }
     .tcc-name { font-size: 1.65rem; font-weight: 700; color: var(--ac); line-height: 1.15; letter-spacing: 1px; text-shadow: 0 0 18px color-mix(in srgb, var(--ac) 35%, transparent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tcc-desc { font-size: .78rem; color: #a7b0bf; margin-top: 4px; }
+    .tcc-basis { display: inline-block; vertical-align: middle; margin-left: 8px; font-size: .62rem; font-weight: 700; letter-spacing: 0; padding: 2px 8px; border-radius: 999px;
+                 color: var(--ac, var(--gold2)); background: rgba(255,255,255,.07); border: 1px solid color-mix(in srgb, var(--ac, #c89b3c) 55%, transparent); text-shadow: none; -webkit-text-fill-color: currentColor; }
     .tcc-who { font-size: 1.15rem; font-weight: 700; color: #fff; margin-top: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tcc-co { font-size: .62rem; font-weight: 500; color: #a7b0bf; margin-left: 6px; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 1px 7px; vertical-align: 2px; }
     .tcc-val { font-size: .8rem; color: #dfe4ec; margin-top: 4px; font-weight: 700; }
@@ -1758,7 +1782,17 @@
       .st-when b { display: inline; margin-right: 6px; }
       .vbar-c b { display: none; }
     }
-  </style>
+      /* 휴대폰: 화면이 작고 밖에서 보는 경우가 많아서 전체를 한 단계 밝게 */
+    @media (max-width: 760px) {
+      :root { --bg: #223150; --panel: #2b3c5c; --panel2: #33466a; --border: #4a6690; --muted: #98a5bb; --text: #e3e7ef; --text-bright: #f8f9fb; }
+      .hero-img { filter: brightness(.78) saturate(1.1); }
+      .sidebar { background: rgba(30,44,70,.97) !important; }
+      .nav-btn { color: #a9b5c9; }
+      .nav-btn .nav-ico { opacity: 1; }
+      .hot-sub, .db-h span, .kpi-s, .kpi-l, .hc-t, .pred-sub, .mb-sub, .modal-hint, .tcc-desc { color: #a9b5c9 !important; }
+      .mb-lane .rn, .mb-lane .ri { opacity: .95 !important; }
+    }
+</style>
 </head>
 <body>
 
@@ -4571,7 +4605,7 @@ function renderSummoners() {
     if (recMode === 'rift' && mainPos && ICONS[mainPos[0]])
       traits.push(`<span class="sm-tr" title="주 라인: ${POS_KO[mainPos[0]]} (${mainPos[1]}판)"><img src="${ICONS[mainPos[0]]}" alt="" onerror="this.parentElement.remove()"></span>`);
     SM_TRAITS.forEach(t => { if (top[t.key] && top[t.key].has(r.key)) traits.push(`<span class="sm-tr" title="${t.name} · ${t.desc}">${t.ico}</span>`); });
-    const ach = (titleMap[r.key] || []).map(t => [`${t.ico} ${t.name}`, t.desc, true]).concat(summonerAchievements(r, totalDays));
+    const ach = (titleMap[r.key] || []).map(t => [`${t.ico} ${t.name}`, t.desc + (titleBasis(t) ? ` (기준: ${titleBasis(t)})` : ''), true]).concat(summonerAchievements(r, totalDays));
     const achHtml = ach.length
       ? ach.map(([t, d, isTitle], j) => `<span class="sm-a${isTitle ? ' title' : ''}${j >= 2 ? ' extra' : ''}" title="${escapeHtml(d)}">${escapeHtml(t)}</span>`).join('') +
         (ach.length > 2 ? `<span class="sm-a more" title="${escapeHtml(ach.slice(2).map(a => a[0]).join(', '))}" onclick="event.stopPropagation(); this.parentElement.classList.add('all')">+${ach.length - 2}</span>` : '')
@@ -4648,6 +4682,14 @@ const TITLES = [
   { k: 'tank',   ico: '🛡️', name: '필사즉생 필생즉사', desc: '분당 받은 피해량 1위', v: r => r.taken / r.mins, f: v => fmtNum(Math.round(v)) + '/분' },
   { k: 'rock',   ico: '🗿', name: '바위처럼 단단하게', desc: '분당 피해 감소량 1위', v: r => r.xmins ? r.mit / r.xmins : null, f: v => fmtNum(Math.round(v)) + '/분' }
 ];
+// 칭호 계산 기준 (화면에 같이 표시)
+const TITLE_BASIS = {
+  ej: '판당 평균', early: '판당 평균', omw: '판당 평균', bld: '판당 평균', wp: '판당 평균', pot: '판당 평균', mage: '판당 평균', die: '판당 평균',
+  cs: '분당 평균', gold: '분당 평균', vis: '분당 평균', apm: '분당 평균', tank: '분당 평균', rock: '분당 평균',
+  eff: '골드 대비', carry: '평균 비중', bus: '평균 비중', lost: '평균 비율', duoBest: '함께한 판 승률', duoWorst: '함께한 판 승률',
+  multi: '누적 합계', pool: '누적 합계', attend: '누적 합계', roller: '판별 기복', river: '판별 기복'
+};
+const titleBasis = t => TITLE_BASIS[t.k] || '';
 function titleStats() {
   const P = {};
   modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => {
@@ -4823,7 +4865,7 @@ function renderDashboard() {
       <div class="tcc-in">
         <div class="tcc-pics${winners.length > 1 ? ' two' : ''}">${pics}<span class="tcc-badge">${t.ico}</span></div>
         <div class="tcc-txt">
-          <div class="tcc-name">${t.name}</div>
+          <div class="tcc-name">${t.name}${titleBasis(t) ? `<span class="tcc-basis">${titleBasis(t)}</span>` : ''}</div>
           <div class="tcc-desc">${escapeHtml(t.desc)}</div>
           <div class="tcc-who">${names}${co}</div>
           <div class="tcc-val">${escapeHtml(text)}</div>
@@ -5071,7 +5113,7 @@ function dayDigest(day) {
     const sig = x => (x && !x.tie && x.winners && x.winners.length) ? x.winners.map(w => w.key).sort().join('|') : '';
     const names = x => x.winners.map(w => w.name).join(x.t.duo ? ' & ' : ', ');
     const prev = {}; tb.forEach(x => { prev[x.t.k] = x; });
-    ta.forEach(x => { const now = sig(x), was = sig(prev[x.t.k]); if (now && now !== was) out.titles.push({ t: x.t, to: names(x), isNew: !was }); });
+    ta.forEach(x => { const now = sig(x), was = sig(prev[x.t.k]); if (now && now !== was) out.titles.push({ t: x.t, to: names(x), isNew: !was, text: x.text || '' }); });
   }
   // 역대 한 판 기록 경신 (그 전날까지의 최고 기록을 넘었을 때)
   if (before.length) {
@@ -5125,7 +5167,7 @@ async function sendDayToDiscord(day, btn) {
   if (st.length) embeds.push({ color: 0xe8763a, fields: pair(st) });
   // ④ 변동사항 (칭호 · 연패 탈출 · 기록 경신 · 이변)
   const ch = [
-    ...g.titles.map(x => `${x.t.ico} ${x.t.name} → **${x.to}**${x.isNew ? ' 🆕' : ''}`),
+    ...g.titles.map(x => `${x.t.ico} ${x.t.name} → **${x.to}**${x.isNew ? ' 🆕' : ''}${x.text ? ` (${/평균$/.test(titleBasis(x.t)) ? titleBasis(x.t) + ' ' : ''}${x.text})` : ''}`),
     ...g.broke.map(s => `🎉 **${s.name}** ${s.n}연패 탈출`),
     ...g.records.map(r => '📈 ' + r),
     ...g.upsets.map(u => `😱 이변 · ${gameNo(u.m)}번째 판, 예측 ${u.pct}% ${u.w === 'blue' ? '블루팀' : '레드팀'} 역전승`)
