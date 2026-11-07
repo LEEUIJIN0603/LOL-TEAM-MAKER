@@ -5205,7 +5205,7 @@ async function sendDayToDiscord(day, btn) {
   const addF = (name, lines) => { if (lines.length) chFields.push({ name, value: lines.join('\n').slice(0, 1024) }); };
   addF('👑 칭호 변동', g.titles.map(x => {
     const val = x.text ? ` · ${/평균$/.test(titleBasis(x.t)) ? titleBasis(x.t) + ' ' : ''}${x.text}` : '';
-    return `${x.t.ico} **${x.t.name}**\n└ ${x.from ? `${x.from} → **${x.to}**` : `🆕 **${x.to}** (첫 주인)`}${val}`;
+    return `${x.t.ico} **${x.t.name}**\n└ ${x.from ? `~~${x.from}~~ → **${x.to}**` : `🆕 **${x.to}** (첫 주인)`}${val}`;
   }));
   const byN = (list, ico, word) => [...new Set(list.map(s => s.n))].sort((x, y) => y - x)
     .map(n => `${ico} ${n}${word} · ${list.filter(s => s.n === n).map(s => `**${s.name}**`).join(', ')}`);
@@ -5233,7 +5233,7 @@ refreshDiscordButtons();
 // 디스코드 미리보기 창 (디스코드 화면처럼 그려서 보여주고, 보낼지 고르기)
 function dcPreview(payload, label) {
   return new Promise(resolve => {
-    const md = t => escapeHtml(String(t || '')).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+    const md = t => escapeHtml(String(t || '')).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/~~(.+?)~~/g, '<s>$1</s>').replace(/\n/g, '<br>');
     const blank = t => !String(t || '').replace(/\u200b/g, '').trim();
     const emb = e => {
       const inl = (e.fields || []).filter(f => f.inline && !(blank(f.name) && blank(f.value))), full = (e.fields || []).filter(f => !f.inline);
