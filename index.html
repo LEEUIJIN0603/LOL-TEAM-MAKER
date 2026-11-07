@@ -1782,7 +1782,33 @@
       .st-when b { display: inline; margin-right: 6px; }
       .vbar-c b { display: none; }
     }
-      /* 휴대폰: 화면이 작고 밖에서 보는 경우가 많아서 전체를 한 단계 밝게 */
+      /* 디스코드 미리보기 창 */
+    .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
+    .dcp-top { padding: 14px 18px 10px; display: flex; flex-direction: column; gap: 2px; }
+    .dcp-top b { color: var(--gold2); font-size: .95rem; } .dcp-top span { color: var(--muted); font-size: .72rem; }
+    .dcp-view { background: #313338; padding: 16px 14px; overflow-y: auto; flex: 1; }
+    .dcp-msg { display: flex; gap: 12px; font-family: 'Noto Sans KR', sans-serif; color: #dbdee1; }
+    .dcp-av { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #c89b3c, #7a5518); display: grid; place-items: center; flex-shrink: 0; }
+    .dcp-body { flex: 1; min-width: 0; }
+    .dcp-hd { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; } .dcp-hd b { color: #f2f3f5; font-size: .9rem; }
+    .dcp-hd span { background: #5865f2; color: #fff; font-size: .58rem; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
+    .dcp-em { position: relative; background: #2b2d31; border-left: 4px solid; border-radius: 4px; padding: 10px 14px 12px 12px; margin-bottom: 6px; font-size: .8rem; line-height: 1.55; }
+    .dcp-em b { color: #f2f3f5; }
+    .dcp-th { position: absolute; right: 12px; top: 10px; width: 56px; height: 56px; border-radius: 6px; object-fit: cover; }
+    .dcp-t { color: #f2f3f5; font-weight: 700; font-size: .88rem; margin-bottom: 4px; padding-right: 64px; } .dcp-t.lk { color: #00a8fc; }
+    .dcp-d { padding-right: 64px; }
+    .dcp-in { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 14px; }
+    .dcp-full { margin-top: 8px; } .dcp-full:first-child { margin-top: 0; }
+    .dcp-fn { color: #f2f3f5; font-weight: 700; margin-bottom: 1px; }
+    .dcp-ft { color: #949ba4; font-size: .66rem; margin-top: 8px; }
+    .dcp-btns { display: flex; gap: 6px; margin-top: 2px; } .dcp-btn { background: #4e5058; color: #fff; font-size: .78rem; padding: 6px 12px; border-radius: 6px; }
+    .dcp-act { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; padding: 12px 18px 16px; }
+    .dcp-act button { padding: 11px; border-radius: 9px; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: .86rem; cursor: pointer; }
+    .dcp-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .dcp-send { background: #5865f2; border: none; color: #fff; } .dcp-send:hover { background: #4752c4; }
+    .dcp-in { grid-template-columns: repeat(2, 1fr); }
+    /* 휴대폰: 화면이 작고 밖에서 보는 경우가 많아서 전체를 한 단계 밝게 */
     @media (max-width: 760px) {
       :root { --bg: #223150; --panel: #2b3c5c; --panel2: #33466a; --border: #4a6690; --muted: #98a5bb; --text: #e3e7ef; --text-bright: #f8f9fb; }
       .hero-img { filter: brightness(.78) saturate(1.1); }
@@ -5114,7 +5140,7 @@ function dayDigest(day) {
     const sig = x => (x && !x.tie && x.winners && x.winners.length) ? x.winners.map(w => w.key).sort().join('|') : '';
     const names = x => x.winners.map(w => w.name).join(x.t.duo ? ' & ' : ', ');
     const prev = {}; tb.forEach(x => { prev[x.t.k] = x; });
-    ta.forEach(x => { const now = sig(x), was = sig(prev[x.t.k]); if (now && now !== was) out.titles.push({ t: x.t, to: names(x), isNew: !was, text: x.text || '' }); });
+    ta.forEach(x => { const now = sig(x), was = sig(prev[x.t.k]); if (now && now !== was) out.titles.push({ t: x.t, to: names(x), from: was ? names(prev[x.t.k]) : '', isNew: !was, text: x.text || '' }); });
   }
   // 역대 한 판 기록 경신 (그 전날까지의 최고 기록을 넘었을 때)
   if (before.length) {
@@ -5141,7 +5167,6 @@ async function sendDayToDiscord(day, btn) {
   if (!getWebhook()) { openDiscordSettings(); return; }
   const g = dayDigest(day), dayMs = g.dayMs;
   if (!dayMs.length) return;
-  if (!confirm(`${day.slice(5).replace('.', '/')} ${MODE_NAME[recMode]} 내전 결과 ${dayMs.length}판을 디스코드로 보낼까요?`)) return;
   const WD = ['일', '월', '화', '수', '목', '금', '토'];
   const d0 = new Date(dayMs[0].date);
   const rec = r => `${r.name} · ${r.w}승 ${r.l}패`;
@@ -5178,7 +5203,10 @@ async function sendDayToDiscord(day, btn) {
   // 변동사항: 종류별로 칸을 나눠서 (칸 사이가 띄워져 보여요)
   const chFields = [];
   const addF = (name, lines) => { if (lines.length) chFields.push({ name, value: lines.join('\n').slice(0, 1024) }); };
-  addF('👑 칭호 변동', g.titles.map(x => `${x.t.ico} ${x.t.name} → **${x.to}**${x.isNew ? ' 🆕' : ''}${x.text ? ` (${/평균$/.test(titleBasis(x.t)) ? titleBasis(x.t) + ' ' : ''}${x.text})` : ''}`));
+  addF('👑 칭호 변동', g.titles.map(x => {
+    const val = x.text ? ` · ${/평균$/.test(titleBasis(x.t)) ? titleBasis(x.t) + ' ' : ''}${x.text}` : '';
+    return `${x.t.ico} **${x.t.name}**\n└ ${x.from ? `${x.from} → **${x.to}**` : `🆕 **${x.to}** (첫 주인)`}${val}`;
+  }));
   const byN = (list, ico, word) => [...new Set(list.map(s => s.n))].sort((x, y) => y - x)
     .map(n => `${ico} ${n}${word} · ${list.filter(s => s.n === n).map(s => `**${s.name}**`).join(', ')}`);
   addF('🔁 연승 · 연패 변동', [...byN(g.broke, '🎉', '연패 탈출'), ...byN(g.ended, '💔', '연승 마감')]);
@@ -5187,6 +5215,8 @@ async function sendDayToDiscord(day, btn) {
   if (chFields.length) embeds.push({ color: 0x9b7be8, title: '📢 변동사항', fields: chFields });
   embeds[embeds.length - 1].footer = { text: '오늘의 LOL 내전' };
   const components = [{ type: 1, components: [{ type: 2, style: 5, label: '📊 사이트에서 자세히 보기', url }] }];
+  // 보내기 전에 디스코드에 어떻게 보일지 미리보기 → [보내기]를 눌러야 실제로 보내요
+  if (!(await dcPreview({ embeds, components }, `${day.slice(5).replace('.', '/')} ${MODE_NAME[recMode]} 내전 결과`))) return;
   const old = btn.textContent;
   btn.disabled = true; btn.textContent = '⏳ 보내는 중...';
   try {
@@ -5199,6 +5229,43 @@ async function sendDayToDiscord(day, btn) {
   setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 2500);
 }
 refreshDiscordButtons();
+
+// 디스코드 미리보기 창 (디스코드 화면처럼 그려서 보여주고, 보낼지 고르기)
+function dcPreview(payload, label) {
+  return new Promise(resolve => {
+    const md = t => escapeHtml(String(t || '')).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+    const blank = t => !String(t || '').replace(/\u200b/g, '').trim();
+    const emb = e => {
+      const inl = (e.fields || []).filter(f => f.inline && !(blank(f.name) && blank(f.value))), full = (e.fields || []).filter(f => !f.inline);
+      return `<div class="dcp-em" style="border-left-color:#${(e.color || 0x4e5058).toString(16).padStart(6, '0')}">
+        ${e.thumbnail ? `<img class="dcp-th" src="${e.thumbnail.url}" alt="" onerror="this.remove()">` : ''}
+        ${e.title ? `<div class="dcp-t${e.url ? ' lk' : ''}">${md(e.title)}</div>` : ''}
+        ${e.description ? `<div class="dcp-d">${md(e.description)}</div>` : ''}
+        ${inl.length ? `<div class="dcp-in">${inl.map(f => `<div><div class="dcp-fn">${blank(f.name) ? '' : md(f.name)}</div>${blank(f.value) ? '' : md(f.value)}</div>`).join('')}</div>` : ''}
+        ${full.map(f => `<div class="dcp-full"><div class="dcp-fn">${md(f.name)}</div>${md(f.value)}</div>`).join('')}
+        ${e.footer ? `<div class="dcp-ft">${md(e.footer.text)}</div>` : ''}
+      </div>`;
+    };
+    const btns = (payload.components || []).flatMap(r => r.components || []).map(c => `<span class="dcp-btn">${escapeHtml(c.label)} ↗</span>`).join('');
+    const wrap = document.createElement('div');
+    wrap.className = 'dcp-wrap';
+    wrap.innerHTML = `<div class="dcp-box">
+      <div class="dcp-top"><b>📣 디스코드로 보낼 내용 미리보기</b><span>${escapeHtml(label || '')} · 아래처럼 채널에 올라가요</span></div>
+      <div class="dcp-view"><div class="dcp-msg"><div class="dcp-av">⚔️</div><div class="dcp-body">
+        <div class="dcp-hd"><b>오늘의 LOL 내전</b><span>앱</span></div>
+        ${(payload.embeds || []).map(emb).join('')}${btns ? `<div class="dcp-btns">${btns}</div>` : ''}
+      </div></div></div>
+      <div class="dcp-act"><button class="dcp-cancel">취소</button><button class="dcp-send">📣 디스코드로 보내기</button></div>
+    </div>`;
+    const done = v => { wrap.remove(); document.removeEventListener('keydown', onKey); resolve(v); };
+    const onKey = e => { if (e.key === 'Escape') done(false); };
+    wrap.addEventListener('click', e => { if (e.target === wrap) done(false); });
+    wrap.querySelector('.dcp-cancel').onclick = () => done(false);
+    wrap.querySelector('.dcp-send').onclick = () => done(true);
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(wrap);
+  });
+}
 
 // ══════════════════ 승부 예측 ══════════════════
 // 소환사별 전력 = 개인 순위 종합 점수(0~100). 라인이 정해지면 그 라인 점수를 우선 사용. 기록 없는 사람은 50(보통)
