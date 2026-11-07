@@ -5090,7 +5090,7 @@ function dayDigest(day) {
   const all = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
   const dayMs = all.filter(m => dayKey(m) === day);
   const upTo = all.filter(m => dayKey(m) <= day), before = all.filter(m => dayKey(m) < day);
-  const out = { dayMs, mvp: dayMvpOf(dayMs), hot: [], cold: [], broke: [], titles: [], records: [], upsets: [], won: [], lost: [], drew: [] };
+  const out = { dayMs, mvp: dayMvpOf(dayMs), hot: [], cold: [], broke: [], titles: [], records: [], upsets: [], won: [], lost: [], drew: [], ended: [] };
   // 그날 최종 승패 (이긴 판이 더 많으면 승리 · 같으면 무승부)
   const R = {};
   dayMs.forEach(m => m.players.forEach(p => { const k = p.puuid || p.name; const r = R[k] || (R[k] = { name: p.name, w: 0, l: 0 }); r.name = p.name; if (p.win) r.w++; else r.l++; }));
@@ -5105,8 +5105,9 @@ function dayDigest(day) {
   stNow.forEach(s => {
     const b = stBefore.find(x => x.key === s.key);
     if (b && b.kind === 'lose' && b.n >= 2 && playedToday.has(s.key) && s.kind === 'win') out.broke.push({ name: s.name, n: b.n });
+    if (b && b.kind === 'win' && b.n >= 2 && playedToday.has(s.key) && s.kind === 'lose') out.ended.push({ name: s.name, n: b.n });
   });
-  out.hot.sort((a, b) => b.n - a.n); out.cold.sort((a, b) => b.n - a.n); out.broke.sort((a, b) => b.n - a.n);
+  out.hot.sort((a, b) => b.n - a.n); out.cold.sort((a, b) => b.n - a.n); out.broke.sort((a, b) => b.n - a.n); out.ended.sort((a, b) => b.n - a.n);
   // 칭호 왕좌 변동 (그 전날까지 → 그날까지)
   if (before.length) {
     const tb = withMatches(before, () => computeTitles().titles), ta = withMatches(upTo, () => computeTitles().titles);
@@ -5155,10 +5156,18 @@ async function sendDayToDiscord(day, btn) {
     thumbnail: g.mvp ? { url: dcChampIcon(g.mvp.m, g.mvp.p.champ) } : undefined
   });
   // ② 최종 승리 · 패배
+  // 같은 성적끼리 묶어서 성적은 한 번만 (모두 같으면 칸 제목에, 다르면 성적별 소제목)
+  const wlField = (label, list) => {
+    const groups = [];
+    list.forEach(r => { const k = `${r.w}승 ${r.l}패`; let gr = groups.find(x => x.k === k); if (!gr) groups.push(gr = { k, names: [] }); gr.names.push(r.name); });
+    return groups.length === 1
+      ? { name: `${label} · ${groups[0].k}`, value: groups[0].names.join('\n'), inline: true }
+      : { name: label, value: groups.map(gr => `**${gr.k}**\n${gr.names.join('\n')}`).join('\n\n'), inline: true };
+  };
   const wl = [];
-  if (g.won.length) wl.push({ name: '🏆 최종 승리', value: g.won.map(rec).join('\n'), inline: true });
-  if (g.lost.length) wl.push({ name: '💀 최종 패배', value: g.lost.map(rec).join('\n'), inline: true });
-  if (g.drew.length) wl.push({ name: '🤝 무승부', value: g.drew.map(rec).join('\n'), inline: true });
+  if (g.won.length) wl.push(wlField('🏆 최종 승리', g.won));
+  if (g.lost.length) wl.push(wlField('💀 최종 패배', g.lost));
+  if (g.drew.length) wl.push(wlField('🤝 무승부', g.drew));
   if (wl.length) embeds.push({ color: 0xc89b3c, fields: pair(wl) });
   // ③ 연승 · 연패
   const st = [];
@@ -5166,13 +5175,16 @@ async function sendDayToDiscord(day, btn) {
   if (g.cold.length) st.push({ name: '🧊 연패 중', value: g.cold.map(s => `${s.name} · ${s.n}연패`).join('\n'), inline: true });
   if (st.length) embeds.push({ color: 0xe8763a, fields: pair(st) });
   // ④ 변동사항 (칭호 · 연패 탈출 · 기록 경신 · 이변)
-  const ch = [
-    ...g.titles.map(x => `${x.t.ico} ${x.t.name} → **${x.to}**${x.isNew ? ' 🆕' : ''}${x.text ? ` (${/평균$/.test(titleBasis(x.t)) ? titleBasis(x.t) + ' ' : ''}${x.text})` : ''}`),
-    ...g.broke.map(s => `🎉 **${s.name}** ${s.n}연패 탈출`),
-    ...g.records.map(r => '📈 ' + r),
-    ...g.upsets.map(u => `😱 이변 · ${gameNo(u.m)}번째 판, 예측 ${u.pct}% ${u.w === 'blue' ? '블루팀' : '레드팀'} 역전승`)
-  ];
-  if (ch.length) embeds.push({ color: 0x9b7be8, fields: [{ name: '📢 변동사항', value: ch.join('\n').slice(0, 1024) }] });
+  // 변동사항: 종류별로 칸을 나눠서 (칸 사이가 띄워져 보여요)
+  const chFields = [];
+  const addF = (name, lines) => { if (lines.length) chFields.push({ name, value: lines.join('\n').slice(0, 1024) }); };
+  addF('👑 칭호 변동', g.titles.map(x => `${x.t.ico} ${x.t.name} → **${x.to}**${x.isNew ? ' 🆕' : ''}${x.text ? ` (${/평균$/.test(titleBasis(x.t)) ? titleBasis(x.t) + ' ' : ''}${x.text})` : ''}`));
+  const byN = (list, ico, word) => [...new Set(list.map(s => s.n))].sort((x, y) => y - x)
+    .map(n => `${ico} ${n}${word} · ${list.filter(s => s.n === n).map(s => `**${s.name}**`).join(', ')}`);
+  addF('🔁 연승 · 연패 변동', [...byN(g.broke, '🎉', '연패 탈출'), ...byN(g.ended, '💔', '연승 마감')]);
+  addF('📈 기록 경신', g.records);
+  addF('😱 이변', g.upsets.map(u => `${gameNo(u.m)}번째 판 · 예측 ${u.pct}%였던 ${u.w === 'blue' ? '🔵 블루팀' : '🔴 레드팀'} 역전승`));
+  if (chFields.length) embeds.push({ color: 0x9b7be8, title: '📢 변동사항', fields: chFields });
   embeds[embeds.length - 1].footer = { text: '오늘의 LOL 내전' };
   const components = [{ type: 1, components: [{ type: 2, style: 5, label: '📊 사이트에서 자세히 보기', url }] }];
   const old = btn.textContent;
