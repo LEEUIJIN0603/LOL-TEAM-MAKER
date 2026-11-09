@@ -5518,7 +5518,7 @@ function renderDashboard() {
   const augTop = Object.entries(AU).sort((a, b) => b[1].g - a[1].g || b[1].w - a[1].w).slice(0, 10);
   const row5 = augTop.length ? `<div class="db-sec"><div class="db-box"><div class="db-h"><b>✨ 인기 증강</b><span>많이 고른 순 · 고른 사람 기준 승률</span></div>
     <div class="aug-grid">${augTop.map(([a, v], i) => `<div class="dl"><span class="dl-n">${i + 1}</span>${augIcon(a, 'big')}<div class="dl-main"><b>${escapeHtml(augInfo(a).name)}</b><small>${v.w}승 ${v.g - v.w}패</small></div><div class="dl-v">${v.g}회<small>승률 ${Math.round(v.w / v.g * 100)}%</small></div></div>`).join('')}</div></div></div>` : '';
-  box.innerHTML = kpi + row3 + row2 + row4 + row5;
+  box.innerHTML = kpi + row2 + row3 + row4 + row5;
   initCarousel();
 }
 
