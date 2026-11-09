@@ -1949,6 +1949,47 @@
     .cal-c.today { box-shadow: inset 0 0 0 1.5px var(--blue-team); }
     .day-group.cal-flash { animation: calFlash 1.8s ease; border-radius: 12px; }
     @keyframes calFlash { 0%, 30% { box-shadow: 0 0 0 2px var(--gold), 0 0 24px rgba(240,190,80,.35); } 100% { box-shadow: 0 0 0 0 transparent; } }
+    /* 디스코드용 내전 결과 이미지 (화면 밖에서 그려서 캡쳐) */
+    .dk-wrap { position: fixed; left: -12000px; top: 0; z-index: -1; pointer-events: none; }
+    .dk { width: 880px; background: linear-gradient(180deg, #141d2e, #0f1626); color: #e3e7ef; border-radius: 18px; overflow: hidden; border: 2px solid #c89b3c; font-family: 'Noto Sans KR', sans-serif; padding-bottom: 2px; }
+    .dk-hd { position: relative; height: 250px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 28px 34px; }
+    .dk-bg { position: absolute; inset: 0; background-size: cover; background-position: center 22%; }
+    .dk-sh { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,9,4,.94) 0%, rgba(12,9,4,.72) 50%, rgba(12,9,4,.4) 100%), linear-gradient(0deg, #141d2e 0%, transparent 45%); }
+    .dk-hin, .dk-mvp { position: relative; }
+    .dk-brand { font-size: 15px; font-weight: 700; color: #f0c45a; letter-spacing: 2px; }
+    .dk-date { font-family: 'Rajdhani', 'Bebas Neue', sans-serif; font-size: 76px; font-weight: 700; color: #fff; line-height: 1; margin-top: 6px; }
+    .dk-date small { font-family: 'Noto Sans KR', sans-serif; font-size: 22px; color: #e8d6a8; margin-left: 8px; font-weight: 600; }
+    .dk-mode { font-size: 16px; color: #d8c7a0; margin-top: 8px; }
+    .dk-mvp { display: flex; align-items: center; gap: 16px; padding: 16px 22px; border-radius: 16px; background: rgba(20,14,6,.78); border: 1.5px solid rgba(247,215,122,.8); }
+    .dk-mv { width: 78px; height: 78px; border-radius: 14px; box-shadow: 0 0 0 2px #f7d77a; display: block; background: #2a2a2a; }
+    .dk-mvp span { display: block; font-size: 13px; color: #f0c45a; font-weight: 700; } .dk-mvp b { display: block; font-size: 30px; color: #fff; line-height: 1.2; } .dk-mvp em { font-style: normal; font-size: 13px; color: #d8c7a0; }
+    .dk-wl { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 22px 34px 8px; } .dk-wl.three { grid-template-columns: 1fr 1fr 1fr; }
+    .dk-col { border-radius: 14px; padding: 14px 18px; }
+    .dk-col.w { background: linear-gradient(160deg, rgba(240,196,90,.16), rgba(240,196,90,.03)); border: 1px solid rgba(240,196,90,.4); }
+    .dk-col.l, .dk-col.d { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.1); }
+    .dk-ch { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 8px; } .dk-ch small { font-size: 13px; color: #a9b5c9; font-weight: 600; margin-left: 6px; }
+    .dk-col.w .dk-ch { color: #ffd77a; }
+    .dk-pr { display: flex; align-items: center; gap: 12px; padding: 7px 0; border-top: 1px solid rgba(255,255,255,.06); } .dk-pr:first-of-type { border-top: none; }
+    .dk-ci { width: 34px; height: 34px; border-radius: 8px; display: block; background: #2a2f3a; flex-shrink: 0; }
+    .dk-pr b { font-size: 17px; color: #fff; flex: 1; } .dk-pr span { font-size: 12px; color: #a9b5c9; }
+    .dk-col.l .dk-pr b, .dk-col.d .dk-pr b { color: #b9c2d0; } .dk-col.l .dk-ci { filter: grayscale(.7) brightness(.8); }
+    .dk-st { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 10px 34px 6px; } .dk-st.one { grid-template-columns: 1fr; }
+    .dk-sc { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 12px 16px; border-radius: 14px; }
+    .dk-sc span { font-size: 15px; font-weight: 800; margin-right: 4px; }
+    .dk-sc b { font-size: 14px; padding: 4px 12px; border-radius: 999px; color: #fff; } .dk-sc b i { font-style: normal; font-family: 'Rajdhani', sans-serif; font-weight: 700; margin-left: 4px; }
+    .dk-sc.hot { background: linear-gradient(90deg, rgba(255,120,40,.2), rgba(255,120,40,.04)); border: 1px solid rgba(255,140,60,.4); } .dk-sc.hot span { color: #ffb45a; } .dk-sc.hot b { background: rgba(255,120,40,.25); } .dk-sc.hot i { color: #ffd27a; }
+    .dk-sc.cold { background: linear-gradient(90deg, rgba(90,130,210,.2), rgba(90,130,210,.04)); border: 1px solid rgba(120,160,230,.4); } .dk-sc.cold span { color: #9db8ec; } .dk-sc.cold b { background: rgba(90,130,210,.25); } .dk-sc.cold i { color: #cfe0ff; }
+    .dk-box { margin: 12px 34px 0; padding: 16px 18px; border-radius: 14px; }
+    .dk-box.dk-tt { background: rgba(155,123,232,.08); border: 1px solid rgba(155,123,232,.35); } .dk-box.dk-tt .dk-ch { color: #cbb6ff; }
+    .dk-box.dk-ex { background: rgba(126,226,168,.06); border: 1px solid rgba(126,226,168,.3); } .dk-box.dk-ex .dk-ch { color: #a8ecc4; }
+    .dk-tg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; }
+    .dk-tr { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid rgba(255,255,255,.05); } .dk-tr:nth-child(-n+2) { border-top: none; }
+    .dk-ti { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; font-size: 17px; background: rgba(255,255,255,.06); flex-shrink: 0; }
+    .dk-tr small { display: block; font-size: 12px; color: #a9b5c9; }
+    .dk-tr div div { font-size: 14.5px; } .dk-tr s { color: #6f7888; margin-right: 6px; } .dk-tr em { font-style: normal; color: #8c7bd0; margin-right: 6px; } .dk-tr b { color: #fff; }
+    .dk-tr i { font-style: normal; font-size: 10px; font-weight: 800; color: #2a1800; background: #7ee2a8; padding: 1px 5px; border-radius: 4px; margin-right: 6px; }
+    .dk-ln { font-size: 14.5px; padding: 5px 0; color: #dfe5ee; border-top: 1px solid rgba(255,255,255,.05); } .dk-ln:nth-of-type(2) { border-top: none; } .dk-ln b { color: #fff; }
+    .dk-ft { display: flex; justify-content: space-between; padding: 16px 34px 16px; font-size: 12px; color: #6f7d93; }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -1968,6 +2009,8 @@
     .dcp-in { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 14px; }
     .dcp-full { margin-top: 8px; } .dcp-full:first-child { margin-top: 0; }
     .dcp-fn { color: #f2f3f5; font-weight: 700; margin-bottom: 1px; }
+    .dcp-content { font-size: .84rem; margin-bottom: 6px; } .dcp-content b { color: #f2f3f5; }
+    .dcp-img { display: block; width: 100%; max-width: 520px; border-radius: 8px; margin-bottom: 6px; }
     .dcp-subt { font-size: .7rem; color: #949ba4; } .dcp-subt b { color: #b5bac1; } .dcp-subt s { color: #80848e; }
     .dcp-d { white-space: normal; }
     .dcp-ft { color: #949ba4; font-size: .66rem; margin-top: 8px; }
@@ -5571,20 +5614,81 @@ async function sendDayToDiscord(day, btn) {
     description: chFields.map(f => `**${f.name}**\n${f.value}`).join('\n\n').slice(0, 4000) });
   embeds[embeds.length - 1].footer = { text: '오늘의 LOL 내전' };
   const components = [{ type: 1, components: [{ type: 2, style: 5, label: '📊 사이트에서 자세히 보기', url }] }];
-  // 보내기 전에 디스코드에 어떻게 보일지 미리보기 → [보내기]를 눌러야 실제로 보내요
-  if (!(await dcPreview({ embeds, components }, `${day.slice(5).replace('.', '/')} ${MODE_NAME[recMode]} 내전 결과`))) return;
+  // 결과를 이미지 한 장으로 만들어서 보내요 (이미지를 못 만들면 예전처럼 글자 카드로)
   const old = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ 이미지 만드는 중...';
+  let img = null;
+  try { img = await dayCardBlob(g, d0); } catch (e) { img = null; }
+  btn.textContent = old; btn.disabled = false;
+  const content = `📅 **${day.slice(5).replace('.', '/')} (${WD[d0.getDay()]}) ${MODE_NAME[recMode]} 내전 결과** · ${dayMs.length}판`;
+  const imgUrl = img ? URL.createObjectURL(img) : '';
+  // 보내기 전에 디스코드에 어떻게 보일지 미리보기 → [보내기]를 눌러야 실제로 보내요
+  const ok = await dcPreview(img ? { content, components, _img: imgUrl } : { embeds, components }, `${day.slice(5).replace('.', '/')} ${MODE_NAME[recMode]} 내전 결과`);
+  if (imgUrl) setTimeout(() => URL.revokeObjectURL(imgUrl), 1000);
+  if (!ok) return;
   btn.disabled = true; btn.textContent = '⏳ 보내는 중...';
   try {
     const hook = getWebhook();
     const withComp = hook + (hook.includes('?') ? '&' : '?') + 'with_components=true';
-    try { await discordPost({ embeds, components }, null, withComp); }
-    catch (e) { if (/응답 400/.test(e.message)) await discordPost({ embeds }); else throw e; }   // 버튼이 안 되면 버튼 없이 (제목을 누르면 사이트로)
+    const file = img ? new File([img], `내전결과_${day.replace(/\./g, '')}.png`, { type: 'image/png' }) : null;
+    const body = img ? { content } : { embeds };
+    try { await discordPost({ ...body, components }, file, withComp); }
+    catch (e) { if (/응답 400/.test(e.message)) await discordPost(body, file); else throw e; }   // 버튼이 안 되면 버튼 없이
     btn.textContent = '✅ 보냈어요';
   } catch (e) { btn.textContent = '⚠️ 실패'; alert('디스코드로 보내지 못했어요\n' + e.message); }
   setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 2500);
 }
 refreshDiscordButtons();
+
+// 디스코드용 내전 결과 이미지 (화면 밖에 카드를 그린 뒤 캡쳐)
+async function dayCardBlob(g, d0) {
+  if (typeof html2canvas !== 'function') throw new Error('html2canvas 없음');
+  const WD = ['일', '월', '화', '수', '목', '금', '토'];
+  const dayMs = g.dayMs, last = {};
+  dayMs.forEach(m => m.players.forEach(p => { last[p.puuid || p.name] = { p, m }; last[p.name] = last[p.name] || { p, m }; }));
+  const icon = (name, cls) => { const x = last[name]; return x ? `<img class="${cls || 'dk-ci'}" src="${DD_BASE}${ddVer(x.m)}/img/champion/${encodeURIComponent(champInfo(x.p.champ).id)}.png" crossorigin="anonymous" alt="">` : `<span class="${cls || 'dk-ci'}"></span>`; };
+  const B = t => escapeHtml(String(t)).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  const recOf = list => { const ks = [...new Set(list.map(r => `${r.w}승 ${r.l}패`))]; return ks.length === 1 ? ks[0] : ''; };
+  const people = (list, label, cls) => !list.length ? '' : `<div class="dk-col ${cls}"><div class="dk-ch">${label} <small>${recOf(list)}</small></div>
+      ${list.map(r => `<div class="dk-pr">${icon(r.name)}<b>${escapeHtml(r.name)}</b>${recOf(list) ? '' : `<span>${r.w}승 ${r.l}패</span>`}</div>`).join('')}</div>`;
+  const mins = Math.round(dayMs.reduce((t, m) => t + m.len, 0) / 60);
+  const mvp = g.mvp;
+  const mvpKda = mvp ? (mvp.d ? ((mvp.k + mvp.a) / mvp.d).toFixed(1) : 'Perfect') : '';
+  const chips = (list, word) => list.map(s => `<b>${escapeHtml(s.name)} <i>${s.n}</i></b>`).join('');
+  const stHtml = (g.hot.length || g.cold.length) ? `<div class="dk-st${g.hot.length && g.cold.length ? '' : ' one'}">
+      ${g.hot.length ? `<div class="dk-sc hot"><span>🔥 연승 중</span>${chips(g.hot)}</div>` : ''}
+      ${g.cold.length ? `<div class="dk-sc cold"><span>🧊 연패 중</span>${chips(g.cold)}</div>` : ''}</div>` : '';
+  const tHtml = g.titles.length ? `<div class="dk-box dk-tt"><div class="dk-ch">👑 칭호 변동 <small>${g.titles.length}개</small></div><div class="dk-tg">
+      ${g.titles.map(x => `<div class="dk-tr"><span class="dk-ti">${x.t.ico}</span><div><small>${escapeHtml(x.t.name)}</small><div>${x.from ? `<s>${escapeHtml(x.from)}</s><em>→</em>` : '<i>NEW</i>'}<b>${escapeHtml(x.to)}</b></div></div></div>`).join('')}</div></div>` : '';
+  const lines = [
+    ...g.broke.map(s => `🎉 <b>${escapeHtml(s.name)}</b> ${s.n}연패 탈출`), ...g.ended.map(s => `💔 <b>${escapeHtml(s.name)}</b> ${s.n}연승 마감`),
+    ...g.records.map(r => '📈 ' + B(r)),
+    ...g.upsets.map(u => `😱 ${gameNo(u.m)}번째 판 · 예측 <b>${u.pct}%</b>였던 ${u.w === 'blue' ? '블루팀' : '레드팀'} 역전승`)
+  ];
+  const xHtml = lines.length ? `<div class="dk-box dk-ex"><div class="dk-ch">📢 그 밖의 변동</div>${lines.map(l => `<div class="dk-ln">${l}</div>`).join('')}</div>` : '';
+  const el = document.createElement('div');
+  el.className = 'dk-wrap';
+  el.innerHTML = `<div class="dk">
+    <div class="dk-hd">${mvp ? `<div class="dk-bg" style="background-image:url('${splashOf(mvp.p.champ)}')"></div>` : ''}<div class="dk-sh"></div>
+      <div class="dk-hin"><div class="dk-brand">🏆 오늘의 LOL 내전</div>
+        <div class="dk-date">${fmtDate(dayMs[0].date).slice(5, 10).replace('.', '/')} <small>${WD[d0.getDay()]}요일</small></div>
+        <div class="dk-mode">${recMode === 'aram' ? '❄️' : '🌲'} ${MODE_NAME[recMode]} · ${dayMs.length}판 · ${mins}분</div></div>
+      ${mvp ? `<div class="dk-mvp">${icon(mvp.p.name, 'dk-mv')}<div><span>👑 오늘의 MVP</span><b>${escapeHtml(mvp.p.name)}</b><em>${mvp.w}승 ${mvp.g - mvp.w}패 · KDA ${mvpKda} · MVP ${mvp.mvp}회</em></div></div>` : ''}
+    </div>
+    <div class="dk-wl${g.drew.length ? ' three' : ''}">${people(g.won, '🏆 최종 승리', 'w')}${people(g.lost, '💀 최종 패배', 'l')}${people(g.drew, '🤝 무승부', 'd')}</div>
+    ${stHtml}${tHtml}${xHtml}
+    <div class="dk-ft"><span>${escapeHtml(location.host + location.pathname.replace(/index\.html$/, ''))}</span><span>자세한 기록은 사이트에서 ↗</span></div>
+  </div>`;
+  document.body.appendChild(el);
+  try {
+    await Promise.all(Array.from(el.querySelectorAll('img')).map(im => im.complete ? 0 : new Promise(r => { im.onload = im.onerror = r; setTimeout(r, 4000); })));
+    const bgUrl = mvp ? splashOf(mvp.p.champ) : '';
+    if (bgUrl) await new Promise(r => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = i.onerror = r; i.src = bgUrl; setTimeout(r, 4000); });
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const canvas = await html2canvas(el.firstElementChild, { scale: 2, useCORS: true, backgroundColor: null, logging: false });
+    return await new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(new Error('이미지 변환 실패')), 'image/png'));
+  } finally { el.remove(); }
+}
 
 // 디스코드 미리보기 창 (디스코드 화면처럼 그려서 보여주고, 보낼지 고르기)
 function dcPreview(payload, label) {
@@ -5610,6 +5714,8 @@ function dcPreview(payload, label) {
       <div class="dcp-top"><b>📣 디스코드로 보낼 내용 미리보기</b><span>${escapeHtml(label || '')} · 아래처럼 채널에 올라가요</span></div>
       <div class="dcp-view"><div class="dcp-msg"><div class="dcp-av">⚔️</div><div class="dcp-body">
         <div class="dcp-hd"><b>오늘의 LOL 내전</b><span>앱</span></div>
+        ${payload.content ? `<div class="dcp-content">${md(payload.content)}</div>` : ''}
+        ${payload._img ? `<img class="dcp-img" src="${payload._img}" alt="">` : ''}
         ${(payload.embeds || []).map(emb).join('')}${btns ? `<div class="dcp-btns">${btns}</div>` : ''}
       </div></div></div>
       <div class="dcp-act"><button class="dcp-cancel">취소</button><button class="dcp-send">📣 디스코드로 보내기</button></div>
