@@ -1218,6 +1218,31 @@
     .db-box { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; min-width: 0; }
     /* 종합 TOP 3 시상대 */
     .podium { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 12px; align-items: end; }
+    /* 두 칸 높이 맞추기: 큰 쪽에 맞춰 늘어나고, 시상대도 그 높이를 꽉 채움 */
+    .db-row > .db-box { display: flex; flex-direction: column; }
+    .db-row > .db-box > .podium { flex: 1; min-height: 270px; grid-template-rows: 1fr; padding-top: 6px; }
+    .podium .pd { display: flex; flex-direction: column; justify-content: space-between; padding: 0; height: 100%; }
+    .podium .pd.p2 { height: 86%; } .podium .pd.p3 { height: 74%; }
+    .pd-top { position: relative; padding: 14px 10px 10px; }
+    .podium .pd-top { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .podium .pd-bg { opacity: .6; background-position: center 15%; }
+    .podium .pd-sh { background: linear-gradient(180deg, rgba(8,12,20,.15) 0%, rgba(8,12,20,.55) 40%, rgba(8,12,20,.92) 75%, rgba(8,12,20,.96) 100%); }
+    .podium .pd-name, .podium .pd-score, .podium .pd-meta { text-shadow: 0 2px 8px rgba(0,0,0,.9); }
+    .podium .pd .ch-box { margin: 8px auto 6px; }
+    .pd-crown { font-size: 1.5rem; line-height: 1; margin-bottom: -4px; filter: drop-shadow(0 0 10px rgba(255,200,80,.8)); animation: hxBob 3s ease-in-out infinite; }
+    .pd-score small { font-size: .7rem; color: #a8b3c4; margin-left: 2px; }
+    .pd-gap { font-size: .66rem; font-weight: 700; color: #ff9c8a; margin: 1px 0 3px; } .pd-gap.lead { color: #ffd77a; }
+    .pd-step { position: relative; display: flex; align-items: baseline; justify-content: center; gap: 2px; padding: 6px 0 5px; font-family: 'Bebas Neue', 'Rajdhani', sans-serif; line-height: 1; }
+    .pd-step b { font-size: 2rem; font-weight: 400; } .pd-step span { font-size: .8rem; letter-spacing: 1px; }
+    .pd.p1 .pd-step { background: linear-gradient(180deg, #f7d77a, #b07a1e); color: #2a1800; }
+    .pd.p2 .pd-step { background: linear-gradient(180deg, #e3e9f2, #8c99ab); color: #1c2430; }
+    .pd.p3 .pd-step { background: linear-gradient(180deg, #e2a77a, #8a4f2a); color: #2a1408; }
+    .pd.p1 { border: 1.5px solid rgba(247,215,122,.85); box-shadow: 0 0 30px rgba(240,190,80,.3), inset 0 0 30px rgba(240,190,80,.08); }
+    .pd.p2 { border: 1.5px solid rgba(214,222,234,.6); } .pd.p3 { border: 1.5px solid rgba(214,150,105,.6); }
+    .pd.p1 .pd-score { font-size: 2rem; color: #ffe08a; text-shadow: 0 0 14px rgba(255,190,70,.5); }
+    .pd.p2 .pd-score { color: #dfe6f0; } .pd.p3 .pd-score { color: #e8b48a; }
+    .pd.p1 .pd-name { font-size: 1.02rem; }
+    .pd.p1 .ch-box { box-shadow: 0 0 0 2px #f7d77a, 0 0 18px rgba(255,200,80,.5); } .pd.p2 .ch-box { box-shadow: 0 0 0 2px #d6deea; } .pd.p3 .ch-box { box-shadow: 0 0 0 2px #d69669; }
     .pd { position: relative; border-radius: 14px; overflow: hidden; text-align: center; padding: 14px 10px 12px; background: #152134; border: 1px solid var(--border); }
     .pd-bg { position: absolute; inset: 0; background-size: cover; background-position: center 18%; opacity: .3; }
     .pd-sh { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,12,20,.3), rgba(8,12,20,.95) 70%); }
@@ -1327,7 +1352,8 @@
       .kpi { padding: 10px 12px; } .kpi-v { font-size: 1.6rem; }
       .db-box { padding: 12px; }
       .podium { gap: 6px; }
-      .pd { padding: 10px 4px; } .pd .ch-box { width: 42px; height: 42px; } .pd.p1 .ch-box { width: 50px; height: 50px; }
+      .pd { padding: 0; } .pd-top { padding: 10px 4px 6px; } .pd .ch-box { width: 42px; height: 42px; } .pd.p1 .ch-box { width: 50px; height: 50px; }
+      .db-row > .db-box > .podium { min-height: 250px; } .pd-step b { font-size: 1.5rem; } .pd-gap { font-size: .56rem; } .pd.p1 .pd-score { font-size: 1.5rem; }
       .pd-name { font-size: .78rem; } .pd-score { font-size: 1.2rem; } .pd-meta { font-size: .56rem; }
       .tt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
       .tt { grid-template-columns: 1fr; gap: 4px; padding: 9px 10px; }
@@ -1891,6 +1917,24 @@
       .hx-lens { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) { .hx *, .hx *::after { animation: none !important; } }
+    /* 내전 달력 */
+    .cal-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+    .cal-ym { text-align: center; } .cal-ym b { display: block; color: var(--text-bright); font-size: .95rem; } .cal-ym span { font-size: .66rem; color: var(--muted); }
+    .cal-nav { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel2); color: var(--text); font-size: 1.1rem; cursor: pointer; line-height: 1; }
+    .cal-nav:hover:not(:disabled) { border-color: var(--gold); color: var(--gold2); } .cal-nav:disabled { opacity: .3; cursor: default; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-w { text-align: center; font-size: .64rem; color: var(--muted); padding-bottom: 2px; } .cal-w.sun { color: #ff8a8a; } .cal-w.sat { color: #8ab4ff; }
+    .cal-c { position: relative; aspect-ratio: 1 / .92; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+             background: rgba(255,255,255,.025); border: 1px solid transparent; font-family: 'Noto Sans KR', sans-serif; padding: 0; }
+    .cal-c.empty { background: none; }
+    .cal-d { font-size: .74rem; color: #8f9bb0; line-height: 1; } .cal-c.sun .cal-d { color: #d77a7a; } .cal-c.sat .cal-d { color: #7a9cd7; }
+    .cal-c.has { cursor: pointer; background: rgba(200,155,60,calc(var(--lv) * .32)); border-color: rgba(240,200,110,calc(var(--lv) * .8)); transition: transform .15s, box-shadow .15s; }
+    .cal-c.has:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(200,155,60,.3); }
+    .cal-c.has .cal-d { color: #fff; font-weight: 700; }
+    .cal-g { font-size: .6rem; font-weight: 700; color: #ffd77a; line-height: 1; }
+    .cal-c.today { box-shadow: inset 0 0 0 1.5px var(--blue-team); }
+    .day-group.cal-flash { animation: calFlash 1.8s ease; border-radius: 12px; }
+    @keyframes calFlash { 0%, 30% { box-shadow: 0 0 0 2px var(--gold), 0 0 24px rgba(240,190,80,.35); } 100% { box-shadow: 0 0 0 0 transparent; } }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -3793,6 +3837,7 @@ const normName = v => String(v || '').toLowerCase().replace(/\s+/g, '');
 function switchRecMode(mode) {
   if (typeof logVisit === 'function' && mode !== recMode) logVisit('탭 전환', MODE_NAME[mode]);
   recMode = mode;
+  if (typeof _calYm !== 'undefined') _calYm = null;     // 달력은 그 탭의 최근 내전 달로
   document.querySelectorAll('.mode-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
   const msg = document.getElementById('recMsg'); if (msg) msg.textContent = '';
   renderRecord();
@@ -4442,7 +4487,7 @@ function renderMatchList() {
   box.innerHTML = groups.reverse().map(g => {
     const d = new Date(g.ms[0].date);
     const total = g.ms.reduce((t, m) => t + m.len, 0);
-    return `<div class="day-group">
+    return `<div class="day-group" data-day="${g.day}">
       <div class="day-head">
         <span class="dh-dot"></span>
         <span class="dh-date">${g.day.slice(5).replace('.', '/')}</span>
@@ -5032,6 +5077,56 @@ function _renderHall(box) {
   </div>`;
 }
 
+// ══════════════════ 내전 달력 (대시보드) ══════════════════
+let _calYm = null;                                        // [년, 월(0~11)] · 처음엔 가장 최근 내전이 있는 달
+function calHtml() {
+  const ms = modeMatches();
+  const byDay = {};
+  ms.forEach(m => { const d = dayKey(m); const x = byDay[d] || (byDay[d] = { g: 0, min: 0, k: 0 }); x.g++; x.min += m.len / 60; x.k += m.players.reduce((t, p) => t + p.k, 0); });
+  const days = Object.keys(byDay).sort();
+  if (!_calYm) { const last = days.length ? days[days.length - 1] : fmtDate(Date.now()); _calYm = [+last.slice(0, 4), +last.slice(5, 7) - 1]; }
+  const [y, mo] = _calYm;
+  const first = new Date(y, mo, 1), nDays = new Date(y, mo + 1, 0).getDate(), lead = first.getDay();
+  const p2 = n => String(n).padStart(2, '0');
+  const todayKey = fmtDate(Date.now()).slice(0, 10);
+  const monthDays = days.filter(d => d.startsWith(`${y}.${p2(mo + 1)}`));
+  const monthGames = monthDays.reduce((t, d) => t + byDay[d].g, 0);
+  const maxG = Math.max(1, ...monthDays.map(d => byDay[d].g));
+  const cells = [];
+  for (let i = 0; i < lead; i++) cells.push('<div class="cal-c empty"></div>');
+  for (let d = 1; d <= nDays; d++) {
+    const key = `${y}.${p2(mo + 1)}.${p2(d)}`, x = byDay[key], wd = (lead + d - 1) % 7;
+    const cls = ['cal-c', x ? 'has' : '', key === todayKey ? 'today' : '', wd === 0 ? 'sun' : wd === 6 ? 'sat' : ''].filter(Boolean).join(' ');
+    cells.push(x
+      ? `<button class="${cls}" style="--lv:${(0.35 + 0.65 * x.g / maxG).toFixed(2)}" onclick="calGo('${key}')" title="${mo + 1}/${d} · ${x.g}판 · 총 ${Math.round(x.min)}분 · ${x.k}킬"><span class="cal-d">${d}</span><span class="cal-g">${x.g}판</span></button>`
+      : `<div class="${cls}"><span class="cal-d">${d}</span></div>`);
+  }
+  const hasPrev = days.some(d => d < `${y}.${p2(mo + 1)}.01`), hasNext = days.some(d => d > `${y}.${p2(mo + 1)}.31`);
+  return `<div class="cal-top">
+      <button class="cal-nav" onclick="calMove(-1)" ${hasPrev ? '' : 'disabled'} aria-label="이전 달">‹</button>
+      <div class="cal-ym"><b>${y}년 ${mo + 1}월</b><span>${monthDays.length ? `내전 ${monthDays.length}일 · ${monthGames}판` : '이 달은 내전이 없어요'}</span></div>
+      <button class="cal-nav" onclick="calMove(1)" ${hasNext ? '' : 'disabled'} aria-label="다음 달">›</button>
+    </div>
+    <div class="cal-grid">${['일', '월', '화', '수', '목', '금', '토'].map((w, i) => `<div class="cal-w${i === 0 ? ' sun' : i === 6 ? ' sat' : ''}">${w}</div>`).join('')}${cells.join('')}</div>`;
+}
+function calMove(n) {
+  if (!_calYm) return;
+  const d = new Date(_calYm[0], _calYm[1] + n, 1);
+  _calYm = [d.getFullYear(), d.getMonth()];
+  const el = document.getElementById('dashCal'); if (el) el.innerHTML = calHtml();
+}
+// 날짜를 누르면 전적 화면의 그날로 이동
+function calGo(day) {
+  const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => (b.getAttribute('onclick') || '').includes("'record'"));
+  switchPage('record', btn);
+  setTimeout(() => {
+    const g = document.querySelector(`#recMatchList .day-group[data-day="${day}"]`);
+    if (!g) return;
+    g.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    g.classList.add('cal-flash'); setTimeout(() => g.classList.remove('cal-flash'), 1800);
+  }, 80);
+}
+
 // ══════════════════ 대시보드 ══════════════════
 function renderDashboard() {
   const box = document.getElementById('dashBody');
@@ -5064,16 +5159,21 @@ function renderDashboard() {
 
   // ② 종합 TOP 3 + 지금 가장 뜨거운/차가운
   const rk = rankRowsFor('ALL').sort((a, b) => b.score - a.score || b.g - a.g);
+  const pdStep = n => `<div class="pd-step"><b>${n}</b><span>${['', 'ST', 'ND', 'RD'][n]}</span></div>`;
   const pdCard = (r, n) => {
-    if (!r) return `<div class="pd p${n}" style="opacity:.35"><div class="pd-medal">${['', '🥇', '🥈', '🥉'][n]}</div><div class="pd-meta" style="margin-top:20px">-</div></div>`;
+    if (!r) return `<div class="pd p${n}" style="opacity:.35"><div class="pd-top"><div class="pd-medal">${['', '🥇', '🥈', '🥉'][n]}</div><div class="pd-meta" style="margin-top:20px">-</div></div>${pdStep(n)}</div>`;
     const most = Object.entries(r.champ).sort((a, b) => b[1].g - a[1].g)[0];
     return `<div class="pd p${n}">
       <div class="pd-bg" style="background-image:url('${splashOf(most[0])}')"></div><div class="pd-sh"></div>
-      <div class="pd-medal">${['', '🥇', '🥈', '🥉'][n]}</div>
-      ${champIcon(most[1].m, most[0])}
-      <div class="pd-name">${escapeHtml(r.name)}</div>
-      <div class="pd-score">${r.score.toFixed(1)}<small style="font-size:.7rem;color:#a8b3c4"> 점</small></div>
-      <div class="pd-meta">${r.g}판 · 승률 ${Math.round(r.wr * 100)}% · KDA ${r.d ? r.kda.toFixed(2) : 'P'}</div>
+      <div class="pd-top">
+        ${n === 1 ? '<div class="pd-crown">👑</div>' : ''}
+        ${champIcon(most[1].m, most[0])}
+        <div class="pd-name">${escapeHtml(r.name)}</div>
+        <div class="pd-score">${r.score.toFixed(1)}<small>점</small></div>
+        ${n > 1 && rk[0] ? `<div class="pd-gap">1위와 −${(rk[0].score - r.score).toFixed(1)}점</div>` : '<div class="pd-gap lead">현재 1위</div>'}
+        <div class="pd-meta">${r.g}판 · 승률 ${Math.round(r.wr * 100)}% · KDA ${r.d ? r.kda.toFixed(2) : 'P'}</div>
+      </div>
+      ${pdStep(n)}
     </div>`;
   };
   const st = calcStreaks();
@@ -5174,7 +5274,7 @@ function renderDashboard() {
     <div class="db-box"><div class="db-h"><b>🎯 인기 챔피언</b><span>픽 많은 순</span></div><div class="db-list">${champHtml}</div></div>
     <div class="db-box"><div class="db-h"><b>📜 한 판 최고 기록</b></div><div class="db-list">${recHtml}</div>
       <div class="db-note">⏳ 최장 ${fmtLen(longest.len)} (${dayKey(longest).slice(5)}) · ⚡ 최단 ${fmtLen(shortest.len)} (${dayKey(shortest).slice(5)})</div></div>
-    <div class="db-box"><div class="db-h"><b>🗓 최근 내전</b><span>최근 5일</span></div><div class="db-list">${dayList}</div></div>
+    <div class="db-box"><div class="db-h"><b>🗓 내전 달력</b><span>날짜를 누르면 그날 전적으로</span></div><div id="dashCal">${calHtml()}</div></div>
   </div>`;
 
   // 인기 증강 (증강 기록이 있을 때)
