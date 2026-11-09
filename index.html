@@ -2022,6 +2022,73 @@
     .dk-sc b.lv3 { font-size: 15.5px; } .dk-sc b.lv4 { font-size: 17px; padding: 5px 14px; } .dk-sc b.lv5 { font-size: 19px; padding: 6px 16px; }
     .dk-sc.hot b.lv4, .dk-sc.hot b.lv5 { background: rgba(255,120,40,.5); box-shadow: 0 0 14px rgba(255,120,40,.6); }
     .dk-sc.cold b.lv4, .dk-sc.cold b.lv5 { background: rgba(90,130,210,.5); box-shadow: 0 0 14px rgba(110,160,255,.6); }
+    /* 명예/불명예 바로가기 */
+    .hx-jump { display: flex; gap: 8px; justify-content: center; margin: 0 0 14px; }
+    .hx-jump button { padding: 8px 18px; border-radius: 999px; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: .82rem; cursor: pointer;
+                      background: rgba(255,210,120,.1); border: 1px solid rgba(255,210,120,.45); color: #ffd77a; }
+    .hx-jump button.sh { background: rgba(150,110,220,.12); border-color: rgba(170,130,240,.5); color: #cbb6ff; }
+    .hs-div { text-align: center; margin: 34px 0 18px; position: relative; }
+    .hs-div::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: linear-gradient(90deg, transparent, rgba(170,130,240,.5), transparent); }
+    .hs-div span { position: relative; padding: 6px 18px; border-radius: 999px; background: var(--bg); border: 1px solid rgba(170,130,240,.4); color: #b9a6e6; font-size: .82rem; }
+    /* 불명예의 전당 (으스스하지만 웃긴 박물관) */
+    .hs { position: relative; overflow: hidden; border-radius: 20px; padding: 34px 26px 26px; scroll-margin-top: 12px;
+          background: radial-gradient(120% 60% at 50% 0%, rgba(110,220,140,.12), transparent 60%), radial-gradient(80% 50% at 50% 100%, rgba(140,80,220,.18), transparent 70%), linear-gradient(180deg, #120f1c 0%, #0d0c16 100%);
+          border: 1px solid rgba(150,110,220,.4); box-shadow: inset 0 0 80px rgba(120,80,200,.12), 0 20px 60px rgba(0,0,0,.5); }
+    #hxFame { scroll-margin-top: 12px; }
+    .hs-fog { position: absolute; inset: -20%; pointer-events: none; opacity: .35; background: radial-gradient(40% 30% at 20% 30%, rgba(130,255,170,.18), transparent 70%), radial-gradient(35% 25% at 80% 60%, rgba(170,120,255,.2), transparent 70%); animation: hsFog 14s ease-in-out infinite alternate; }
+    @keyframes hsFog { to { transform: translate(6%, -4%) scale(1.08); } }
+    .hs > *:not(.hs-fog) { position: relative; z-index: 1; }
+    .hs-hero { text-align: center; margin-bottom: 24px; }
+    .hs-skull { font-size: 2.8rem; filter: drop-shadow(0 0 16px rgba(130,255,170,.6)); animation: hsWob 3.4s ease-in-out infinite; }
+    @keyframes hsWob { 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+    .hs-title { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; letter-spacing: 12px; line-height: 1; margin: 6px 0;
+                background: linear-gradient(180deg, #e6dcff 0%, #9b7be8 55%, #4e3a8a 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+                filter: drop-shadow(0 0 18px rgba(150,110,240,.45)); animation: hsFlicker 6s linear infinite; }
+    @keyframes hsFlicker { 0%, 92%, 100% { opacity: 1; } 93% { opacity: .55; } 95% { opacity: 1; } 96% { opacity: .7; } }
+    .hs-sub { color: #a99cc8; font-size: .84rem; }
+    .hs-sec { text-align: center; margin: 4px 0 16px; }
+    .hs-sec span { display: block; font-family: 'Bebas Neue', sans-serif; letter-spacing: 6px; font-size: .9rem; color: #8fd9a8; }
+    .hs-sec b { font-size: 1.1rem; color: #e6dcff; letter-spacing: 2px; }
+    .hs-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 30px; }
+    .hs-grid > .hs-pl { flex: 0 1 calc(33.333% - 11px); min-width: 190px; }
+    .hs-pl { padding: 1.5px; border-radius: 6px; background: linear-gradient(160deg, #6a5a8a, #2a2238 45%, #3a5a48 70%, #6a5a8a); animation: tcDeal .7s cubic-bezier(.2,.9,.3,1.2) both; transform: rotate(-.6deg); transition: transform .25s; }
+    .hs-pl:nth-child(even) { transform: rotate(.7deg); }
+    .hs-pl:hover { transform: rotate(0) translateY(-5px); }
+    .hs-pl-in { position: relative; height: 100%; border-radius: 5px; padding: 30px 14px 14px; text-align: center; overflow: hidden;
+                background: repeating-linear-gradient(135deg, rgba(255,255,255,.015) 0 6px, transparent 6px 12px), linear-gradient(180deg, #1b1726, #121019); }
+    .hs-pl-in::after { content: ''; position: absolute; right: -8px; top: 18px; width: 70px; height: 1px; background: rgba(255,255,255,.18); transform: rotate(38deg); }
+    .hs-tape { position: absolute; top: -2px; left: 50%; transform: translateX(-50%) rotate(-3deg); padding: 3px 16px 4px; background: rgba(230,220,180,.25); border: 1px dashed rgba(230,220,180,.35); font-size: 1rem; }
+    .hs-lab { color: #b9a6e6; font-size: .78rem; font-weight: 700; letter-spacing: 1px; }
+    .hs-val { font-family: 'Rajdhani', 'Bebas Neue', sans-serif; font-weight: 700; font-size: 2.2rem; line-height: 1.15; margin: 4px 0 10px; color: #9cf0b8; text-shadow: 0 0 16px rgba(110,230,150,.45); }
+    .hs-val small { display: block; font-family: 'Noto Sans KR', sans-serif; font-size: .68rem; color: #9b93b2; text-shadow: none; margin-top: -2px; }
+    .hs-who { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .hs-who .ch-box { width: 30px; height: 30px; border-radius: 50%; filter: grayscale(.6); box-shadow: 0 0 0 1.5px #6a5a8a; }
+    .hs-who b { color: #fff; font-size: .92rem; }
+    .hs-when { color: #8a829e; font-size: .66rem; margin-top: 4px; }
+    .hs-quip { margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(170,130,240,.25); font-size: .68rem; color: #a99cc8; font-style: italic; }
+    .hs-quip s { color: #6f6884; font-style: normal; } .hs-quip em { color: #9cf0b8; font-style: normal; font-weight: 700; }
+    .hs-mos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 30px; } .hs-mos.two { grid-template-columns: 1fr 1fr; margin-bottom: 18px; }
+    .hs-mo { min-width: 0; border-radius: 14px; padding: 14px 16px; background: linear-gradient(180deg, #19162a, #110f1c); border: 1px solid rgba(150,110,220,.35); }
+    .hs-mo.rev { border-color: rgba(255,120,120,.4); } .hs-mo.gg { border-color: rgba(220,220,220,.3); } .hs-mo.mass { border-color: rgba(230,60,80,.45); }
+    .hs-mo.lose { border-color: rgba(120,160,240,.45); } .hs-mo.dead { border-color: rgba(130,230,160,.4); }
+    .hs-mo-h { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; } .hs-mo-h > span { font-size: 1.5rem; }
+    .hs-mo-h b { display: block; color: #fff; font-size: .95rem; } .hs-mo-h small { color: #8f88a8; font-size: .66rem; }
+    .hs-mr { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px solid rgba(255,255,255,.06); }
+    .hs-mr:first-of-type { border-top: none; }
+    .hs-mr .ch-box { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; filter: grayscale(.5); }
+    .hs-mn { flex: 1; min-width: 0; } .hs-mn b { display: block; color: #fff; font-size: .84rem; } .hs-mn b em { font-style: normal; color: #9cf0b8; margin-left: 6px; }
+    .hs-mn span { display: block; color: #8a829e; font-size: .64rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hs-pct, .hs-time { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.1rem; min-width: 48px; text-align: center; color: #ff8a8a; }
+    .hs-pct.blue { color: #7db8ff; } .hs-pct.red { color: #ff7b7b; }
+    .hs-rk { width: 20px; text-align: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; color: #8f88a8; }
+    .hs-none { color: #8a829e; font-size: .76rem; text-align: center; padding: 16px 0 8px; }
+    .hs-foot { text-align: center; font-size: .72rem; color: #8a829e; }
+    @media (max-width: 1100px) { .hs-mos { grid-template-columns: 1fr; } .hs-mos.two { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) {
+      .hs { padding: 24px 14px 18px; border-radius: 16px; } .hs-title { font-size: 2.2rem; letter-spacing: 6px; }
+      .hs-grid { gap: 10px; } .hs-grid > .hs-pl { flex: 0 1 calc(50% - 5px); min-width: 0; } .hs-val { font-size: 1.7rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { .hs *, .hs *::after { animation: none !important; } }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -2257,7 +2324,7 @@
 
 <!-- ▣ 명예의 전당 -->
 <div class="page-view" id="view-hall">
-  <div class="hx-pre">🚧 <b>실제 반영 전</b> · 관리자 링크에서만 보이는 미리보기예요. 일반 링크에는 아직 이 메뉴가 없어요.</div>
+  <div class="hx-pre">🚧 <b>실제 반영 전</b> · 관리자 링크에서만 보이는 미리보기예요 (명예의 전당 + 불명예의 전당). 일반 링크에는 아직 이 메뉴가 없어요.</div>
   <div id="hallBody"></div>
 </div><!-- /view-hall -->
 
@@ -5150,7 +5217,8 @@ function _renderHall(box) {
       <div class="hx-mo-h"><span class="hx-mo-ico">${ico}</span><div><b>${title}</b><small>${sub}</small></div><span class="hx-mo-n">${items.length}</span></div>
       ${items.length ? items.join('') : `<div class="hx-mo-none">${empty}</div>`}</div></div>`;
   const lenMedal = (m, label, ico) => `<div class="hx-len"><span class="hx-len-ico">${ico}</span><div><small>${label}</small><b>${fmtLen(m.len)}</b><span>${hallWhen(m)} · ${winnerOf(m) === 'blue' ? '🔵 블루' : '🔴 레드'} 승</span></div></div>`;
-  box.innerHTML = `<div class="hx">
+  box.innerHTML = `<div class="hx-jump"><button onclick="document.getElementById('hxFame').scrollIntoView({behavior:'smooth'})">🏆 명예의 전당</button><button class="sh" onclick="document.getElementById('hxShame').scrollIntoView({behavior:'smooth'})">💀 불명예의 전당</button></div>
+  <div class="hx" id="hxFame">
     <div class="hx-rays"></div>${spark(24)}
     <div class="hx-hero">
       <div class="hx-laurel">🏆</div>
@@ -5168,6 +5236,79 @@ function _renderHall(box) {
       ${moment('shield', '🛡️', '노데스 게임', '0데스로 끝낸 판', nodeath.slice().reverse().sort((a, b) => (b.p.k + b.p.a) - (a.p.k + a.p.a)).slice(0, 6).map(x => mrow(x.m, x.p, `${x.p.k}/0/${x.p.a}`)), '아직 노데스 게임이 없어요')}
       ${moment('upset', '😱', '대역전승', '예측 25% 이하 팀의 승리', upsets.slice().reverse().map(u => `<div class="hx-mr"><div class="hx-pct ${u.w}">${u.pct}%</div><div class="hx-mn"><b>${u.w === 'blue' ? '🔵 블루팀' : '🔴 레드팀'} 역전승</b><span>${hallWhen(u.m)} · ${u.m.players.filter(p => p.team === u.w).map(p => escapeHtml(p.name)).join(', ')}</span></div></div>`), '아직 대역전승이 없어요')}
     </div>
+  </div>
+  <div class="hs-div"><span>⬇ 그리고… 잊고 싶은 기록들</span></div>
+  ${shameHtml(ms, retro)}`;
+}
+
+// ══════════════════ 불명예의 전당 (명예의 전당 아래) ══════════════════
+const SHAME_RECORDS = [
+  { k: 'd',    ico: '💀', name: '최다 데스',        quip: '부활 대기실 VIP',       v: (p, m) => p.d, f: v => v + '데스', high: true },
+  { k: 'kda',  ico: '🧾', name: '최저 KDA',          quip: '5데스 이상 판 기준',    v: (p, m) => p.d >= 5 ? (p.k + p.a) / p.d : null, f: v => v.toFixed(2), sub: p => `${p.k}/${p.d}/${p.a}` },
+  { k: 'dpm',  ico: '😶', name: '최저 분당 딜량',    quip: '20분 이상 판 · 평화주의자', v: (p, m) => m.len >= 1200 ? p.dmg / (m.len / 60) : null, f: v => Math.round(v) + '/분' },
+  { k: 'kp',   ico: '🧭', name: '최저 킬관여율',     quip: '어디 계셨어요?',        v: (p, m) => { const tk = m.players.filter(x => x.team === p.team).reduce((t, x) => t + x.k, 0); return tk >= 10 ? (p.k + p.a) / tk : null; }, f: v => Math.round(v * 100) + '%' },
+  { k: 'vis',  ico: '🙈', name: '최저 시야점수',     quip: '20분 이상 판 · 눈 감고 롤', v: (p, m) => m.len >= 1200 && modeOf(m) === 'rift' ? p.vis : null, f: v => v + '점' },
+  { k: 'eff',  ico: '🪙', name: '골드 먹튀',         quip: '골드 대비 딜 최저',      v: (p, m) => p.gold >= 8000 ? p.dmg / p.gold : null, f: v => v.toFixed(2) + ' 딜/골드', sub: p => `${fmtNum(p.gold)}골드 · ${fmtNum(p.dmg)}딜` }
+];
+function shameHtml(ms, retro) {
+  // ① 한 판 최악 기록 (경신 이력 포함)
+  const recs = SHAME_RECORDS.map(r => {
+    const hist = [];
+    ms.forEach(m => {
+      let worst = null;
+      m.players.forEach(p => { const v = r.v(p, m); if (v == null || !isFinite(v)) return; if (!worst || (r.high ? v > worst.v : v < worst.v)) worst = { v, p, m }; });
+      if (worst && (!hist.length || (r.high ? worst.v > hist[hist.length - 1].v : worst.v < hist[hist.length - 1].v))) hist.push(worst);
+    });
+    return { r, hist };
+  }).filter(x => x.hist.length);
+  const plaque = ({ r, hist }, i) => {
+    const cur = hist[hist.length - 1], prev = hist[hist.length - 2];
+    return `<div class="hs-pl" style="animation-delay:${(i * .07).toFixed(2)}s"><div class="hs-pl-in">
+      <div class="hs-tape">${r.ico}</div>
+      <div class="hs-lab">${r.name}</div>
+      <div class="hs-val">${r.f(cur.v)}${r.sub ? `<small>${r.sub(cur.p)}</small>` : ''}</div>
+      <div class="hs-who">${champIcon(cur.m, cur.p.champ)}<b>${escapeHtml(cur.p.name)}</b></div>
+      <div class="hs-when">${escapeHtml(champInfo(cur.p.champ).name)} · ${hallWhen(cur.m)}</div>
+      <div class="hs-quip">${prev ? `<s>${escapeHtml(prev.p.name)} ${r.f(prev.v)}</s> <em>${hist.length - 1}번 갱신</em>` : `“${r.quip}”`}</div>
+    </div></div>`;
+  };
+  // ② 경기 단위 흑역사
+  const reversals = ms.map(m => { const r = retro[m.id]; if (!r) return null; const w = winnerOf(m), l = w === 'blue' ? 'red' : 'blue', pl = l === 'blue' ? r.p : 1 - r.p; return pl >= 0.75 ? { m, l, pct: Math.round(pl * 100) } : null; }).filter(Boolean);
+  const surr = ms.filter(m => m.surrender).sort((a, b) => a.len - b.len).slice(0, 3);
+  const tk = (m, t) => m.players.filter(p => p.team === t).reduce((x, p) => x + p.k, 0);
+  const massacre = ms.map(m => { const w = winnerOf(m), l = w === 'blue' ? 'red' : 'blue'; return { m, w, l, diff: tk(m, w) - tk(m, l) }; }).sort((a, b) => b.diff - a.diff).slice(0, 3);
+  const teamNames = (m, t) => m.players.filter(p => p.team === t).map(p => escapeHtml(p.name)).join(', ');
+  const row = (left, title, sub) => `<div class="hs-mr">${left}<div class="hs-mn"><b>${title}</b><span>${sub}</span></div></div>`;
+  const box = (cls, ico, title, sub, items, empty) => `<div class="hs-mo ${cls}"><div class="hs-mo-h"><span>${ico}</span><div><b>${title}</b><small>${sub}</small></div></div>${items.length ? items.join('') : `<div class="hs-none">${empty}</div>`}</div>`;
+  // ③ 커리어 흑역사: 역대 최장 연패 · 누적 데스
+  const st = calcStreaks();
+  const longLose = st.map(s => { let best = 0, cur = 0, end = null; s.days.forEach(d => { if (d.res === 'l') { cur++; if (cur > best) { best = cur; end = d.day; } } else if (d.res === 'w') cur = 0; }); return { name: s.name, n: best, end, last: s.last }; })
+    .filter(x => x.n >= 2).sort((a, b) => b.n - a.n).slice(0, 3);
+  const D = {};
+  ms.forEach(m => m.players.forEach(p => { const k = p.puuid || p.name; const x = D[k] || (D[k] = { name: p.name, d: 0, g: 0, p, m }); x.name = p.name; x.d += p.d; x.g++; x.p = p; x.m = m; }));
+  const deathKing = Object.values(D).sort((a, b) => b.d - a.d).slice(0, 3);
+  const rank = (i) => `<span class="hs-rk">${i + 1}</span>`;
+  return `<div class="hs" id="hxShame">
+    <div class="hs-fog"></div>
+    <div class="hs-hero">
+      <div class="hs-skull">💀</div>
+      <div class="hs-title">HALL OF SHAME</div>
+      <div class="hs-sub">불명예의 전당 · 깨고 싶어도 아무도 안 깨는 기록들</div>
+    </div>
+    <div class="hs-sec"><span>✦ CURSED RECORDS ✦</span><b>한 판 최악 기록</b></div>
+    <div class="hs-grid">${recs.map(plaque).join('')}</div>
+    <div class="hs-sec"><span>✦ DARK MOMENTS ✦</span><b>경기 흑역사</b></div>
+    <div class="hs-mos">
+      ${box('rev', '📉', '대역전패', `예측 75% 이상이었는데 진 판${reversals.length > 5 ? ` · 최근 5개 (전체 ${reversals.length}판)` : ''}`, reversals.slice().reverse().slice(0, 5).map(u => row(`<div class="hs-pct ${u.l}">${u.pct}%</div>`, `${u.l === 'blue' ? '🔵 블루팀' : '🔴 레드팀'} 역전패`, `${hallWhen(u.m)} · ${teamNames(u.m, u.l)}`)), '아직 대역전패가 없어요 😇')}
+      ${box('gg', '🏳️', '가장 빠른 항복', '항복으로 끝난 짧은 판', surr.map(m => { const l = winnerOf(m) === 'blue' ? 'red' : 'blue'; return row(`<div class="hs-time">${fmtLen(m.len).replace(/ \d+초/, '')}</div>`, `${l === 'blue' ? '🔵 블루팀' : '🔴 레드팀'} 항복`, `${hallWhen(m)} · ${teamNames(m, l)}`); }), '아직 항복한 판이 없어요')}
+      ${box('mass', '🩸', '최악의 학살', '킬 차이가 가장 컸던 판', massacre.filter(x => x.diff > 0).map(x => row(`<div class="hs-time">−${x.diff}</div>`, `${x.l === 'blue' ? '🔵 블루팀' : '🔴 레드팀'} ${tk(x.m, x.l)} : ${tk(x.m, x.w)} 참패`, `${hallWhen(x.m)} · ${teamNames(x.m, x.l)}`)), '아직 기록이 없어요')}
+    </div>
+    <div class="hs-sec"><span>✦ CAREER OF SHAME ✦</span><b>누적 흑역사</b></div>
+    <div class="hs-mos two">
+      ${box('lose', '🧊', '역대 최장 연패', '내전 날짜 기준', longLose.map((x, i) => row(rank(i) + champIcon(x.last.m, x.last.p.champ), `${escapeHtml(x.name)} <em>${x.n}연패</em>`, `${x.end ? x.end.slice(5).replace('.', '/') + '까지' : ''}`)), '아직 2연패 이상이 없어요')}
+      ${box('dead', '⚰️', '누적 데스왕', '지금까지 가장 많이 죽은 사람', deathKing.map((x, i) => row(rank(i) + champIcon(x.m, x.p.champ), `${escapeHtml(x.name)} <em>${x.d}데스</em>`, `${x.g}판 · 판당 ${(x.d / x.g).toFixed(1)}데스`)), '아직 기록이 없어요')}
+    </div>
+    <div class="hs-foot">🤫 웃자고 만든 기록이에요. 다음 내전에서 명예 회복하면 돼요!</div>
   </div>`;
 }
 
