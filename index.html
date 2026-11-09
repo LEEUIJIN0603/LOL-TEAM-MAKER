@@ -1951,6 +1951,7 @@
     @keyframes calFlash { 0%, 30% { box-shadow: 0 0 0 2px var(--gold), 0 0 24px rgba(240,190,80,.35); } 100% { box-shadow: 0 0 0 0 transparent; } }
     /* 디스코드용 내전 결과 이미지 (화면 밖에서 그려서 캡쳐) */
     .dk-wrap { position: fixed; left: -12000px; top: 0; z-index: -1; pointer-events: none; }
+    .dk-noimg img, .dk-noimg .dk-bg { display: none !important; }
     .dk { width: 880px; background: linear-gradient(180deg, #141d2e, #0f1626); color: #e3e7ef; border-radius: 18px; overflow: hidden; border: 2px solid #c89b3c; font-family: 'Noto Sans KR', sans-serif; padding-bottom: 2px; }
     .dk-hd { position: relative; height: 250px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 28px 34px; }
     .dk-bg { position: absolute; inset: 0; background-size: cover; background-position: center 22%; }
@@ -5617,13 +5618,14 @@ async function sendDayToDiscord(day, btn) {
   // 결과를 이미지 한 장으로 만들어서 보내요 (이미지를 못 만들면 예전처럼 글자 카드로)
   const old = btn.textContent;
   btn.disabled = true; btn.textContent = '⏳ 이미지 만드는 중...';
-  let img = null;
-  try { img = await dayCardBlob(g, d0); } catch (e) { img = null; }
+  let img = null, imgErr = '';
+  try { img = await dayCardBlob(g, d0); } catch (e) { img = null; imgErr = e && e.message || String(e); console.warn('[디스코드 이미지] 만들기 실패', e); }
   btn.textContent = old; btn.disabled = false;
   const content = `📅 **${day.slice(5).replace('.', '/')} (${WD[d0.getDay()]}) ${MODE_NAME[recMode]} 내전 결과** · ${dayMs.length}판`;
   const imgUrl = img ? URL.createObjectURL(img) : '';
   // 보내기 전에 디스코드에 어떻게 보일지 미리보기 → [보내기]를 눌러야 실제로 보내요
-  const ok = await dcPreview(img ? { content, components, _img: imgUrl } : { embeds, components }, `${day.slice(5).replace('.', '/')} ${MODE_NAME[recMode]} 내전 결과`);
+  const note = !img ? ` · ⚠️ 이미지를 만들지 못해 글자 카드로 보내요 (${imgErr})` : img._noimg ? ' · ⚠️ 챔피언 그림을 불러오지 못해 그림 없이 만들었어요' : ' · 🖼 이미지로 보내요';
+  const ok = await dcPreview(img ? { content, components, _img: imgUrl } : { embeds, components }, `${day.slice(5).replace('.', '/')} ${MODE_NAME[recMode]} 내전 결과${note}`);
   if (imgUrl) setTimeout(() => URL.revokeObjectURL(imgUrl), 1000);
   if (!ok) return;
   btn.disabled = true; btn.textContent = '⏳ 보내는 중...';
@@ -5685,8 +5687,16 @@ async function dayCardBlob(g, d0) {
     const bgUrl = mvp ? splashOf(mvp.p.champ) : '';
     if (bgUrl) await new Promise(r => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = i.onerror = r; i.src = bgUrl; setTimeout(r, 4000); });
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    const canvas = await html2canvas(el.firstElementChild, { scale: 2, useCORS: true, backgroundColor: null, logging: false });
-    return await new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(new Error('이미지 변환 실패')), 'image/png'));
+    const shot = async () => {
+      const canvas = await html2canvas(el.firstElementChild, { scale: 2, useCORS: true, backgroundColor: null, logging: false });
+      return await new Promise((res, rej) => { try { canvas.toBlob(b => b ? res(b) : rej(new Error('이미지 변환 실패')), 'image/png'); } catch (e) { rej(e); } });
+    };
+    try { return await shot(); }
+    catch (e) {                                            // 챔피언 그림 때문에 막히면 그림만 빼고 다시
+      console.warn('[디스코드 이미지] 그림 포함 실패 → 그림 없이 다시', e);
+      el.classList.add('dk-noimg');
+      const b = await shot(); b._noimg = true; return b;
+    }
   } finally { el.remove(); }
 }
 
