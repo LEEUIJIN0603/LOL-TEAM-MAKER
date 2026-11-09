@@ -1144,6 +1144,14 @@
     /* ══ 소환사 정보 카드 ══ */
     .sm-head { display: flex; align-items: baseline; gap: 10px; margin: 2px 0 14px; flex-wrap: wrap; }
     .sm-sub { font-size: .7rem; color: var(--muted); }
+    .sm-search { display: flex; align-items: center; gap: 10px; margin: -4px 0 16px; padding: 0 14px; height: 44px; border-radius: 12px;
+                 background: var(--panel); border: 1px solid var(--border); transition: border-color .2s, box-shadow .2s; }
+    .sm-search:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200,155,60,.15); }
+    .sm-search svg { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
+    .sm-search input { flex: 1; min-width: 0; height: 100%; background: none !important; border: none !important; outline: none; box-shadow: none !important; padding: 0 !important;
+                       color: var(--text-bright); font-family: 'Noto Sans KR', sans-serif; font-size: .92rem; }
+    .sm-search input::placeholder { color: var(--muted); }
+    .sm-count { font-size: .72rem; color: var(--gold2); white-space: nowrap; }
     .sm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
     .sm-card { position: relative; border-radius: 16px; overflow: hidden; background: #0a0f18; border: 1px solid #1d2a3d;
                cursor: pointer; transition: transform .2s, box-shadow .2s, border-color .2s; animation: fadeUp .45s ease both; }
@@ -2104,6 +2112,11 @@
     </button>
   </div>
   <div class="sm-head"><span class="rec-list-title">▸ 소환사 정보</span><span class="sm-sub">판수 많은 순 · 카드를 누르면 날짜별 전체 기록이 나와요</span></div>
+  <div class="sm-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input type="search" id="smQ" placeholder="소환사 이름 검색 (초성도 돼요 · 예: ㅎㄱㄷ)" autocomplete="off" spellcheck="false" oninput="smFilter()" onkeydown="if(event.key==='Escape'){this.value='';smFilter();}">
+    <span class="sm-count" id="smCount"></span>
+  </div>
   <div class="sm-grid" id="smGrid"></div>
 </div><!-- /view-summoner -->
 
@@ -4180,6 +4193,7 @@ function renderRecord() {
   renderMatchList();
   renderRank();
   renderSummoners();
+  smFilter();
   renderDashboard();
   if (typeof renderHall === 'function') renderHall();
 }
@@ -4745,7 +4759,7 @@ function renderSummoners() {
       ? ach.map(([t, d, isTitle], j) => `<span class="sm-a${isTitle ? ' title' : ''}${j >= 2 ? ' extra' : ''}" title="${escapeHtml(d)}">${escapeHtml(t)}</span>`).join('') +
         (ach.length > 2 ? `<span class="sm-a more" title="${escapeHtml(ach.slice(2).map(a => a[0]).join(', '))}" onclick="event.stopPropagation(); this.parentElement.classList.add('all')">+${ach.length - 2}</span>` : '')
       : '<span class="sm-none">아직 획득한 업적이 없어요</span>';
-    return `<div class="sm-card" style="animation-delay:${Math.min(i, 12) * 0.04}s" onclick="openSummonerHist(${i})">
+    return `<div class="sm-card" data-q="${escapeHtml(smKey(r.name + ' ' + (r.tag || '')))}" style="animation-delay:${Math.min(i, 12) * 0.04}s" onclick="openSummonerHist(${i})">
       <div class="sm-bg" style="background-image:url('${mainC ? splashOf(mainC) : ''}')"></div>
       <div class="sm-shade"></div>
       <div class="sm-in">
@@ -4780,6 +4794,25 @@ function renderSummoners() {
     </div>`;
   }).join('');
 }
+// 이름 검색: 띄어쓰기·대소문자 무시, 초성(ㅎㄱㄷ)으로도 찾기
+const CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+const choOf = t => Array.from(t).map(c => { const n = c.charCodeAt(0) - 0xAC00; return n >= 0 && n < 11172 ? CHO[Math.floor(n / 588)] : c; }).join('');
+const smKey = t => { const n = String(t || '').toLowerCase().replace(/\s+/g, ''); return n + '|' + choOf(n); };
+function smFilter() {
+  const inp = document.getElementById('smQ'), grid = document.getElementById('smGrid'), cnt = document.getElementById('smCount');
+  if (!inp || !grid) return;
+  const q = inp.value.toLowerCase().replace(/\s+/g, '');
+  const cards = Array.from(grid.querySelectorAll('.sm-card'));
+  let shown = 0;
+  cards.forEach(c => { const ok = !q || (c.dataset.q || '').includes(q); c.style.display = ok ? '' : 'none'; if (ok) shown++; });
+  let none = grid.querySelector('.sm-nores');
+  if (q && !shown && cards.length) {
+    if (!none) { none = document.createElement('div'); none.className = 'rec-empty sm-nores'; none.style.gridColumn = '1/-1'; grid.appendChild(none); }
+    none.textContent = `'${inp.value.trim()}' 이름의 소환사가 없어요`;
+  } else if (none) none.remove();
+  if (cnt) cnt.textContent = q ? `${shown}명` : (cards.length ? `전체 ${cards.length}명` : '');
+}
+
 function openSummonerHist(i) {
   const r = _smList[i];
   if (!r) return;
