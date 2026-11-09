@@ -1300,6 +1300,17 @@
     .dl-v { font-weight: 700; color: var(--gold2); white-space: nowrap; text-align: right; }
     .dl-v small { display: block; font-weight: 400; color: var(--muted); font-size: .62rem; }
     .db-note { font-size: .66rem; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+    /* 아래 줄 세 칸: 가장 큰 칸 높이에 맞춰 목록을 고르게 펼침 */
+    .db-row3 > .db-box { display: flex; flex-direction: column; }
+    .db-row3 > .db-box > .db-list { flex: 1; justify-content: space-between; }
+    .db-row3 > .db-box > .db-note { margin-top: auto; padding-top: 10px; }
+    .db-row3 > .db-box > .db-list + .db-note { margin-top: 10px; }
+    .db-row3 .dl { padding: 4px 0; }
+    .db-row3 .dl .ch-box { width: 34px; height: 34px; }
+    .db-row3 .dl { grid-template-columns: 20px 34px 1fr auto; }
+    .db-row3 > .db-box > #dashCal { flex: 1; display: flex; flex-direction: column; }
+    #dashCal .cal-grid { flex: 1; grid-template-rows: auto; grid-auto-rows: 1fr; }
+    #dashCal .cal-c { aspect-ratio: auto; min-height: 40px; }
     .db-empty { text-align: center; color: var(--muted); padding: 50px 10px; font-size: .9rem; line-height: 1.9; background: var(--panel); border: 1px dashed var(--border); border-radius: 14px; }
     @media (max-width: 900px) { .db-row, .db-row3 { grid-template-columns: 1fr; } }
 
@@ -2589,7 +2600,9 @@ function restoreDefaultMembers() {
 }
 
 // ── 상단 메뉴 전환 ──
-function switchPage(id, btn) {
+function switchPage(id, btn, keepMode) {
+  // 다른 메뉴로 들어갈 때는 항상 소환사 협곡 탭부터 (칼바람을 보고 있었어도)
+  if (!keepMode && typeof recMode !== 'undefined' && recMode !== 'rift' && typeof switchRecMode === 'function') switchRecMode('rift', true);
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
   if (btn) btn.classList.add('active');
@@ -3834,8 +3847,8 @@ let _mmOverride = null;                               // 잠깐 다른 경기 �
 const modeMatches = () => _mmOverride ? _mmOverride.slice() : matches.filter(m => modeOf(m) === recMode);
 function withMatches(list, fn) { const prev = _mmOverride; _mmOverride = list; try { return fn(); } finally { _mmOverride = prev; } }
 const normName = v => String(v || '').toLowerCase().replace(/\s+/g, '');
-function switchRecMode(mode) {
-  if (typeof logVisit === 'function' && mode !== recMode) logVisit('탭 전환', MODE_NAME[mode]);
+function switchRecMode(mode, silent) {
+  if (!silent && typeof logVisit === 'function' && mode !== recMode) logVisit('탭 전환', MODE_NAME[mode]);
   recMode = mode;
   if (typeof _calYm !== 'undefined') _calYm = null;     // 달력은 그 탭의 최근 내전 달로
   document.querySelectorAll('.mode-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
@@ -5118,7 +5131,7 @@ function calMove(n) {
 // 날짜를 누르면 전적 화면의 그날로 이동
 function calGo(day) {
   const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => (b.getAttribute('onclick') || '').includes("'record'"));
-  switchPage('record', btn);
+  switchPage('record', btn, true);                          // 달력에서 누른 탭 그대로
   setTimeout(() => {
     const g = document.querySelector(`#recMatchList .day-group[data-day="${day}"]`);
     if (!g) return;
@@ -5965,7 +5978,7 @@ loadSharedMatches();
   const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => (b.getAttribute('onclick') || '').includes(`'${id}'`));
   if (!btn || btn.classList.contains('adm-only') && !IS_ADMIN) return;
   switchPage(id, btn);
-  if (id === 'record' && sub === 'aram') switchRecMode('aram');
+  if (id === 'record' && sub === 'aram') switchRecMode('aram', true);
 })();
 </script>
 </body>
