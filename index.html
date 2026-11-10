@@ -2170,9 +2170,20 @@
     .sx-r b { flex: 1; min-width: 0; color: #fff; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .sx-r b mark { background: none; color: #f7d77a; }
     .sx-r span { font-size: 12px; color: #a9b5c9; white-space: nowrap; } .sx-r em { font-style: normal; font-weight: 800; color: #7db8ff; margin-left: 4px; }
     .sx-none { padding: 14px; font-size: 13px; color: #a9b5c9; }
-    .hero-credit { z-index: 1; }
+    /* 소환사 한 명 검색 시 아래 전적 목록 */
+    .sm-ml:empty { display: none; }
+    .sm-ml { margin-top: 26px; }
+    .sm-ml-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .sm-ml-sum { font-size: .82rem; color: var(--muted); } .sm-ml-sum .w { color: #5aa9ff; } .sm-ml-sum .l { color: #ff6b6b; }
+    .sm-me { display: flex; align-items: center; gap: 8px; margin: 14px 0 6px; font-size: .8rem; color: var(--muted); }
+    .day-list .sm-me:first-child { margin-top: 0; }
+    .sm-me b { font-size: .72rem; padding: 2px 8px; border-radius: 6px; color: #fff; } .sm-me.w b { background: #2f6fd1; } .sm-me.l b { background: #c2413f; }
+    .sm-me .ch-box { width: 22px; height: 22px; border-radius: 50%; } .sm-me span { color: var(--text); font-weight: 600; } .sm-me em { font-style: normal; font-weight: 700; color: var(--text-bright); }
+    tr.pr.me td { background: rgba(240,196,90,.12) !important; }
+    tr.pr.me td:first-child { box-shadow: inset 3px 0 0 #f0c45a; }
+    tr.pr.me .mt-pl b { color: #f7d77a; }
     @media (max-width: 900px) {
-      .hero { height: auto; min-height: 190px; padding: 18px 0 30px; }
+      .hero { height: auto; min-height: 180px; padding: 18px 0 22px; }
       .hero .hero-content { flex-direction: column; gap: 10px; width: 100%; }
       .sx-bar { width: 100%; max-width: 420px; }
       .sx-in { height: 44px; } .sx-go { height: 34px; padding: 0 12px; font-size: 13px; }
@@ -2235,12 +2246,11 @@
     </div>
     <div class="sx-bar" id="sxBar">
       <div class="sx-in"><span class="sx-ic">🔍</span>
-        <input type="search" id="sxQ" placeholder="소환사 이름을 검색해 보세요 (초성 가능)" autocomplete="off" spellcheck="false" aria-label="소환사 검색">
+        <input type="search" id="sxQ" placeholder="소환사 이름 검색 (초성 가능)" autocomplete="off" spellcheck="false" aria-label="소환사 검색">
         <button class="sx-go" type="button" onclick="sxGo()">.GG</button></div>
       <div class="sx-dd" id="sxDD" hidden></div>
     </div>
   </div>
-  <div class="hero-credit">by. 챱츄챱챱츄</div>
 </div>
 
 <div class="app">
@@ -2427,6 +2437,7 @@
     <span class="sm-count" id="smCount"></span>
   </div>
   <div class="sm-grid" id="smGrid"></div>
+  <div class="sm-ml" id="smMatches"></div>
 </div><!-- /view-summoner -->
 
 <!-- ▣ 명예의 전당 -->
@@ -4824,8 +4835,7 @@ function renderStreaks() {
 }
 function toggleMatch(id) {
   if (recOpen.has(id)) recOpen.delete(id); else recOpen.add(id);
-  const card = Array.from(document.querySelectorAll('.mt-card')).find(c => c.dataset.id === id);
-  if (card) card.classList.toggle('open', recOpen.has(id));
+  document.querySelectorAll('.mt-card').forEach(c => { if (c.dataset.id === id) c.classList.toggle('open', recOpen.has(id)); });
 }
 function renderMatchList() {
   const box = document.getElementById('recMatchList');
@@ -4879,7 +4889,7 @@ function matchCard(m) {
     const ratio = kdaRatio(p.k, p.d, p.a);
     const kp = tKills[p.team] ? Math.round((p.k + p.a) / tKills[p.team] * 100) : 0;
     const b = badges[i];
-    return `<tr class="pr ${p.team}${p.win ? ' win' : ''}">
+    return `<tr class="pr ${p.team}${p.win ? ' win' : ''}${_hlName && normName(p.name) === _hlName ? ' me' : ''}">
       <td>${p.pos && ICONS[p.pos] ? `<img class="pos-ic" src="${ICONS[p.pos]}" title="${POS_KO[p.pos]}" alt="" onerror="this.remove()">` : ''}</td>
       <td><div class="mt-ch">
         <span style="position:relative;display:inline-flex">${champIcon(m, p.champ, p.team)}<span class="ch-lvl">${p.lvl}</span></span>
@@ -5167,7 +5177,7 @@ function renderSummoners() {
       ? ach.map(([t, d, isTitle], j) => `<span class="sm-a${isTitle ? ' title' : ''}${j >= 2 ? ' extra' : ''}" title="${escapeHtml(d)}">${escapeHtml(t)}</span>`).join('') +
         (ach.length > 2 ? `<span class="sm-a more" title="${escapeHtml(ach.slice(2).map(a => a[0]).join(', '))}" onclick="event.stopPropagation(); this.parentElement.classList.add('all')">+${ach.length - 2}</span>` : '')
       : '<span class="sm-none">아직 획득한 업적이 없어요</span>';
-    return `<div class="sm-card" data-q="${escapeHtml(smKey(r.name + ' ' + (r.tag || '')))}" style="animation-delay:${Math.min(i, 12) * 0.04}s" onclick="openSummonerHist(${i})">
+    return `<div class="sm-card" data-name="${escapeHtml(r.name)}" data-q="${escapeHtml(smKey(r.name + ' ' + (r.tag || '')))}" style="animation-delay:${Math.min(i, 12) * 0.04}s" onclick="openSummonerHist(${i})">
       <div class="sm-bg" style="background-image:url('${mainC ? splashOf(mainC) : ''}')"></div>
       <div class="sm-shade"></div>
       <div class="sm-in">
@@ -5219,6 +5229,34 @@ function smFilter() {
     none.textContent = `'${inp.value.trim()}' 이름의 소환사가 없어요`;
   } else if (none) none.remove();
   if (cnt) cnt.textContent = q ? `${shown}명` : (cards.length ? `전체 ${cards.length}명` : '');
+  // 한 명으로 좁혀지면 카드 아래에 그 소환사가 뛴 전적을 쭉 보여줘요
+  const one = q && shown === 1 ? cards.find(c => c.style.display !== 'none') : null;
+  renderSmMatches(one ? one.dataset.name : '');
+}
+let _hlName = '';
+function renderSmMatches(name) {
+  const box = document.getElementById('smMatches');
+  if (!box) return;
+  _hlName = name ? normName(name) : '';
+  if (!name) { box.innerHTML = ''; return; }
+  const key = normName(name);
+  const list = modeMatches().filter(m => m.players.some(p => normName(p.name) === key)).sort((a, b) => (b.date || 0) - (a.date || 0));
+  if (!list.length) { box.innerHTML = ''; return; }
+  const me = m => m.players.find(p => normName(p.name) === key);
+  const w = list.filter(m => me(m).win).length;
+  const groups = [];
+  list.forEach(m => { const k = dayKey(m); let g = groups[groups.length - 1]; if (!g || g.day !== k) groups.push(g = { day: k, ms: [] }); g.ms.push(m); });
+  const WD = ['일', '월', '화', '수', '목', '금', '토'];
+  box.innerHTML = `<div class="sm-ml-head"><span class="rec-list-title">▸ ${escapeHtml(name)} 님이 뛴 ${MODE_NAME[recMode]} 전적</span>
+      <span class="sm-ml-sum">${list.length}판 · <b class="w">${w}승</b> <b class="l">${list.length - w}패</b> · 승률 ${Math.round(w / list.length * 100)}%</span></div>`
+    + groups.map(g => {
+      const d = new Date(g.ms[0].date), gw = g.ms.filter(m => me(m).win).length;
+      return `<div class="day-group">
+        <div class="day-head"><span class="dh-dot"></span><span class="dh-date">${g.day.slice(5).replace('.', '/')}</span>
+          <span class="dh-wd">${g.day.slice(0, 4)} · ${WD[d.getDay()]}요일</span><span class="dh-chip">${g.ms.length}판 · ${gw}승 ${g.ms.length - gw}패</span></div>
+        <div class="day-list">${g.ms.map(m => { const p = me(m); return `<div class="sm-me ${p.win ? 'w' : 'l'}"><b>${p.win ? '승리' : '패배'}</b>${champIcon(m, p.champ)}<span>${escapeHtml(champInfo(p.champ).name)}</span><em>${p.k} / ${p.d} / ${p.a}</em></div>` + matchCard(m); }).join('')}</div></div>`;
+    }).join('');
+  _hlName = '';
 }
 
 function openSummonerHist(i) {
@@ -5554,10 +5592,7 @@ function sxPick(i) {
   switchPage('summoner', btn);
   if (!x.rift && x.aram) switchRecMode('aram', true);       // 칼바람만 한 사람은 칼바람 탭으로
   const sq = document.getElementById('smQ'); if (sq) { sq.value = x.name; smFilter(); }
-  setTimeout(() => {
-    const idx = _smList.findIndex(r => normName(r.name) === normName(x.name));
-    if (idx >= 0) openSummonerHist(idx);
-  }, 80);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   if (typeof logVisit === 'function') logVisit('배너 검색', x.name.slice(0, 40));
 }
 function sxGo() { if (!_sxRows.length) sxRender(); if (_sxRows.length) sxPick(Math.max(0, _sxIdx)); else document.getElementById('sxQ').focus(); }
