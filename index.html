@@ -929,6 +929,7 @@
     .rk-most { display: flex; gap: 6px; justify-content: flex-start; }
     .rk-most > div { display: flex; flex-direction: column; align-items: center; gap: 1px; font-size: .58rem; color: var(--muted); }
     .rk-pos img { width: 20px; height: 20px; opacity: .85; vertical-align: middle; }
+    .rk-pos-t { display: none; }
 
     @media (max-width: 760px) {
       .rec-sum { grid-template-columns: 1fr; gap: 10px; }
@@ -1431,23 +1432,27 @@
       .rk-table { min-width: 0; display: block; }
       .rk-table tbody { display: flex; flex-direction: column; gap: 8px; }
       .rk-table tr:first-child { display: none; }
-      .rk-table tr { display: flex; flex-wrap: wrap; align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; gap: 6px 0; }
-      .rk-table td { border: none; padding: 0; white-space: normal; text-align: left; }
-      .rk-table td:nth-child(1) { width: 30px; }
-      .rk-table td.rk-name { flex: 1 1 0; min-width: 0; }
-      .rk-table td:nth-child(3) { margin-left: auto; }
-      .rk-table td[data-l] { order: 2; flex: 1 1 30%; font-size: .74rem; padding: 6px 0 0; border-top: 1px solid #273a57; }
+      /* 카드 안을 6칸 격자로: 칸마다 폭이 같아서 구분선·숫자가 줄 맞춰 정렬돼요 */
+      .rk-table tr { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; column-gap: 10px; row-gap: 0; }
+      .rk-table td { border: none; padding: 0; white-space: normal; text-align: left; min-width: 0; }
+      .rk-table td:nth-child(1) { grid-column: span 1; }
+      .rk-table td.rk-name { grid-column: span 3; min-width: 0; margin-left: -16px; }
+      .rk-table td:nth-child(3) { grid-column: span 2; justify-self: end; }
+      .rk-table td[data-l] { order: 2; grid-column: span 2; align-self: stretch; font-size: .74rem; padding: 8px 0 8px; margin-top: 8px; border-top: 1px solid #273a57; line-height: 1.35; }
       .rk-group > span { flex-shrink: 0; white-space: nowrap; }
       .rk-table td.rk-name b { font-size: .92rem; }
       .rk-table td.rk-name small { display: block; margin: 0; }
       .rk-table .rk-score .bar { width: 40px; }
-      .rk-table td[data-l]::before { content: attr(data-l); display: block; font-size: .6rem; color: var(--muted); margin-bottom: 2px; }
-      .rk-table td.rk-c-wr { flex-basis: 100%; order: 1; }
+      .rk-table td[data-l]::before { content: attr(data-l); display: block; font-size: .6rem; color: var(--muted); margin-bottom: 3px; white-space: nowrap; }
+      .rk-table td.rk-c-wr { grid-column: 1 / -1; order: 1; }
       .rk-table td.rk-c-wr .wr { justify-content: flex-start; }
       .rk-table td.rk-c-wr .wr-bar { width: 140px; }
-      .rk-table td.rk-c-most { flex-basis: 100%; order: 3; padding-top: 6px; }
+      .rk-table td.rk-c-most { grid-column: 1 / -1; order: 3; padding-top: 8px; border-top: 1px solid #273a57; }
       .rk-table td.rk-c-most::before { content: '모스트 챔피언'; display: block; font-size: .6rem; color: var(--muted); margin-bottom: 4px; }
-      .rk-table .kda-r { display: inline; margin-left: 4px; }
+      .rk-table td.rk-c-kda { white-space: nowrap; letter-spacing: -.2px; }
+      .rk-table .kda-r { display: block; margin: 1px 0 0; }
+      .rk-table td.rk-pos img { width: 18px; height: 18px; margin-right: 4px; }
+      .rk-table .rk-pos-t { display: inline; vertical-align: middle; }
       /* 소환사 정보 */
       .sm-grid { grid-template-columns: 1fr; gap: 12px; }
       .sm-in { padding: 14px; }
@@ -5066,7 +5071,7 @@ function renderRank() {
         <td data-l="평균 딜량">${fmtNum(Math.round(r.avgDmg))}</td>
         <td data-l="${lane === 'SPT' ? '분당 시야' : '분당 CS'}">${lane === 'SPT' ? r.f.vpm.toFixed(2) : r.f.cspm.toFixed(1)}</td>
         <td data-l="MVP·ACE">${r.mvp || '-'}</td>
-        ${showPos ? `<td class="rk-pos" data-l="주 라인">${mainPos && ICONS[mainPos[0]] ? `<img src="${ICONS[mainPos[0]]}" title="${POS_KO[mainPos[0]]} ${mainPos[1]}판" alt="" onerror="this.remove()">` : '-'}</td>` : ''}
+        ${showPos ? `<td class="rk-pos" data-l="주 라인">${mainPos && ICONS[mainPos[0]] ? `<img src="${ICONS[mainPos[0]]}" title="${POS_KO[mainPos[0]]} ${mainPos[1]}판" alt="" onerror="this.remove()"><span class="rk-pos-t">${POS_KO[mainPos[0]]}</span>` : '-'}</td>` : ''}
         <td class="rk-c-most"><div class="rk-most">${most.map(([c, v]) => `<div>${champIcon(v.m, c, 'sm')}<span>${v.g}판 ${Math.round(v.w / v.g * 100)}%</span></div>`).join('')}</div></td>
       </tr>`;
     }).join('')}
