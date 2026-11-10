@@ -5152,6 +5152,8 @@ function duoStats() {
 }
 // 칭호별 1등 계산 → [{t, winners:[row], val, text}]
 function computeTitles() {
+  // 칭호는 소환사 협곡 전적으로만 집계 · 노출 (칼바람 탭에서는 칭호 없음)
+  if (recMode !== 'rift') return { titles: [], byKey: {}, rows: [] };
   const rows = titleStats();
   if (!rows.length) return { titles: [], byKey: {}, rows };
   const maxG = Math.max(...rows.map(r => r.g));
@@ -5510,7 +5512,7 @@ function renderDashboard() {
       </div>
     </div>`;
   }).join('');
-  const row3 = `<div class="db-sec"><div class="db-h"><b>🏅 칭호</b><span>${matchMedia('(max-width: 760px)').matches ? '옆으로 밀어서' : '좌우 버튼으로'} 넘겨 보세요 · ${got.length}개 · 판수가 쌓이면 3판 이상 한 소환사만 대상</span></div>
+  const row3 = recMode !== 'rift' ? '' : `<div class="db-sec"><div class="db-h"><b>🏅 칭호</b><span>${matchMedia('(max-width: 760px)').matches ? '옆으로 밀어서' : '좌우 버튼으로'} 넘겨 보세요 · ${got.length}개 · 판수가 쌓이면 3판 이상 한 소환사만 대상</span></div>
     ${got.length ? `<div class="car" id="ttCar">
       <button class="car-nav prev" onclick="carGo(_carIdx - 1)" aria-label="이전">‹</button>
       <div class="car-stage" id="carStage">${cards}</div>
@@ -5745,8 +5747,8 @@ function dayDigest(day) {
     if (b && b.kind === 'win' && b.n >= 2 && playedToday.has(s.key) && s.kind === 'lose') out.ended.push({ name: s.name, n: b.n });
   });
   out.hot.sort((a, b) => b.n - a.n); out.cold.sort((a, b) => b.n - a.n); out.broke.sort((a, b) => b.n - a.n); out.ended.sort((a, b) => b.n - a.n);
-  // 칭호 왕좌 변동 (그 전날까지 → 그날까지)
-  if (before.length) {
+  // 칭호 왕좌 변동 (그 전날까지 → 그날까지) · 소환사 협곡만
+  if (before.length && recMode === 'rift') {
     const tb = withMatches(before, () => computeTitles().titles), ta = withMatches(upTo, () => computeTitles().titles);
     const sig = x => (x && !x.tie && x.winners && x.winners.length) ? x.winners.map(w => w.key).sort().join('|') : '';
     const names = x => x.winners.map(w => w.name).join(x.t.duo ? ' & ' : ', ');
@@ -6096,6 +6098,7 @@ function relationsHtml(key) {
 // ══════════════════ 칭호 왕좌 변동 ══════════════════
 // 가장 최근 내전 날짜 전/후의 칭호 1등을 비교
 function titleChanges() {
+  if (recMode !== 'rift') return null;
   const ms = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
   const days = [...new Set(ms.map(dayKey))];
   if (days.length < 2) return null;
