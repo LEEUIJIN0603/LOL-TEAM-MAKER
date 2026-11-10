@@ -1598,6 +1598,14 @@
              background: rgba(88,101,242,.15); color: #aab2ff; border: 1px solid rgba(88,101,242,.5); border-radius: 999px; padding: 3px 11px; transition: all .15s; }
     .dh-dc:hover { background: #5865f2; color: #fff; }
     .dh-dc:disabled { opacity: .6; cursor: default; }
+    .dh-kt { align-self: center; font-size: .68rem; font-weight: 700; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; margin-left: 6px;
+             background: rgba(254,229,0,.14); color: #ffe86b; border: 1px solid rgba(254,229,0,.5); border-radius: 999px; padding: 3px 11px; transition: all .15s; }
+    .dh-kt:hover { background: #fee500; color: #191919; }
+    .dh-kt:disabled { opacity: .6; cursor: default; }
+    .kt-toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); z-index: 3500; background: #191919; color: #fff; font-size: .84rem; font-weight: 600;
+                padding: 12px 18px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.5); border: 1px solid rgba(254,229,0,.5); max-width: 92vw; text-align: center; line-height: 1.5;
+                animation: fadeUp .25s ease; }
+    .kt-toast b { color: #fee500; }
     .dc-box { width: min(560px, 100%); }
     .dc-input { width: 100%; text-align: left !important; font-size: .8rem !important; padding: 10px 12px !important; margin: 4px 0 10px; }
     .dc-btns { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -4656,6 +4664,7 @@ function renderMatchList() {
         <span class="dh-chip">${g.ms.length}판</span>
         <span class="dh-len">총 ${Math.round(total / 60)}분</span>
         <button class="dh-dc adm-only" onclick="sendDayToDiscord('${g.day}', this)" title="이 날 내전 결과를 디스코드 채널로 보내요">📣 디스코드로 보내기</button>
+        <button class="dh-kt adm-only" onclick="shareDayToKakao('${g.day}', this)" title="이 날 내전 결과 이미지를 카톡으로 공유해요 (휴대폰: 공유 화면 · PC: 이미지 복사)">💬 카톡 공유</button>
       </div>
       <div class="day-list">${g.ms.slice().reverse().map(m => matchCard(m)).join('')}</div>
     </div>`;
@@ -5732,6 +5741,46 @@ function dayDigest(day) {
 }
 // 사이트 주소 (관리자 표시 없이 · 전적 화면으로 바로)
 const siteRecordUrl = () => location.origin + location.pathname + '#record' + (recMode === 'aram' ? '-aram' : '');
+// 💬 카톡 공유: 디스코드와 같은 결과 이미지를 휴대폰 공유 화면으로 (PC는 클립보드 복사 → 카톡에 붙여넣기)
+function ktToast(html, ms) {
+  document.querySelectorAll('.kt-toast').forEach(e => e.remove());
+  const t = document.createElement('div'); t.className = 'kt-toast'; t.innerHTML = html; document.body.appendChild(t);
+  setTimeout(() => t.remove(), ms || 4500);
+}
+async function shareDayToKakao(day, btn) {
+  if (!IS_ADMIN) return;
+  const g = dayDigest(day), dayMs = g.dayMs;
+  if (!dayMs.length) return;
+  const WD = ['일', '월', '화', '수', '목', '금', '토'];
+  const d0 = new Date(dayMs[0].date);
+  const old = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ 이미지 만드는 중...';
+  let img = null;
+  try { img = await dayCardBlob(g, d0); } catch (e) { console.warn('[카톡 공유] 이미지 실패', e); }
+  btn.textContent = old; btn.disabled = false;
+  if (!img) { ktToast('⚠️ 이미지를 만들지 못했어요. 잠시 후 다시 해 주세요'); return; }
+  const title = `${day.slice(5).replace('.', '/')} (${WD[d0.getDay()]}) ${MODE_NAME[recMode]} 내전 결과 · ${dayMs.length}판`;
+  const fileName = `LOL_naejeon_${day.replace(/\./g, '')}.png`;
+  const file = new File([img], fileName, { type: 'image/png' });
+  const text = `📅 ${title}\n📊 자세히 보기: ${siteRecordUrl()}`;
+  const mobile = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+  // ① 휴대폰: 공유 화면 (카카오톡 선택 → 단톡방 선택)
+  if (mobile && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title, text }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }          // 사용자가 공유 창을 닫은 경우
+  }
+  // ② PC: 이미지를 클립보드에 복사 → 카톡 대화방에서 Ctrl+V
+  try {
+    if (!navigator.clipboard || typeof ClipboardItem === 'undefined') throw new Error('no clipboard');
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': img })]);
+    ktToast('✅ 결과 이미지를 복사했어요<br>카톡 대화방에서 <b>Ctrl + V</b>로 붙여넣어 주세요');
+    return;
+  } catch (e) {}
+  // ③ 복사도 안 되면 파일로 저장
+  downloadBlob(img, fileName);
+  ktToast('💾 결과 이미지를 저장했어요<br>카톡 대화방에 <b>파일을 끌어다 놓거나</b> 첨부해 주세요');
+}
+
 async function sendDayToDiscord(day, btn) {
   if (!IS_ADMIN) return;
   if (!getWebhook()) { openDiscordSettings(); return; }
