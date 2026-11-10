@@ -1582,9 +1582,15 @@
                background: rgba(10,14,22,.85); border: 1px solid #2a3a52; color: #e6ebf2; font-size: 1.5rem; line-height: 1; cursor: pointer; transition: all .2s; }
     .car-nav:hover { border-color: var(--gold); color: var(--gold2); }
     .car-nav.prev { left: 8px; } .car-nav.next { right: 8px; }
-    .car-dots { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; margin: 4px 0 2px; }
-    .car-dot { width: 7px; height: 7px; border-radius: 50%; border: none; background: #2a3a52; padding: 0; cursor: pointer; transition: all .2s; }
-    .car-dot.on { width: 20px; border-radius: 4px; background: var(--gold); }
+    /* 칭호 넘김: 점 대신  ‹ 3 / 24 ›  + 얇은 진행 막대 */
+    .car-pg { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 6px 0 2px; }
+    .pg-a { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #2a3a52; background: rgba(10,14,22,.6); color: #c9d1dd; font-size: 1.1rem; line-height: 1; cursor: pointer; transition: all .2s; padding: 0 0 2px; }
+    .pg-a:hover { border-color: var(--gold); color: var(--gold2); }
+    .pg-mid { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 120px; }
+    .pg-txt { font-size: .74rem; color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: .5px; }
+    .pg-txt b { color: var(--gold2); font-size: .9rem; }
+    .pg-bar { width: 100%; height: 3px; border-radius: 3px; background: #2a3445; overflow: hidden; }
+    .pg-bar i { display: block; height: 100%; width: 0; border-radius: 3px; background: linear-gradient(90deg, #b07a1e, #f0c45a); transition: width .35s ease; }
     @media (max-width: 760px) {
       .car { height: 250px; }
       .tcc { width: 84%; height: 220px; }
@@ -1596,8 +1602,6 @@
       .tcc-name { font-size: 1.3rem; }
       .tcc-who { font-size: 1rem; margin-top: 8px; }
       .car-nav { display: none; }            /* 휴대폰: 손가락으로 밀기 · 점 · 옆 카드 누르기 */
-      .car-dot { width: 8px; height: 8px; }
-      .car-dot.on { width: 22px; }
     }
     /* 관리자 모드가 아니면 편집 버튼 숨김 */
     html:not(.admin) .rec-admin, html:not(.admin) #recShare, html:not(.admin) #recMsg,
@@ -1778,7 +1782,6 @@
     /* ══ 칭호 왕좌 변동 ══ */
     .tcc-new { position: absolute; top: 10px; right: 12px; z-index: 5; font-size: .66rem; font-weight: 700; color: #1a1205;
                background: linear-gradient(90deg, #f0c45a, #ffe39a); border-radius: 999px; padding: 2px 9px; box-shadow: 0 0 12px rgba(240,196,90,.5); animation: stkPulse 1.6s ease-in-out infinite; }
-    .car-dot.new { background: #f0c45a; box-shadow: 0 0 6px rgba(240,196,90,.8); }
     .tchg { margin-top: 10px; background: var(--panel); border: 1px solid rgba(240,196,90,.3); border-radius: 12px; padding: 10px 14px; }
     .tchg-h { font-size: .78rem; font-weight: 700; color: var(--gold2); margin-bottom: 8px; }
     .tchg-list { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -5777,7 +5780,9 @@ function renderDashboard() {
       <div class="car-stage" id="carStage">${cards}</div>
       <button class="car-nav next" onclick="carGo(_carIdx + 1)" aria-label="다음">›</button>
     </div>
-    <div class="car-dots">${got.map((x, i) => `<button class="car-dot${changedK.has(x.t.k) ? ' new' : ''}" title="${x.t.name}" onclick="carGo(${i})"></button>`).join('')}</div>
+    <div class="car-pg"><button class="pg-a" onclick="carGo(_carIdx - 1)" aria-label="이전 칭호">‹</button>
+      <div class="pg-mid"><div class="pg-txt"><b id="carNo">1</b> / ${got.length}</div><div class="pg-bar"><i id="carBar"></i></div></div>
+      <button class="pg-a" onclick="carGo(_carIdx + 1)" aria-label="다음 칭호">›</button></div>
     ${tc ? `<div class="tchg"><div class="tchg-h">👑 ${tc.day.slice(5).replace('.', '/')} 내전 후 칭호 변동</div>
       ${tc.changes.length ? `<div class="tchg-list">${tc.changes.map(c => `<button class="tchg-i" onclick="carGo(${got.findIndex(x => x.t.k === c.k)})"><span class="ti">${c.t.ico}</span><b>${c.t.name}</b>
         ${c.from ? `<span class="tf">${escapeHtml(c.from)}</span><span class="ta">→</span>` : '<span class="tnew">NEW</span>'}<span class="tt2">${escapeHtml(c.to)}</span></button>`).join('')}</div>`
@@ -5847,7 +5852,9 @@ function carLayout() {
     c.style.filter = a === 0 ? 'none' : `blur(${a * 1.4}px) brightness(${1 - a * .28})`;
     c.style.pointerEvents = a > 2 ? 'none' : 'auto';
   });
-  document.querySelectorAll('.car-dot').forEach((d, i) => d.classList.toggle('on', i === _carIdx));
+  const no = document.getElementById('carNo'), bar = document.getElementById('carBar');
+  if (no) no.textContent = _carIdx + 1;
+  if (bar) bar.style.width = ((_carIdx + 1) / n * 100) + '%';
 }
 function carGo(i) { _carIdx = i; carLayout(); carAuto(); }
 function carAuto() {
