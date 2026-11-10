@@ -2118,6 +2118,16 @@
       .hot-row .tcard.lv2 .tc-quote { display: none; }
       .hot-row .tcard.lv2 .tc-num b { font-size: 2.3rem; }
     }
+    /* 팀 배정: 그냥 랜덤 / 전적 기반 밸런스 */
+    .bal-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0 8px; }
+    .bal-btn { text-align: left; padding: 10px 14px; border-radius: 10px; cursor: pointer; background: var(--panel2); border: 1.5px solid var(--border); color: var(--muted); font-family: 'Noto Sans KR', sans-serif; transition: all .15s; }
+    .bal-btn b { display: block; font-size: .86rem; color: var(--text); } .bal-btn small { display: block; font-size: .66rem; margin-top: 2px; }
+    .bal-btn:hover { border-color: rgba(200,155,60,.6); }
+    .bal-btn.on { border-color: var(--gold); background: var(--gold-dim); color: #d8c7a0; box-shadow: 0 0 0 2px rgba(200,155,60,.15); } .bal-btn.on b { color: var(--gold2); }
+    .bal-note { font-size: .7rem; color: var(--muted); margin: 0 0 10px; line-height: 1.6; min-height: 0; }
+    .bal-note.on { padding: 7px 12px; border-radius: 8px; background: rgba(200,155,60,.06); border: 1px dashed rgba(200,155,60,.35); }
+    .bal-note b { color: var(--gold2); }
+    @media (max-width: 420px) { .bal-btn { padding: 8px 10px; } .bal-btn small { font-size: .6rem; } }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -2235,6 +2245,11 @@
       <div class="card-title"><span>▸ 참가자 10명 입력</span><button class="btn-tab-reset" onclick="resetTab('random')">↺ 초기화</button></div>
       <div class="fix-hint" id="randFixHint">라인 칩을 누르면 <b>보통 → 🚫제외 → 📌고정</b> 순으로 바뀌어요. 고정은 1개, 제외는 여러 개 가능해요. 같은 라인을 2명이 고정하면 그 라인은 팀만 랜덤으로 갈려요.</div>
       <div class="rand-grid" id="randGrid"></div>
+      <div class="bal-pick" data-tab="random">
+        <button class="bal-btn" data-v="rand" onclick="setBalMode('random','rand')"><b>🎲 그냥 랜덤</b><small>완전 무작위 팀 + 포지션</small></button>
+        <button class="bal-btn" data-v="rec" onclick="setBalMode('random','rec')"><b>📊 전적 기반 밸런스</b><small>지금까지 전적으로 승률 50 : 50에 가깝게</small></button>
+      </div>
+      <div class="bal-note" id="balNote-random"></div>
       <button class="btn-main" id="btnRand" onclick="doRandom()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errRand"></div>
     </div>
@@ -2246,6 +2261,11 @@
     <div class="card">
       <div class="card-title"><span>▸ 참가자 이름 + 능력치 입력 (1~10)</span><button class="btn-tab-reset" onclick="resetTab('ability')">↺ 초기화</button></div>
       <div class="ability-grid" id="abilityGrid"></div>
+      <div class="bal-pick" data-tab="ability">
+        <button class="bal-btn" data-v="rand" onclick="setBalMode('ability','rand')"><b>🎲 그냥 랜덤</b><small>입력한 능력치 평균 균형</small></button>
+        <button class="bal-btn" data-v="rec" onclick="setBalMode('ability','rec')"><b>📊 전적 기반 밸런스</b><small>지금까지 전적으로 승률 50 : 50에 가깝게</small></button>
+      </div>
+      <div class="bal-note" id="balNote-ability"></div>
       <button class="btn-main" id="btnAbility" onclick="doAbility()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errAbility"></div>
     </div>
@@ -2586,6 +2606,7 @@ const DEFAULT_MEMBERS = [
   '챱츄챱챱츄', '오늘의꼬순이', '황금도토리', '조지훈', '민식박프레이룰러',
   '겨  울', '위염앤비염', 'Monks', '마샬d챤', '비에고',
   '수능왕마킹', 'Art pororo', '머포좀먹자', '부평 그랑힐스', '대운빌라',
+  '돼지국밥같은남자',
 ];
 // 멤버 리스트는 브라우저에 저장하지 않아요. 새로고침하면 항상 위 DEFAULT_MEMBERS(=index.html에 적힌 멤버)로 시작해요.
 //   화면에서 추가/삭제한 멤버는 새로고침 전까지만 유지돼요.
@@ -2823,6 +2844,69 @@ function shuffle(a) {
     [b[i],b[j]] = [b[j],b[i]];
   }
   return b;
+}
+
+// ══════════════════ 📊 전적 기반 밸런스 배정 ══════════════════
+//   올 랜덤 탭 = 소환사 협곡 전적(라인 점수 포함), 증바람 탭 = 칼바람 전적으로 소환사별 전력을 매기고
+//   예측 승률이 50 : 50에 가까운 후보들 중에서 무작위로 골라요 (매번 같은 팀이 나오지 않게)
+const BAL_KEY = 'lol_bal_mode';
+function balMode(tab) { try { return (JSON.parse(localStorage.getItem(BAL_KEY) || '{}')[tab]) || 'rand'; } catch (e) { return 'rand'; } }
+function setBalMode(tab, v) {
+  try { const o = JSON.parse(localStorage.getItem(BAL_KEY) || '{}'); o[tab] = v; localStorage.setItem(BAL_KEY, JSON.stringify(o)); } catch (e) {}
+  paintBal();
+}
+function balTable(mode) { return ratingTableFrom(matches.filter(m => modeOf(m) === mode), mode); }
+function paintBal() {
+  ['random', 'ability'].forEach(tab => {
+    const v = balMode(tab);
+    document.querySelectorAll(`.bal-pick[data-tab="${tab}"] .bal-btn`).forEach(b => b.classList.toggle('on', b.dataset.v === v));
+    const note = document.getElementById('balNote-' + tab);
+    if (!note) return;
+    if (v !== 'rec') { note.textContent = ''; note.className = 'bal-note'; return; }
+    const mode = tab === 'random' ? 'rift' : 'aram';
+    const names = tab === 'random' ? [...document.querySelectorAll('#randGrid input[type=text]')].map(i => i.value.trim())
+                                   : [...document.querySelectorAll('#abilityGrid .ab-name')].map(i => i.value.trim());
+    const T = balTable(mode), filled = names.filter(Boolean);
+    const known = filled.filter(n => T[normName(n)] && T[normName(n)].ALL != null).length;
+    note.className = 'bal-note on';
+    note.innerHTML = `📊 <b>${MODE_NAME[mode]}</b> 전적 기준 · 기록 있는 소환사 <b>${known}/${filled.length || 10}</b>명` +
+      (tab === 'ability' ? ' · 기록 없는 사람은 입력한 능력치로 계산' : ' · 기록 없는 사람은 보통(50점)으로 계산') +
+      (filled.length && known < 3 ? '<br>⚠️ 기록 있는 사람이 적어서 거의 그냥 랜덤처럼 나와요' : '');
+  });
+}
+// 후보를 여러 번 뽑아 예측 승률 차이가 작은 것 중 무작위
+function pickBalanced(gen, mode, tries, first) {
+  const T = balTable(mode), cands = [];
+  for (let i = 0; i < tries; i++) {
+    const r = i === 0 && first ? first : gen();
+    if (!r || r.error) continue;
+    const pr = predictWith(T, r.t1, r.t2);
+    cands.push({ r, d: Math.abs(pr.p - 0.5), p: pr.p });
+  }
+  if (!cands.length) return first;
+  const best = Math.min(...cands.map(c => c.d));
+  const pool = cands.filter(c => c.d <= best + 0.02);              // 가장 좋은 것 + 2%p 이내는 모두 후보
+  return pool[Math.floor(Math.random() * pool.length)].r;
+}
+// 증바람 탭: 10명을 5:5로 나누는 126가지를 전부 따져서 균형 좋은 것 중 무작위
+function recordSplit(players) {
+  const T = balTable('aram');
+  const rate = players.map(pl => { const e = T[normName(pl.name)]; return e && e.ALL != null ? e.ALL : pl.score * 10; });
+  const splits = [];
+  for (let mask = 0; mask < 1024; mask++) {
+    if (!(mask & 1)) continue;                                      // 0번 사람은 항상 1팀 (같은 나눔 두 번 세지 않게)
+    let c = 0; for (let i = 0; i < 10; i++) if (mask >> i & 1) c++;
+    if (c !== 5) continue;
+    const g1 = [], g2 = [];
+    for (let i = 0; i < 10; i++) (mask >> i & 1 ? g1 : g2).push(i);
+    const a1 = g1.reduce((t, i) => t + rate[i], 0) / 5, a2 = g2.reduce((t, i) => t + rate[i], 0) / 5;
+    const p = 1 / (1 + Math.exp(-(a1 - a2) / 18));
+    splits.push({ g1, g2, d: Math.abs(p - 0.5) });
+  }
+  const best = Math.min(...splits.map(x => x.d));
+  const pool = splits.filter(x => x.d <= best + 0.02);
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  return Math.random() < 0.5 ? { g1: shuffle(pick.g1), g2: shuffle(pick.g2) } : { g1: shuffle(pick.g2), g2: shuffle(pick.g1) };
 }
 
 function balancedSplit(players) {
@@ -3968,7 +4052,12 @@ function doRandom() {
 
   const withRole = getOptIndex('optRand') === 0;
   let t1, t2;
-  if (withRole) {
+  if (withRole && balMode('random') === 'rec') {
+    // 📊 전적 기반 밸런스: 고정/제외 조건을 지키는 배정을 여러 번 뽑아서, 예측 승률이 50 : 50에 가까운 것 중 무작위로
+    const first = buildRoleAssignment(entries);
+    if (first.error) { err.textContent = first.error; return; }
+    ({ t1, t2 } = pickBalanced(() => buildRoleAssignment(entries), 'rift', 700, first));
+  } else if (withRole) {
     const res = buildRoleAssignment(entries);
     if (res.error) { err.textContent = res.error; return; }
     ({ t1, t2 } = res);
@@ -3993,7 +4082,7 @@ function doAbility() {
   if (players.some(p => isNaN(p.score)||p.score<1||p.score>10)) { err.textContent = '능력치는 1~10 사이의 숫자로 입력해 주세요! (소수점 가능)'; return; }
   err.textContent = '';
   const withRole = getOptIndex('optAbility') === 0;
-  const { g1, g2 } = balancedSplit(players);
+  const { g1, g2 } = balMode('ability') === 'rec' ? recordSplit(players) : balancedSplit(players);
   let t1, t2;
   if (withRole) {
     const r1 = shuffle([...ROLES]), r2 = shuffle([...ROLES]);
@@ -4430,6 +4519,7 @@ function renderRecord() {
   smFilter();
   renderDashboard();
   if (typeof renderHall === 'function') renderHall();
+  if (typeof paintBal === 'function') paintBal();
 }
 function renderRecSummary() {
   const box = document.getElementById('recSum');
@@ -6352,6 +6442,9 @@ loadRec();
 renderRecord();
 loadDD();
 loadSharedMatches();
+paintBal();
+document.addEventListener('input', e => { if (e.target.closest && e.target.closest('#randGrid, #abilityGrid')) paintBal(); });
+document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.member-panel, .btn-tab-reset')) setTimeout(paintBal, 60); });
 // 주소 끝 #record 처럼 붙어 있으면 그 메뉴로 바로 열기 (디스코드 '자세히 보기' 버튼)
 (function openFromHash() {
   const h = (location.hash || '').replace('#', '');
