@@ -2145,6 +2145,39 @@
       .hl-ui { font-size: 2.9rem; } .hl-p { font-size: 2.55rem; } .hl-gg { font-size: 1.2rem; padding: 3px 8px 4px; margin-left: 7px; border-radius: 7px; box-shadow: 0 3px 0 #5a3a0c, 0 0 12px rgba(255,190,70,.5); }
     }
     @media (max-width: 380px) { .hl-ui { font-size: 2.5rem; } .hl-p { font-size: 2.2rem; } .hl-gg { font-size: 1.05rem; } }
+    /* 배너 소환사 검색 (다크 글래스) */
+    .hero { overflow: visible; }
+    .hero-img, .hero-overlay, .hero-shine { clip-path: inset(0); }
+    .hero .hero-content { display: flex; align-items: center; gap: 46px; z-index: 6; }
+    .hero-brand { text-align: center; }
+    .sx-bar { position: relative; width: 520px; max-width: 92vw; }
+    .sx-in { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 6px 0 16px; border-radius: 14px;
+             background: rgba(12,18,32,.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(240,196,90,.45); box-shadow: 0 8px 24px rgba(0,0,0,.35); transition: border-color .15s, box-shadow .15s; }
+    .sx-in:focus-within { border-color: #f0c45a; box-shadow: 0 0 0 3px rgba(240,196,90,.2), 0 8px 24px rgba(0,0,0,.35); }
+    .sx-ic { font-size: 17px; }
+    .sx-in input { flex: 1; min-width: 0; height: 100%; border: none !important; background: none !important; outline: none; box-shadow: none !important; padding: 0 !important;
+                   font: 500 15px 'Noto Sans KR', sans-serif; color: #f3ead2 !important; text-align: left !important; }
+    .sx-in input::placeholder { color: rgba(232,214,168,.6); }
+    .sx-in input::-webkit-search-cancel-button { filter: invert(.8); }
+    .sx-go { flex: 0 0 auto; height: 40px; padding: 0 14px; border-radius: 10px; border: none; cursor: pointer; background: linear-gradient(180deg, #f7d77a, #b07a1e); font: 900 14px 'Arial Black', sans-serif; color: #1a1205; box-shadow: 0 3px 0 #5a3a0c; }
+    .sx-go:active { transform: translateY(2px); box-shadow: 0 1px 0 #5a3a0c; }
+    .sx-dd { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 50; border-radius: 12px; overflow: hidden; text-align: left;
+             background: rgba(16,22,38,.97); border: 1px solid rgba(240,196,90,.35); box-shadow: 0 14px 34px rgba(0,0,0,.5); }
+    .sx-dd .h { font: 700 11px 'Noto Sans KR', sans-serif; color: #a9b5c9; padding: 8px 14px 4px; }
+    .sx-r { display: flex; align-items: center; gap: 10px; padding: 8px 14px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+    .sx-r.on, .sx-r:hover { background: rgba(240,196,90,.12); }
+    .sx-r .ch-box { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; }
+    .sx-r b { flex: 1; min-width: 0; color: #fff; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .sx-r b mark { background: none; color: #f7d77a; }
+    .sx-r span { font-size: 12px; color: #a9b5c9; white-space: nowrap; } .sx-r em { font-style: normal; font-weight: 800; color: #7db8ff; margin-left: 4px; }
+    .sx-none { padding: 14px; font-size: 13px; color: #a9b5c9; }
+    .hero-credit { z-index: 1; }
+    @media (max-width: 900px) {
+      .hero { height: auto; min-height: 190px; padding: 18px 0 30px; }
+      .hero .hero-content { flex-direction: column; gap: 10px; width: 100%; }
+      .sx-bar { width: 100%; max-width: 420px; }
+      .sx-in { height: 44px; } .sx-go { height: 34px; padding: 0 12px; font-size: 13px; }
+      .sx-in input { font-size: 14px; }
+    }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -2175,11 +2208,11 @@
     .dcp-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); }
     .dcp-send { background: #5865f2; border: none; color: #fff; } .dcp-send:hover { background: #4752c4; }
     .dcp-in { grid-template-columns: repeat(2, 1fr); }
-    /* 휴대폰: 화면이 작고 밖에서 보는 경우가 많아서 전체를 한 단계 밝게 */
+    /* 휴대폰: 남색을 빼고 살짝 어두운 다크톤 (글씨·아이콘은 밝게 유지) */
     @media (max-width: 760px) {
-      :root { --bg: #223150; --panel: #2b3c5c; --panel2: #33466a; --border: #4a6690; --muted: #98a5bb; --text: #e3e7ef; --text-bright: #f8f9fb; }
-      .hero-img { filter: brightness(.78) saturate(1.1); }
-      .sidebar { background: rgba(30,44,70,.97) !important; }
+      :root { --bg: #14181f; --panel: #1d222c; --panel2: #252b37; --border: #353d4c; --muted: #9aa3b2; --text: #e3e6ec; --text-bright: #f8f9fb; }
+      .hero-img { filter: brightness(.72) saturate(1.05); }
+      .sidebar { background: rgba(20,24,31,.97) !important; }
       .nav-btn { color: #a9b5c9; }
       .nav-btn .nav-ico { opacity: 1; }
       .hot-sub, .db-h span, .kpi-s, .kpi-l, .hc-t, .pred-sub, .mb-sub, .modal-hint, .tcc-desc { color: #a9b5c9 !important; }
@@ -2196,8 +2229,16 @@
   <div class="hero-overlay"></div>
   <div class="hero-shine"></div>
   <div class="hero-content">
-    <div class="hero-title hx-logo" aria-label="의P.GG"><span class="hl-ui">의</span><span class="hl-p">P</span><span class="hl-gg">.GG</span></div>
-    <div class="hero-sub">의피지지 · 우리끼리 내전 전적</div>
+    <div class="hero-brand">
+      <div class="hero-title hx-logo" aria-label="의P.GG"><span class="hl-ui">의</span><span class="hl-p">P</span><span class="hl-gg">.GG</span></div>
+      <div class="hero-sub">의피지지 · 우리끼리 내전 전적</div>
+    </div>
+    <div class="sx-bar" id="sxBar">
+      <div class="sx-in"><span class="sx-ic">🔍</span>
+        <input type="search" id="sxQ" placeholder="소환사 이름을 검색해 보세요 (초성 가능)" autocomplete="off" spellcheck="false" aria-label="소환사 검색">
+        <button class="sx-go" type="button" onclick="sxGo()">.GG</button></div>
+      <div class="sx-dd" id="sxDD" hidden></div>
+    </div>
   </div>
   <div class="hero-credit">by. 챱츄챱챱츄</div>
 </div>
@@ -5474,6 +5515,64 @@ function shameHtml(ms, retro) {
     <div class="hs-foot">🤫 웃자고 만든 기록이에요. 다음 내전에서 명예 회복하면 돼요!</div>
   </div>`;
 }
+
+// ══════════════════ 배너 소환사 검색 (의P.GG) ══════════════════
+let _sxIdx = -1, _sxRows = [];
+function sxPeople() {
+  // 협곡 + 칼바람 전체 전적에서 소환사 모으기 (판수 · 승률 · 최근 챔피언)
+  const P = {};
+  matches.slice().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => m.players.forEach(p => {
+    const k = normName(p.name); const x = P[k] || (P[k] = { name: p.name, g: 0, w: 0, rift: 0, aram: 0 });
+    x.name = p.name; x.g++; if (p.win) x.w++; x[modeOf(m)]++; x.m = m; x.c = p.champ;
+  }));
+  return Object.values(P);
+}
+function sxRender() {
+  const inp = document.getElementById('sxQ'), dd = document.getElementById('sxDD');
+  if (!inp || !dd) return;
+  const raw = inp.value.trim(), q = raw.toLowerCase().replace(/\s+/g, '');
+  if (!q) { dd.hidden = true; _sxRows = []; return; }
+  const list = sxPeople().filter(x => smKey(x.name).includes(q))
+    .sort((a, b) => (normName(a.name).startsWith(q) ? 0 : 1) - (normName(b.name).startsWith(q) ? 0 : 1) || b.g - a.g).slice(0, 6);
+  _sxRows = list; _sxIdx = list.length ? 0 : -1;
+  const hl = name => { const i = name.toLowerCase().indexOf(raw.toLowerCase()); return i < 0 ? escapeHtml(name) : escapeHtml(name.slice(0, i)) + '<mark>' + escapeHtml(name.slice(i, i + raw.length)) + '</mark>' + escapeHtml(name.slice(i + raw.length)); };
+  dd.innerHTML = list.length ? '<div class="h">소환사</div>' + list.map((x, i) => `<div class="sx-r${i === _sxIdx ? ' on' : ''}" data-i="${i}" onmousedown="event.preventDefault();sxPick(${i})">${champIcon(x.m, x.c)}<b>${hl(x.name)}</b><span>${x.g}판 · 승률 <em>${Math.round(x.w / x.g * 100)}%</em></span></div>`).join('')
+                             : `<div class="sx-none">'${escapeHtml(raw)}' 이름의 소환사가 없어요</div>`;
+  dd.hidden = false;
+}
+function sxMove(d) {
+  if (!_sxRows.length) return;
+  _sxIdx = (_sxIdx + d + _sxRows.length) % _sxRows.length;
+  document.querySelectorAll('#sxDD .sx-r').forEach((r, i) => r.classList.toggle('on', i === _sxIdx));
+}
+// 고르면 소환사 정보 메뉴로 가서 그 사람 카드만 보이게 하고, 전체 전적 창을 열어요
+function sxPick(i) {
+  const x = _sxRows[i]; if (!x) return;
+  const dd = document.getElementById('sxDD'), inp = document.getElementById('sxQ');
+  dd.hidden = true; inp.blur(); inp.value = '';
+  const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => (b.getAttribute('onclick') || '').includes("'summoner'"));
+  switchPage('summoner', btn);
+  if (!x.rift && x.aram) switchRecMode('aram', true);       // 칼바람만 한 사람은 칼바람 탭으로
+  const sq = document.getElementById('smQ'); if (sq) { sq.value = x.name; smFilter(); }
+  setTimeout(() => {
+    const idx = _smList.findIndex(r => normName(r.name) === normName(x.name));
+    if (idx >= 0) openSummonerHist(idx);
+  }, 80);
+  if (typeof logVisit === 'function') logVisit('배너 검색', x.name.slice(0, 40));
+}
+function sxGo() { if (!_sxRows.length) sxRender(); if (_sxRows.length) sxPick(Math.max(0, _sxIdx)); else document.getElementById('sxQ').focus(); }
+(function initSx() {
+  const inp = document.getElementById('sxQ'); if (!inp) return;
+  inp.addEventListener('input', sxRender);
+  inp.addEventListener('focus', () => { if (inp.value.trim()) sxRender(); });
+  inp.addEventListener('blur', () => setTimeout(() => { const dd = document.getElementById('sxDD'); if (dd) dd.hidden = true; }, 120));
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); sxMove(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); sxMove(-1); }
+    else if (e.key === 'Enter') { e.preventDefault(); sxGo(); }
+    else if (e.key === 'Escape') { inp.value = ''; sxRender(); inp.blur(); }
+  });
+})();
 
 // ══════════════════ 내전 달력 (대시보드) ══════════════════
 let _calYm = null;                                        // [년, 월(0~11)] · 처음엔 가장 최근 내전이 있는 달
