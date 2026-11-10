@@ -2197,6 +2197,20 @@
       .sx-in { height: 44px; } .sx-go { height: 34px; padding: 0 12px; font-size: 13px; }
       .sx-in input { font-size: 14px; }
     }
+    /* 공유 이미지·팀 배정용 작은 로고 (이미지 캡처에서도 깨지지 않게 단색 + 그림자) */
+    .bl { display: inline-flex; align-items: center; line-height: 1; white-space: nowrap; }
+    .bl i { font-style: normal; font-weight: 900; }
+    .bl .u { font-family: 'Noto Sans KR', sans-serif; color: #f7d77a; text-shadow: 0 2px 0 #7a5214, 0 0 10px rgba(255,190,70,.35); }
+    .bl .p { font-family: 'Arial Black', 'Rajdhani', sans-serif; color: #f7d77a; text-shadow: 0 2px 0 #7a5214, 0 0 10px rgba(255,190,70,.35); margin-left: 1px; }
+    .bl .g { font-family: 'Arial Black', 'Rajdhani', sans-serif; color: #1a1205; background: linear-gradient(180deg, #f7d77a, #b07a1e); border-radius: .28em; padding: .14em .34em .18em; margin-left: .3em; box-shadow: 0 .12em 0 #5a3a0c; font-size: .55em; }
+    .dk-brand .bl { font-size: 34px; letter-spacing: 0; }
+    .dk-ft .bl { font-size: 15px; margin-right: 8px; vertical-align: middle; }
+    .dk-ft > span:first-child { display: inline-flex; align-items: center; }
+    .am-logo { text-align: center; margin: -10px 0 6px; font-size: 26px; opacity: .95; }
+    @media (max-width: 760px) { .am-logo { font-size: 21px; margin: -14px 0 4px; } }
+    .mb-brand { display: none; align-items: center; justify-content: space-between; padding: 10px 18px; background: rgba(0,0,0,.28); border-top: 1px solid rgba(240,196,90,.25); font-size: 12px; color: #8d99ae; font-family: 'Noto Sans KR', sans-serif; }
+    .mb-brand .bl { font-size: 20px; }
+    .dcp-av { overflow: hidden; } .dcp-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -2522,6 +2536,7 @@
     <button class="bgm-btn" id="bgmBtn" type="button" onclick="Bgm.toggle()" aria-label="배경음 켜기/끄기" data-tip="배경음">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="currentColor" fill-opacity=".2"/><g class="bgm-wave"><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></g><g class="bgm-x"><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></g></svg>
     </button>
+    <div class="am-logo"><span class="bl"><i class="u">의</i><i class="p">P</i><i class="g">.GG</i></span></div>
     <div class="anim-modal-title" id="animModalTitle">팀 배정 중...</div>
 
     <!-- 애니메이션 영역 -->
@@ -2630,6 +2645,7 @@
       <div class="match-board" id="matchBoard">
         <div class="pred" id="predBox"></div>
         <div class="modal-teams-row" id="modalTeamsRow"></div>
+        <div class="mb-brand" id="mbBrand"><span class="bl"><i class="u">의</i><i class="p">P</i><i class="g">.GG</i></span><span>우리끼리 내전 · 팀 배정</span></div>
       </div>
       <!-- 복사 버튼 -->
       <div class="modal-copy-row">
@@ -3446,7 +3462,7 @@ function copyAsText() {
     ...rows.map(r => build(r.label, r.blue, r.red))
   ];
 
-  const text = lines.join('\n');
+  const text = '⚔️ 의P.GG · 내전 팀 배정\n\n' + lines.join('\n');
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('btnCopyTxt');
     btn.classList.add('copied');
@@ -3479,7 +3495,7 @@ function captureResultBlob() {
         // 복제된 화면에서 등장 애니메이션을 꺼야 글자가 투명하게 찍히지 않아요
         const st = doc.createElement('style');
         st.textContent = '*{animation:none!important;transition:none!important}' +
-                         '#matchBoard{margin:0!important}';
+                         '#matchBoard{margin:0!important}#mbBrand{display:flex!important}';
         doc.head.appendChild(st);
         doc.querySelectorAll('#modalTeamsRow .role-row').forEach(r => r.classList.remove('dragging','drop-target','swapped'));
       }
@@ -5924,11 +5940,18 @@ async function testDiscord() {
     dcSay('✅ 보냈어요! 디스코드 채널을 확인해 보세요. 잘 왔으면 💾 저장을 눌러 주세요');
   } catch (e) { dcSay('⚠️ 보내지 못했어요: ' + e.message, true); }
 }
+// 의P.GG 로고 (공유 이미지용 · 단색이라 캡처에서도 그대로)
+function brandLogo() { return '<span class="bl"><i class="u">의</i><i class="p">P</i><i class="g">.GG</i></span>'; }
+// 디스코드 봇 프로필 사진 = 사이트 아이콘 (실제 사이트 주소일 때만)
+function brandIconUrl() {
+  if (!/^https:/.test(location.protocol) || /localhost|127\.0\.0\.1/.test(location.host)) return '';
+  return location.origin + location.pathname.replace(/[^/]*$/, '') + 'favicon-192.png';
+}
 // 실제 전송 (이미지가 있으면 첨부)
 async function discordPost(payload, file, url) {
   url = url || getWebhook();
   if (!url) throw new Error('디스코드가 연결되어 있지 않아요');
-  const body = { username: '의P.GG', allowed_mentions: { parse: [] }, ...payload };
+  const body = { username: '의P.GG', ...(brandIconUrl() ? { avatar_url: brandIconUrl() } : {}), allowed_mentions: { parse: [] }, ...payload };
   let res;
   if (file) {
     const fd = new FormData();
@@ -5965,7 +5988,7 @@ async function sendTeamToDiscord() {
       { name: `🔴 레드팀${showScore ? ` · 평균 ${avg(t2)}` : ''}`, value: t2.map(line).join('\n') || '-', inline: true },
       ...(() => { const pr = predictCurrent(); return pr && pr.known >= 3 ? [{ name: '🔮 승부 예측', value: `블루 **${Math.round(pr.p * 100)}%** : **${100 - Math.round(pr.p * 100)}%** 레드`, inline: false }] : []; })()
     ],
-    footer: { text: '의P.GG · 팀 배정' }, timestamp: new Date().toISOString()
+    footer: { text: '의P.GG · 팀 배정', ...(brandIconUrl() ? { icon_url: brandIconUrl() } : {}) }, timestamp: new Date().toISOString()
   };
   if (img) embed.image = { url: 'attachment://team.png' };
   try {
@@ -6194,14 +6217,14 @@ async function dayCardBlob(g, d0) {
   el.className = 'dk-wrap';
   el.innerHTML = `<div class="dk">
     <div class="dk-hd">${mvp ? `<div class="dk-bg" style="background-image:url('${splashOf(mvp.p.champ)}')"></div>` : ''}<div class="dk-sh"></div>
-      <div class="dk-hin"><div class="dk-brand">🏆 의P.GG</div>
+      <div class="dk-hin"><div class="dk-brand">${brandLogo()}</div>
         <div class="dk-date">${fmtDate(dayMs[0].date).slice(5, 10).replace('.', '/')} <small>${WD[d0.getDay()]}요일</small></div>
         <div class="dk-mode">${recMode === 'aram' ? '❄️' : '🌲'} ${MODE_NAME[recMode]} · ${dayMs.length}판 · ${mins}분</div></div>
       ${mvp ? `<div class="dk-mvp">${icon(mvp.p.name, 'dk-mv')}<div><span>👑 오늘의 MVP</span><b>${escapeHtml(mvp.p.name)}</b><em>${mvp.w}승 ${mvp.g - mvp.w}패 · KDA ${mvpKda} · MVP ${mvp.mvp}회</em></div></div>` : ''}
     </div>
     <div class="dk-wl${g.drew.length ? ' three' : ''}">${people(g.won, '🏆 최종 승리', 'w')}${people(g.lost, '💀 최종 패배', 'l')}${people(g.drew, '🤝 무승부', 'd')}</div>
     ${stHtml}${tHtml}${xHtml}
-    <div class="dk-ft"><span>${escapeHtml(location.host + location.pathname.replace(/index\.html$/, ''))}</span><span>자세한 기록은 사이트에서 ↗</span></div>
+    <div class="dk-ft"><span>${brandLogo()}${escapeHtml(location.host + location.pathname.replace(/index\.html$/, ''))}</span><span>자세한 기록은 사이트에서 ↗</span></div>
   </div>`;
   document.body.appendChild(el);
   try {
@@ -6244,7 +6267,7 @@ function dcPreview(payload, label) {
     wrap.className = 'dcp-wrap';
     wrap.innerHTML = `<div class="dcp-box">
       <div class="dcp-top"><b>📣 디스코드로 보낼 내용 미리보기</b><span>${escapeHtml(label || '')} · 아래처럼 채널에 올라가요</span></div>
-      <div class="dcp-view"><div class="dcp-msg"><div class="dcp-av">⚔️</div><div class="dcp-body">
+      <div class="dcp-view"><div class="dcp-msg"><div class="dcp-av"><img src="favicon-192.png?v=2" alt="" onerror="this.replaceWith('⚔️')"></div><div class="dcp-body">
         <div class="dcp-hd"><b>의P.GG</b><span>앱</span></div>
         ${payload.content ? `<div class="dcp-content">${md(payload.content)}</div>` : ''}
         ${payload._img ? `<img class="dcp-img" src="${payload._img}" alt="">` : ''}
