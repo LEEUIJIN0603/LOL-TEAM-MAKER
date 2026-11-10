@@ -2,12 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png?v=2">
+  <link rel="shortcut icon" href="favicon.ico?v=2">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#050910">
-  <title>오늘의 LOL 내전</title>
+  <title>의P.GG · 우리끼리 내전 전적</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Rajdhani:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
@@ -71,6 +72,14 @@
         0 0 80px rgba(200,155,60,0.4),
         0 3px 12px rgba(0,0,0,1);
     }
+    /* 의P.GG 로고 (황금 입체 글자 + .GG 배지) */
+    .hero-title.hx-logo { display: flex; align-items: center; justify-content: center; gap: 0; letter-spacing: 0; text-shadow: none; margin-bottom: 10px; color: transparent; }
+    .hl-ui, .hl-p { line-height: 1; background: linear-gradient(180deg, #fff6d6 0%, #f7d77a 35%, #c8902a 60%, #fff1b8 75%, #a06a18 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 3px 0 #5a3a0c) drop-shadow(0 0 22px rgba(255,190,70,.45)); }
+    .hl-ui { font-family: 'Noto Sans KR', sans-serif; font-weight: 900; font-size: 4.4rem; }
+    .hl-p { font-family: 'Arial Black', 'Rajdhani', sans-serif; font-weight: 900; font-size: 3.9rem; margin-left: 2px; }
+    .hl-gg { font-family: 'Arial Black', 'Rajdhani', sans-serif; font-weight: 900; font-size: 1.85rem; line-height: 1; margin-left: 10px; padding: 4px 12px 5px; border-radius: 10px;
+      background: linear-gradient(180deg, #f7d77a, #b07a1e); color: #1a1205; transform: translateY(4px) rotate(-4deg); box-shadow: 0 4px 0 #5a3a0c, 0 0 18px rgba(255,190,70,.5); }
     .hero-sub {
       font-size: 0.8rem; letter-spacing: 5px;
       text-transform: uppercase; color: var(--gold);
@@ -2131,6 +2140,11 @@
     #abilityGrid.rec .ab-score { opacity: .55; pointer-events: none; background: transparent; border-style: dashed; color: transparent; }
     #abilityGrid.rec .ab-score::placeholder { color: var(--muted); font-family: 'Noto Sans KR', sans-serif; font-size: .8rem; }
     #abilityGrid.rec .ability-hint { visibility: hidden; }
+    @media (max-width: 760px) {
+      .hero-title.hx-logo { margin-bottom: 6px; }
+      .hl-ui { font-size: 2.9rem; } .hl-p { font-size: 2.55rem; } .hl-gg { font-size: 1.2rem; padding: 3px 8px 4px; margin-left: 7px; border-radius: 7px; box-shadow: 0 3px 0 #5a3a0c, 0 0 12px rgba(255,190,70,.5); }
+    }
+    @media (max-width: 380px) { .hl-ui { font-size: 2.5rem; } .hl-p { font-size: 2.2rem; } .hl-gg { font-size: 1.05rem; } }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -2182,8 +2196,8 @@
   <div class="hero-overlay"></div>
   <div class="hero-shine"></div>
   <div class="hero-content">
-    <div class="hero-title">오늘의 LOL 내전</div>
-    <div class="hero-sub">League of Legends · 10인 · 2팀 랜덤</div>
+    <div class="hero-title hx-logo" aria-label="의P.GG"><span class="hl-ui">의</span><span class="hl-p">P</span><span class="hl-gg">.GG</span></div>
+    <div class="hero-sub">의피지지 · 우리끼리 내전 전적</div>
   </div>
   <div class="hero-credit">by. 챱츄챱챱츄</div>
 </div>
@@ -5760,7 +5774,7 @@ async function testDiscord() {
   const u = readDcInput(); if (!u) return;
   dcSay('⏳ 보내는 중...');
   try {
-    await discordPost({ embeds: [{ title: '✅ 연결 테스트', description: '오늘의 LOL 내전 사이트와 연결됐어요!', color: 0xc89b3c }] }, null, u);
+    await discordPost({ embeds: [{ title: '✅ 연결 테스트', description: '의P.GG 사이트와 연결됐어요!', color: 0xc89b3c }] }, null, u);
     dcSay('✅ 보냈어요! 디스코드 채널을 확인해 보세요. 잘 왔으면 💾 저장을 눌러 주세요');
   } catch (e) { dcSay('⚠️ 보내지 못했어요: ' + e.message, true); }
 }
@@ -5768,7 +5782,7 @@ async function testDiscord() {
 async function discordPost(payload, file, url) {
   url = url || getWebhook();
   if (!url) throw new Error('디스코드가 연결되어 있지 않아요');
-  const body = { username: '오늘의 LOL 내전', allowed_mentions: { parse: [] }, ...payload };
+  const body = { username: '의P.GG', allowed_mentions: { parse: [] }, ...payload };
   let res;
   if (file) {
     const fd = new FormData();
@@ -5805,7 +5819,7 @@ async function sendTeamToDiscord() {
       { name: `🔴 레드팀${showScore ? ` · 평균 ${avg(t2)}` : ''}`, value: t2.map(line).join('\n') || '-', inline: true },
       ...(() => { const pr = predictCurrent(); return pr && pr.known >= 3 ? [{ name: '🔮 승부 예측', value: `블루 **${Math.round(pr.p * 100)}%** : **${100 - Math.round(pr.p * 100)}%** 레드`, inline: false }] : []; })()
     ],
-    footer: { text: '오늘의 LOL 내전 · 팀 배정' }, timestamp: new Date().toISOString()
+    footer: { text: '의P.GG · 팀 배정' }, timestamp: new Date().toISOString()
   };
   if (img) embed.image = { url: 'attachment://team.png' };
   try {
@@ -5975,7 +5989,7 @@ async function sendDayToDiscord(day, btn) {
   // 작은 흐린 글씨(-#)는 칸(field) 안에서는 안 먹어서, 본문(description)에 항목별로 띄워서 넣어요
   if (chFields.length) embeds.push({ color: 0x9b7be8, title: '📢 변동사항',
     description: chFields.map(f => `**${f.name}**\n${f.value}`).join('\n\n').slice(0, 4000) });
-  embeds[embeds.length - 1].footer = { text: '오늘의 LOL 내전' };
+  embeds[embeds.length - 1].footer = { text: '의P.GG' };
   const components = [{ type: 1, components: [{ type: 2, style: 5, label: '📊 사이트에서 자세히 보기', url }] }];
   // 결과를 이미지 한 장으로 만들어서 보내요 (이미지를 못 만들면 예전처럼 글자 카드로)
   const old = btn.textContent;
@@ -6034,7 +6048,7 @@ async function dayCardBlob(g, d0) {
   el.className = 'dk-wrap';
   el.innerHTML = `<div class="dk">
     <div class="dk-hd">${mvp ? `<div class="dk-bg" style="background-image:url('${splashOf(mvp.p.champ)}')"></div>` : ''}<div class="dk-sh"></div>
-      <div class="dk-hin"><div class="dk-brand">🏆 오늘의 LOL 내전</div>
+      <div class="dk-hin"><div class="dk-brand">🏆 의P.GG</div>
         <div class="dk-date">${fmtDate(dayMs[0].date).slice(5, 10).replace('.', '/')} <small>${WD[d0.getDay()]}요일</small></div>
         <div class="dk-mode">${recMode === 'aram' ? '❄️' : '🌲'} ${MODE_NAME[recMode]} · ${dayMs.length}판 · ${mins}분</div></div>
       ${mvp ? `<div class="dk-mvp">${icon(mvp.p.name, 'dk-mv')}<div><span>👑 오늘의 MVP</span><b>${escapeHtml(mvp.p.name)}</b><em>${mvp.w}승 ${mvp.g - mvp.w}패 · KDA ${mvpKda} · MVP ${mvp.mvp}회</em></div></div>` : ''}
@@ -6085,7 +6099,7 @@ function dcPreview(payload, label) {
     wrap.innerHTML = `<div class="dcp-box">
       <div class="dcp-top"><b>📣 디스코드로 보낼 내용 미리보기</b><span>${escapeHtml(label || '')} · 아래처럼 채널에 올라가요</span></div>
       <div class="dcp-view"><div class="dcp-msg"><div class="dcp-av">⚔️</div><div class="dcp-body">
-        <div class="dcp-hd"><b>오늘의 LOL 내전</b><span>앱</span></div>
+        <div class="dcp-hd"><b>의P.GG</b><span>앱</span></div>
         ${payload.content ? `<div class="dcp-content">${md(payload.content)}</div>` : ''}
         ${payload._img ? `<img class="dcp-img" src="${payload._img}" alt="">` : ''}
         ${(payload.embeds || []).map(emb).join('')}${btns ? `<div class="dcp-btns">${btns}</div>` : ''}
