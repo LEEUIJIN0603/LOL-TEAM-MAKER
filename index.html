@@ -2097,6 +2097,27 @@
       .hs-grid { gap: 10px; } .hs-grid > .hs-pl { flex: 0 1 calc(50% - 5px); min-width: 0; } .hs-val { font-size: 1.7rem; }
     }
     @media (prefers-reduced-motion: reduce) { .hs *, .hs *::after { animation: none !important; } }
+    /* 전적 날짜 줄: 공유 버튼 묶음 */
+    .dh-acts { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; flex-wrap: nowrap; }
+    .dh-acts .dh-dc, .dh-acts .dh-kt { margin-left: 0; }
+    @media (max-width: 760px) { .day-head { flex-wrap: wrap; } .dh-acts { flex-basis: 100%; justify-content: flex-end; margin-top: 6px; } }
+    /* 연승·연패가 많을 때: 연승 줄 / 연패 줄 */
+    .hot-row.split { flex-direction: column; gap: 18px; }
+    .hot-line { display: flex; flex-wrap: wrap; gap: 14px; }
+    .hot-line .tcard { flex: 1 1 calc((100% - (var(--cols, 3) - 1) * 14px) / var(--cols, 3)); min-width: 0; height: 240px; }
+    .hot-line.small .tcard { height: 205px; }
+    .hot-line .hot-tag { flex-basis: 100%; font-size: .78rem; font-weight: 800; margin-bottom: -4px; }
+    .hot-line.win .hot-tag { color: #ffb45a; } .hot-line.lose .hot-tag { color: #9db8ec; }
+    .hot-line.empty { display: block; } .hot-line.empty .tcard.ghost { height: 70px; } .hot-line.empty .tcard.ghost br { display: none; }
+    /* 2연승·2연패는 자주 나오니까 조금 작게, 3 이상은 크게 */
+    .hot-line.small .tc-quote { -webkit-line-clamp: 2; }
+    @media (max-width: 760px) {
+      .hot-line { gap: 10px; }
+      .hot-line .tcard, .hot-line.small .tcard { flex-basis: 100%; height: 128px; }
+      .hot-row .tcard.lv2 { height: 104px; }
+      .hot-row .tcard.lv2 .tc-quote { display: none; }
+      .hot-row .tcard.lv2 .tc-num b { font-size: 2.3rem; }
+    }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -2166,7 +2187,7 @@
     <button class="nav-btn active" onclick="switchPage('dash',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1.5"/><rect width="7" height="5" x="14" y="3" rx="1.5"/><rect width="7" height="9" x="14" y="12" rx="1.5"/><rect width="7" height="5" x="3" y="16" rx="1.5"/></svg></span>대시보드</button>
     <button class="nav-btn" onclick="switchPage('record',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></span>전적</button>
     <button class="nav-btn" onclick="switchPage('rank',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span>순위</button>
-    <button class="nav-btn" onclick="switchPage('summoner',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></span>소환사</button>
+    <button class="nav-btn" onclick="switchPage('summoner',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></span>소환사 정보</button>
     <button class="nav-btn adm-only" onclick="switchPage('hall',this)" title="관리자만 보이는 미리보기 (아직 일반 링크에는 안 보여요)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M4 18h16"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 3 3 8.5V11h18V8.5z"/></svg></span>명예의 전당</button>
     <div class="nav-sep" aria-hidden="true"></div>
     <button class="nav-btn" onclick="switchPage('assign',this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/></svg></span>팀 배정</button>
@@ -4575,7 +4596,7 @@ function renderStreaks() {
   const fx = kind => '<div class="stk-fx">' + Array.from({ length: kind === 'win' ? 9 : 10 }, (_, i) =>
     `<i style="left:${(i * 37 + 7) % 100}%;animation-delay:${((i * 0.53) % 3).toFixed(2)}s;--dx:${(i % 2 ? 1 : -1) * (5 + (i * 7) % 14)}px"></i>`).join('') + '</div>';
   const pick = kind => all.filter(s => s.kind === kind && s.n >= 2)
-    .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name)).slice(0, 3);
+    .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));          // 해당하는 사람 전부
   const wins = pick('win'), loses = pick('lose');
   const isWide = Math.max(1, wins.length) + Math.max(1, loses.length) <= 3;
   let delay = 0;
@@ -4611,11 +4632,23 @@ function renderStreaks() {
   if (!wins.length && !loses.length) { box.innerHTML = head + '<div class="hot-none">아직 2연승·2연패 이상인 사람이 없어요. 다음 내전 주인공은 누구? 🔥🧊</div>'; return; }
   const count = Math.max(1, wins.length) + Math.max(1, loses.length);    // 빈 카드 포함 실제 카드 수
   const wide = count <= 3;                                                // 3장 이하면 넓은 카드
-  box.innerHTML = head + `<div class="hot-row c${count}${wide ? ' wide' : ''}">
-    ${wins.length ? wins.map(card).join('') : ghost('win')}
-    <div class="hot-vs"><span>VS</span></div>
-    ${loses.length ? loses.map(card).join('') : ghost('lose')}
-  </div>`;
+  if (count <= 6) {
+    box.innerHTML = head + `<div class="hot-row c${count}${wide ? ' wide' : ''}">
+      ${wins.length ? wins.map(card).join('') : ghost('win')}
+      <div class="hot-vs"><span>VS</span></div>
+      ${loses.length ? loses.map(card).join('') : ghost('lose')}
+    </div>`;
+  } else {
+    // 많으면 연승 줄 / 연패 줄로 나눠서, 줄마다 칸을 꽉 채우게 (한 줄 최대 5장, 넘치면 다음 줄)
+    const line = (list, kind) => {
+      if (!list.length) return `<div class="hot-line empty ${kind}">${ghost(kind)}</div>`;
+      const rows = Math.ceil(list.length / 5), cols = Math.ceil(list.length / rows);      // 줄마다 장 수를 고르게 (7명 → 4 + 3)
+      const small = list.every(x => x.n <= 2);                                             // 전부 2연승·2연패면 카드를 조금 낮게
+      return `<div class="hot-line ${kind}${small ? ' small' : ''}" style="--cols:${cols}">
+        <div class="hot-tag">${kind === 'win' ? `🔥 연승 중 · ${list.length}명` : `🧊 연패 중 · ${list.length}명`}</div>${list.map(card).join('')}</div>`;
+    };
+    box.innerHTML = head + `<div class="hot-row split">${line(wins, 'win')}${line(loses, 'lose')}</div>`;
+  }
   // 숫자 카운트업
   box.querySelectorAll('.stk-count').forEach(el => {
     const n = Number(el.dataset.n), t0 = performance.now(), dur = 800;
@@ -4663,8 +4696,7 @@ function renderMatchList() {
         <span class="dh-wd">${g.day.slice(0, 4)} · ${WD[d.getDay()]}요일</span>
         <span class="dh-chip">${g.ms.length}판</span>
         <span class="dh-len">총 ${Math.round(total / 60)}분</span>
-        <button class="dh-dc adm-only" onclick="sendDayToDiscord('${g.day}', this)" title="이 날 내전 결과를 디스코드 채널로 보내요">📣 디스코드로 보내기</button>
-        <button class="dh-kt adm-only" onclick="shareDayToKakao('${g.day}', this)" title="이 날 내전 결과 이미지를 카톡으로 공유해요 (휴대폰: 공유 화면 · PC: 이미지 복사)">💬 카톡 공유</button>
+        <span class="dh-acts adm-only"><button class="dh-dc" onclick="sendDayToDiscord('${g.day}', this)" title="이 날 내전 결과를 디스코드 채널로 보내요">📣 디스코드로 보내기</button><button class="dh-kt" onclick="shareDayToKakao('${g.day}', this)" title="이 날 내전 결과 이미지를 카톡으로 공유해요 (휴대폰: 공유 화면 · PC: 이미지 복사)">💬 카톡 공유</button></span>
       </div>
       <div class="day-list">${g.ms.slice().reverse().map(m => matchCard(m)).join('')}</div>
     </div>`;
@@ -6201,7 +6233,7 @@ async function logVisit(menu, detail) {
     });
   } catch (e) { /* 기록 실패해도 사이트는 그대로 */ }
 }
-const PAGE_NAME = { dash: '대시보드', assign: '팀 배정', record: '전적', rank: '순위', summoner: '소환사', hall: '명예의 전당', stats: '접속통계' };
+const PAGE_NAME = { dash: '대시보드', assign: '팀 배정', record: '전적', rank: '순위', summoner: '소환사 정보', hall: '명예의 전당', stats: '접속통계' };
 if (VISIT_ON) {
   const note = document.getElementById('visitNote');
   if (note) note.textContent = '이 사이트는 더 나은 운영을 위해 방문 통계(접속 시간 · 대략적인 지역 · 기기 종류 · 본 메뉴)를 익명으로 기록해요.';
