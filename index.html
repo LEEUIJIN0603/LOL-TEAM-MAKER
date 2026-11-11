@@ -2251,40 +2251,6 @@
       .hot-sub, .db-h span, .kpi-s, .kpi-l, .hc-t, .pred-sub, .mb-sub, .modal-hint, .tcc-desc { color: #a9b5c9 !important; }
       .mb-lane .rn, .mb-lane .ri { opacity: .95 !important; }
     }
-    /* ══ 🍫 빼빼로데이 (11월 11일 하루만 자동으로 켜져요 · 미리보기: 주소 뒤에 ?pepero) ══ */
-    html.ppr-day { --gold: #ff8fbf; --gold2: #ffb3d4; }
-    html.ppr-day .hero-overlay { background: linear-gradient(90deg, rgba(60,10,35,.82), rgba(90,25,60,.45) 50%, rgba(60,10,35,.82)) !important; }
-    html.ppr-day .hero { border-bottom: 2px solid #ff8fbf; }
-    html.ppr-day .hl-ui, html.ppr-day .hl-p { background: linear-gradient(180deg, #fff 0%, #ffd1e6 35%, #ff7fb6 62%, #ffe3f0 78%, #c94683 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; }
-    html.ppr-day .hx-logo { align-items: flex-end; }
-    html.ppr-day .hl-gg { position: relative; overflow: visible; align-self: center; background: linear-gradient(180deg, #ffb3d4, #d2468a) !important; color: #3a0a20 !important; box-shadow: 0 4px 0 #7a1c4a, 0 0 18px rgba(255,120,180,.55) !important; }
-    html.ppr-day .hl-gg::before, html.ppr-day .hl-gg::after { content: ''; position: absolute; bottom: 88%; width: .24em; height: 1.05em; border-radius: .1em; z-index: -1;
-      background: linear-gradient(180deg, #7a4523 0%, #3d1f0e 70%, #f3d29a 70%, #c98f45 100%); }
-    html.ppr-day .hl-gg::before { left: 22%; transform: rotate(-8deg); }
-    html.ppr-day .hl-gg::after { left: 52%; height: .85em; transform: rotate(6deg); background: linear-gradient(180deg, #fff4e6 0%, #e9d7c0 70%, #f3d29a 70%, #c98f45 100%); }
-    .ppr-s { display: inline-block; position: relative; width: .2em; height: 1.2em; border-radius: .09em; align-self: flex-end; margin: 0 0 .1em -.04em;
-      background: linear-gradient(180deg, #7a4523 0%, #3d1f0e 72%, #d9a55a 72%, #f3d29a 86%, #c98f45 100%);
-      box-shadow: inset -.03em 0 0 rgba(0,0,0,.3), inset .03em 0 0 rgba(255,255,255,.22), 0 .05em .12em rgba(0,0,0,.45); }
-    html.ppr-day .ppr-s + .hl-p { margin-left: .12em; }
-    html.ppr-day .sx-in { border-color: rgba(255,143,191,.55); }
-    html.ppr-day .sx-in:focus-within { border-color: #ff8fbf; box-shadow: 0 0 0 3px rgba(255,143,191,.2), 0 8px 24px rgba(0,0,0,.35); }
-    html.ppr-day .sx-go { background: linear-gradient(180deg, #ffb3d4, #d2468a); box-shadow: 0 3px 0 #7a1c4a; color: #3a0a20; }
-    .ppr { position: absolute; width: var(--w, 10px); height: var(--h, 130px); border-radius: 6px; transform: rotate(var(--r, 20deg)); pointer-events: none;
-      background: linear-gradient(180deg, var(--c1, #6b3a1d) 0%, var(--c2, #3d1f0e) 74%, #d9a55a 74%, #f0c886 88%, #c98f45 100%);
-      box-shadow: inset -2px 0 0 rgba(0,0,0,.25), inset 2px 0 0 rgba(255,255,255,.18), 0 6px 14px rgba(0,0,0,.35); }
-    .ppr.pink { --c1: #ff9ec4; --c2: #e86a9c; }
-    .ppr.white { --c1: #fff4e6; --c2: #e9d7c0; }
-    .ppr.almond { background: radial-gradient(circle at 30% 8%, #e8c48a 2px, transparent 3px) 0 0/10px 14px, radial-gradient(circle at 70% 20%, #d7a866 2px, transparent 3px) 0 0/10px 18px, linear-gradient(180deg, #6b3a1d 0%, #3d1f0e 74%, #d9a55a 74%, #f0c886 88%, #c98f45 100%); }
-    .ppr-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; clip-path: inset(0); }
-    .ppr-tag { position: absolute; right: 18px; top: 14px; z-index: 5; display: inline-flex; align-items: center; gap: 6px; font: 800 12px 'Noto Sans KR', sans-serif; padding: 5px 12px; border-radius: 999px; white-space: nowrap;
-      background: rgba(255,143,191,.18); color: #ffd1e6; border: 1px solid rgba(255,143,191,.6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); pointer-events: none; }
-    .ppr-rain { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
-    .ppr-rain .ppr { top: -160px; opacity: .38; animation: pprFall linear infinite; }
-    @keyframes pprFall { to { transform: translateY(120vh) rotate(calc(var(--r) + 160deg)); } }
-    @media (prefers-reduced-motion: reduce) { .ppr-rain { display: none; } }
-    @media (max-width: 900px) {
-      .ppr-tag { right: auto; top: auto; left: 50%; transform: translateX(-50%); bottom: -14px; background: rgba(60,10,35,.92); }
-    }
 </style>
 </head>
 <body>
@@ -6688,32 +6654,6 @@ document.addEventListener('click', e => { if (e.target.closest && e.target.close
   switchPage(id, btn);
   if (id === 'record' && sub === 'aram') switchRecMode('aram', true);
 })();
-// ══ 🍫 빼빼로데이: 한국 시간 11월 11일 하루만 (주소 뒤에 ?pepero 를 붙이면 미리보기) ══
-(function pepero() {
-  const kst = new Date(Date.now() + 9 * 3600e3).toISOString().slice(5, 10);
-  if (kst !== '11-11' && !/[?&]pepero\b/.test(location.search)) return;
-  document.documentElement.classList.add('ppr-day');
-  const logo = document.querySelector('.hero .hx-logo');
-  if (logo) logo.innerHTML = '<span class="hl-ui">으</span><i class="ppr-s"></i><span class="hl-p">P</span><span class="hl-gg">.GG</span>';
-  const hero = document.querySelector('.hero');
-  if (!hero) return;
-  const mob = innerWidth <= 760;
-  const L = document.createElement('div'); L.className = 'ppr-layer'; L.setAttribute('aria-hidden', 'true');
-  const spots = mob ? [[2, 10, 28, 96, ''], [7, 30, 48, 84, 'pink'], [90, 6, -30, 96, 'almond'], [95, 40, -52, 80, 'white']]
-                    : [[3, 18, 30, 130, ''], [6, 40, 52, 110, 'pink'], [9.5, 8, 18, 120, 'almond'], [86, 10, -22, 126, 'white'], [90, 34, -46, 118, ''], [94, 6, -12, 124, 'pink']];
-  spots.forEach(([x, y, r, h, k]) => { const i = document.createElement('i'); i.className = 'ppr ' + k; i.style.cssText = `left:${x}%;top:${y}px;--r:${r}deg;--h:${h}px;--w:${mob ? 8 : 11}px`; L.appendChild(i); });
-  hero.appendChild(L);
-  const t = document.createElement('div'); t.className = 'ppr-tag'; t.textContent = '💗 11.11 빼빼로데이'; hero.appendChild(t);
-  const R = document.createElement('div'); R.className = 'ppr-rain'; R.setAttribute('aria-hidden', 'true');
-  const kinds = ['', 'pink', 'almond', 'white', 'pink'];
-  for (let i = 0; i < (mob ? 9 : 16); i++) {
-    const s = document.createElement('i'); s.className = 'ppr ' + kinds[i % 5]; const dur = 14 + (i * 7) % 10;
-    s.style.cssText = `left:${(i * 61) % 100}%;--r:${(i * 37) % 60 - 30}deg;--h:${80 + (i * 13) % 40}px;--w:${mob ? 7 : 9}px;animation-duration:${dur}s;animation-delay:-${((i * 5.3) % dur).toFixed(1)}s`;
-    R.appendChild(s);
-  }
-  document.body.prepend(R);
-})();
-
 </script>
 </body>
 </html>
