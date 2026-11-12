@@ -1324,6 +1324,9 @@
     .db-row3 > .db-box > #dashCal { flex: 1; display: flex; flex-direction: column; }
     #dashCal .cal-grid { flex: 1; grid-template-rows: auto; grid-auto-rows: 1fr; }
     #dashCal .cal-c { aspect-ratio: auto; min-height: 40px; }
+    .rec-loading { display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .ld-spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(200,155,60,.25); border-top-color: var(--gold); animation: ldSpin .8s linear infinite; flex-shrink: 0; }
+    @keyframes ldSpin { to { transform: rotate(360deg); } }
     .db-empty { text-align: center; color: var(--muted); padding: 50px 10px; font-size: .9rem; line-height: 1.9; background: var(--panel); border: 1px dashed var(--border); border-radius: 14px; }
     @media (max-width: 900px) { .db-row, .db-row3 { grid-template-columns: 1fr; } }
 
@@ -4231,6 +4234,9 @@ const REC_MODE_KEY = 'lol_matches_mode_v1';        // 공유 경기를 다른 �
 //   각 브라우저에는 '내가 직접 올렸는데 아직 공유 파일에 없는 경기'만 저장해요.
 //   그래서 공유 파일에서 경기를 빼고 다시 올리면, 모든 사람 화면에서도 빠져요.
 let sharedIds = new Set(), sharedState = 'none', modeOverride = {}, dateFixed = {};   // sharedState: none | ok | missing
+// 처음 접속해서 공유 전적을 받아오는 동안엔 '기록 없음' 대신 '불러오는 중'으로 보여줘요
+const recLoading = () => sharedState === 'none' && !modeMatches().length;
+const loadingHtml = (cls, style) => `<div class="${cls} rec-loading"${style ? ` style="${style}"` : ''}><span class="ld-spin"></span>전적을 불러오는 중이에요…</div>`;
 let matches = [], recDeleted = [], recOpen = new Set(), recSort = 'games';
 let recMode = 'rift';                                 // 'rift' 소환사 협곡 / 'aram' 칼바람 증바람
 const MODE_NAME = { rift: '소환사 협곡', aram: '칼바람 증바람' };
@@ -4484,7 +4490,7 @@ function exportMatches() {
 }
 // GitHub에 함께 올린 matches.json을 불러와 기준으로 삼기
 function loadSharedMatches() {
-  if (!/^https?:$/.test(location.protocol)) { sharedState = 'missing'; renderShareInfo(); return; }
+  if (!/^https?:$/.test(location.protocol)) { sharedState = 'missing'; renderRecord(); renderShareInfo(); return; }
   const fromFile = () => fetch('matches.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : Promise.reject('missing'));
   // 공유 저장소(Supabase)가 기준. 연결이 안 되면 예전 matches.json 파일로 대신 보여줘요
   (DB_ON ? dbLoadMatches().then(list => { sharedSrc = 'db'; return list; }).catch(() => { sharedSrc = 'file'; return fromFile(); })
@@ -4504,7 +4510,7 @@ function loadSharedMatches() {
     })
     .catch(() => {
       sharedState = 'missing';                       // 아직 공유 파일이 없음 → 지금 있는 건 전부 내 기록
-      saveRec(); renderShareInfo();
+      saveRec(); renderRecord(); renderShareInfo();
     });
 }
 // 공유 상태 안내 한 줄
@@ -4652,6 +4658,7 @@ function renderRecSummary() {
   const box = document.getElementById('recSum');
   if (!box) return;
   const list = modeMatches();
+  if (recLoading()) { box.innerHTML = ''; return; }        // 불러오는 중엔 0판·0명 대신 비워 둬요
   const total = list.length;
   const people = new Set(list.flatMap(m => m.players.map(p => p.puuid || p.name))).size;
   const avgLen = total ? Math.round(list.reduce((s, m) => s + m.len, 0) / total) : 0;
@@ -4845,7 +4852,7 @@ function renderStreaks() {
       <span class="gi">${kind === 'win' ? '🔥' : '🧊'}</span>${kind === 'win' ? '2연승 이상<br>아직 없음<br>다음 내전 주인공은?' : '2연패 이상<br>아무도 없음<br>다들 선방 중 👏'}</div></div>`;
 
   const head = `<div class="hot-head"><span class="hot-title">HOT &amp; COLD</span><span class="hot-sub">내전 날짜 기준 2일 이상 연승 · 연패 중인 소환사 (그날 승이 많으면 승, 같으면 무승부라 제외)</span></div>`;
-  if (!modeMatches().length) { box.innerHTML = head + '<div class="hot-none">경기 기록이 올라오면 연승·연패 카드가 여기에 나와요</div>'; return; }
+  if (!modeMatches().length) { box.innerHTML = recLoading() ? '' : head + '<div class="hot-none">경기 기록이 올라오면 연승·연패 카드가 여기에 나와요</div>'; return; }
   if (!wins.length && !loses.length) { box.innerHTML = head + '<div class="hot-none">아직 2연승·2연패 이상인 사람이 없어요. 다음 내전 주인공은 누구? 🔥🧊</div>'; return; }
   const count = Math.max(1, wins.length) + Math.max(1, loses.length);    // 빈 카드 포함 실제 카드 수
   const wide = count <= 3;                                                // 3장 이하면 넓은 카드
@@ -4887,7 +4894,7 @@ function renderMatchList() {
   if (!box) return;
   const list = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
   if (!list.length) {
-    box.innerHTML = IS_ADMIN ? `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기가 없어요.<br>
+    box.innerHTML = recLoading() ? loadingHtml('rec-empty') : IS_ADMIN ? `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기가 없어요.<br>
       오른쪽 위 <b>📂 리플레이 올리기</b>를 누르거나, 리플레이 파일(.rofl)을 이 화면에 끌어다 놓으세요.<br>
       <small>롤 클라이언트 경기 기록에서 리플레이를 받으면 <b>문서\\League of Legends\\Replays</b> 폴더에 저장돼요</small></div>`
       : `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>내전 기록이 올라오면 여기에 나와요.</div>`;
@@ -5064,7 +5071,7 @@ function renderRank() {
       `<button class="rk-btn${k === 'total' ? ' total' : ''}${lane === 'ALL' && recSort === k ? ' active' : ''}" onclick="setRankSort('${k}')">${k === 'total' ? '🏅 ' : ''}${t}</button>`).join('') +
     (recMode === 'rift' ? '<span class="rk-sep" title="라인별은 그 라인으로 뛴 판만 모아 종합 점수로 순위를 매겨요"></span>' + RK_LANES.filter(([k]) => k !== 'ALL').map(([k, t]) =>
       `<button class="rk-btn rk-lane${lane === k ? ' active' : ''}" onclick="setRankLane('${k}')" title="${t} 라인 종합 점수 순위">${ICONS[k] ? `<img src="${ICONS[k]}" alt="" onerror="this.remove()">` : ''}${t}</button>`).join('') : '') + '</div>';
-  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.' : '내전 기록이 올라오면 순위가 나와요.'}</div>`; return; }
+  if (!modeMatches().length) { box.innerHTML = recLoading() ? loadingHtml('rec-empty') : `<div class="rec-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>전적</b> 메뉴에서 리플레이 파일을 올리면 순위가 나와요.' : '내전 기록이 올라오면 순위가 나와요.'}</div>`; return; }
 
   const rows = rankRowsFor(lane);
   if (!rows.length) { box.innerHTML = `<div class="rec-empty">${RK_LANES.find(x => x[0] === lane)[1]} 라인으로 뛴 기록이 아직 없어요.</div>`; return; }
@@ -5192,7 +5199,7 @@ let _smList = [];
 function renderSummoners() {
   const box = document.getElementById('smGrid');
   if (!box) return;
-  if (!modeMatches().length) { box.innerHTML = `<div class="rec-empty" style="grid-column:1/-1">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>전적</b> 메뉴에서 리플레이 파일을 올리면 소환사 카드가 나와요.' : '내전 기록이 올라오면 소환사 카드가 나와요.'}</div>`; return; }
+  if (!modeMatches().length) { box.innerHTML = recLoading() ? loadingHtml('rec-empty', 'grid-column:1/-1') : `<div class="rec-empty" style="grid-column:1/-1">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>전적</b> 메뉴에서 리플레이 파일을 올리면 소환사 카드가 나와요.' : '내전 기록이 올라오면 소환사 카드가 나와요.'}</div>`; return; }
   const rows = summonerStats();
   const titleMap = computeTitles().byKey;
   const totalDays = new Set(modeMatches().map(dayKey)).size;
@@ -5454,7 +5461,7 @@ function renderHall() {
 }
 function _renderHall(box) {
   const ms = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
-  if (!ms.length) { box.innerHTML = `<div class="db-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.</div>`; return; }
+  if (!ms.length) { box.innerHTML = recLoading() ? loadingHtml('db-empty') : `<div class="db-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.</div>`; return; }
   const recs = HALL_RECORDS.map(r => {
     const hist = [];
     ms.forEach(m => {
@@ -5712,7 +5719,7 @@ function renderDashboard() {
   if (!box) return;
   const ms = modeMatches().sort((a, b) => (a.date || 0) - (b.date || 0));
   if (!ms.length) {
-    box.innerHTML = `<div class="db-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>전적</b> 메뉴에서 리플레이 파일을 올리면 대시보드가 채워져요.' : '내전 기록이 올라오면 대시보드가 채워져요.'}</div>`;
+    box.innerHTML = recLoading() ? loadingHtml('db-empty') : `<div class="db-empty">아직 ${MODE_NAME[recMode]} 경기 기록이 없어요.<br>${IS_ADMIN ? '왼쪽 <b>전적</b> 메뉴에서 리플레이 파일을 올리면 대시보드가 채워져요.' : '내전 기록이 올라오면 대시보드가 채워져요.'}</div>`;
     return;
   }
   const days = [...new Set(ms.map(dayKey))];
