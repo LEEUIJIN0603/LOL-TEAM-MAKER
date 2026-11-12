@@ -6164,7 +6164,7 @@ async function sendDayToDiscord(day, btn) {
   const old = btn.textContent;
   btn.disabled = true; btn.textContent = '⏳ 이미지 만드는 중...';
   let img = null, imgErr = '';
-  try { img = await dayCardBlob(g, d0); } catch (e) { img = null; imgErr = e && e.message || String(e); console.warn('[디스코드 이미지] 만들기 실패', e); }
+  try { img = await dayCardBlob(g, d0, 'discord'); } catch (e) { img = null; imgErr = e && e.message || String(e); console.warn('[디스코드 이미지] 만들기 실패', e); }
   btn.textContent = old; btn.disabled = false;
   const content = `📅 **${day.slice(5).replace('.', '/')} (${WD[d0.getDay()]}) ${MODE_NAME[recMode]} 내전 결과** · ${dayMs.length}판`;
   const imgUrl = img ? URL.createObjectURL(img) : '';
@@ -6188,7 +6188,7 @@ async function sendDayToDiscord(day, btn) {
 refreshDiscordButtons();
 
 // 디스코드용 내전 결과 이미지 (화면 밖에 카드를 그린 뒤 캡쳐)
-async function dayCardBlob(g, d0) {
+async function dayCardBlob(g, d0, target) {
   if (typeof html2canvas !== 'function') throw new Error('html2canvas 없음');
   const WD = ['일', '월', '화', '수', '목', '금', '토'];
   const dayMs = g.dayMs, last = {};
@@ -6224,7 +6224,7 @@ async function dayCardBlob(g, d0) {
     </div>
     <div class="dk-wl${g.drew.length ? ' three' : ''}">${people(g.won, '🏆 최종 승리', 'w')}${people(g.lost, '💀 최종 패배', 'l')}${people(g.drew, '🤝 무승부', 'd')}</div>
     ${stHtml}${tHtml}${xHtml}
-    <div class="dk-ft"><span>${brandLogo()}${escapeHtml(location.host + location.pathname.replace(/index\.html$/, ''))}</span><span>자세한 기록은 사이트에서 ↗</span></div>
+    <div class="dk-ft"><span>${brandLogo()}${escapeHtml(location.host + location.pathname.replace(/index\.html$/, ''))}</span><span>${target === 'discord' ? '↓ 아래 버튼을 누르면 사이트로 이동해요' : '자세한 기록은 사이트에서 ↗'}</span></div>
   </div>`;
   document.body.appendChild(el);
   try {
