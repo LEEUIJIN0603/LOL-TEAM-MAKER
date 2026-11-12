@@ -5581,11 +5581,13 @@ function shameHtml(ms, retro) {
 // ══════════════════ 배너 소환사 검색 (의P.GG) ══════════════════
 let _sxIdx = -1, _sxRows = [];
 function sxPeople() {
-  // 협곡 + 칼바람 전체 전적에서 소환사 모으기 (판수 · 승률 · 최근 챔피언)
+  // 판수 · 승률 · 챔피언은 소환사 협곡 기준 (칼바람만 한 사람도 검색은 되게 따로 셈)
   const P = {};
   matches.slice().sort((a, b) => (a.date || 0) - (b.date || 0)).forEach(m => m.players.forEach(p => {
     const k = normName(p.name); const x = P[k] || (P[k] = { name: p.name, g: 0, w: 0, rift: 0, aram: 0 });
-    x.name = p.name; x.g++; if (p.win) x.w++; x[modeOf(m)]++; x.m = m; x.c = p.champ;
+    const md = modeOf(m); x.name = p.name; x[md]++;
+    if (md === 'rift') { x.g++; if (p.win) x.w++; x.m = m; x.c = p.champ; }
+    else if (!x.g) { x.m = m; x.c = p.champ; }
   }));
   return Object.values(P);
 }
@@ -5595,10 +5597,10 @@ function sxRender() {
   const raw = inp.value.trim(), q = raw.toLowerCase().replace(/\s+/g, '');
   if (!q) { dd.hidden = true; _sxRows = []; return; }
   const list = sxPeople().filter(x => smKey(x.name).includes(q))
-    .sort((a, b) => (normName(a.name).startsWith(q) ? 0 : 1) - (normName(b.name).startsWith(q) ? 0 : 1) || b.g - a.g).slice(0, 6);
+    .sort((a, b) => (normName(a.name).startsWith(q) ? 0 : 1) - (normName(b.name).startsWith(q) ? 0 : 1) || b.g - a.g || b.aram - a.aram).slice(0, 6);
   _sxRows = list; _sxIdx = list.length ? 0 : -1;
   const hl = name => { const i = name.toLowerCase().indexOf(raw.toLowerCase()); return i < 0 ? escapeHtml(name) : escapeHtml(name.slice(0, i)) + '<mark>' + escapeHtml(name.slice(i, i + raw.length)) + '</mark>' + escapeHtml(name.slice(i + raw.length)); };
-  dd.innerHTML = list.length ? '<div class="h">소환사</div>' + list.map((x, i) => `<div class="sx-r${i === _sxIdx ? ' on' : ''}" data-i="${i}" onmousedown="event.preventDefault();sxPick(${i})">${champIcon(x.m, x.c)}<b>${hl(x.name)}</b><span>${x.g}판 · 승률 <em>${Math.round(x.w / x.g * 100)}%</em></span></div>`).join('')
+  dd.innerHTML = list.length ? '<div class="h">소환사 · 소환사 협곡 기준</div>' + list.map((x, i) => `<div class="sx-r${i === _sxIdx ? ' on' : ''}" data-i="${i}" onmousedown="event.preventDefault();sxPick(${i})">${champIcon(x.m, x.c)}<b>${hl(x.name)}</b><span>${x.g ? `${x.g}판 · 승률 <em>${Math.round(x.w / x.g * 100)}%</em>` : `협곡 기록 없음 · 칼바람 ${x.aram}판`}</span></div>`).join('')
                              : `<div class="sx-none">'${escapeHtml(raw)}' 이름의 소환사가 없어요</div>`;
   dd.hidden = false;
 }
@@ -6306,12 +6308,8 @@ function predictWith(T, blue, red) {
 function predictCurrent() {
   if (!_lastResult) return null;
   const pref = _assignMode || (_lastResult.showScore ? 'aram' : 'rift');               // 증바람 능력치 탭 → 칼바람 전적, 올 랜덤 → 협곡 전적
-  const other = pref === 'rift' ? 'aram' : 'rift';
-  let mode = pref, pr = predictWith(ratingTableFrom(matches.filter(m => modeOf(m) === pref), pref), _lastResult.t1, _lastResult.t2);
-  if (pr.known < 3) {
-    const alt = predictWith(ratingTableFrom(matches.filter(m => modeOf(m) === other), other), _lastResult.t1, _lastResult.t2);
-    if (alt.known > pr.known) { pr = alt; mode = other; }
-  }
+  // 협곡 탭은 협곡 전적만, 칼바람 탭은 칼바람 전적만 (서로 섞지 않아요)
+  const mode = pref, pr = predictWith(ratingTableFrom(matches.filter(m => modeOf(m) === pref), pref), _lastResult.t1, _lastResult.t2);
   return { ...pr, mode };
 }
 function renderPrediction() {
