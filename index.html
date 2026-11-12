@@ -2145,6 +2145,22 @@
     .bal-note.on { padding: 7px 12px; border-radius: 8px; background: rgba(200,155,60,.06); border: 1px dashed rgba(200,155,60,.35); }
     .bal-note b { color: var(--gold2); }
     @media (max-width: 420px) { .bal-btn { padding: 8px 10px; } .bal-btn small { font-size: .6rem; } }
+    /* 전적 기반 밸런스 켜기/끄기 (스위치) */
+    .bal-opt { display: flex; align-items: center; gap: 12px; margin: 2px 0 10px; padding: 10px 14px; border-radius: 10px; cursor: pointer; user-select: none;
+               background: var(--panel2); border: 1px solid var(--border); transition: border-color .15s, background .15s; }
+    .bal-opt:hover { border-color: rgba(200,155,60,.5); }
+    .bal-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+    .bal-sw { position: relative; flex: 0 0 auto; width: 42px; height: 24px; border-radius: 999px; background: #2a3445; border: 1px solid #3a4a62; transition: all .2s; }
+    .bal-sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #8d99ae; transition: all .2s; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+    .bal-opt.on { border-color: var(--gold); background: var(--gold-dim); }
+    .bal-opt.on .bal-sw { background: linear-gradient(180deg, #e8c060, #b07a1e); border-color: #c89b3c; }
+    .bal-opt.on .bal-sw::after { left: 20px; background: #fff8e2; }
+    .bal-opt input:focus-visible + .bal-sw { outline: 2px solid var(--gold2); outline-offset: 2px; }
+    .bal-txt { flex: 1; min-width: 0; }
+    .bal-txt b { display: block; font-size: .86rem; color: var(--text); } .bal-txt small { display: block; font-size: .66rem; color: var(--muted); margin-top: 2px; line-height: 1.45; }
+    .bal-opt.on .bal-txt b { color: var(--gold2); }
+    .bal-st { flex: 0 0 auto; font: 800 .66rem 'Rajdhani', sans-serif; letter-spacing: 1px; color: var(--muted); }
+    .bal-opt.on .bal-st { color: var(--gold2); }
     #abilityGrid.rec .ab-score { opacity: .55; pointer-events: none; background: transparent; border-style: dashed; color: transparent; }
     #abilityGrid.rec .ab-score::placeholder { color: var(--muted); font-family: 'Noto Sans KR', sans-serif; font-size: .8rem; }
     #abilityGrid.rec .ability-hint { visibility: hidden; }
@@ -2333,13 +2349,15 @@
   <div class="panel active" id="panel-random">
     <div class="card">
       <div class="card-title"><span>▸ 참가자 10명 입력</span><button class="btn-tab-reset" onclick="resetTab('random')">↺ 초기화</button></div>
+      <label class="bal-opt" data-tab="random">
+        <input type="checkbox" onchange="setBalMode('random', this.checked ? 'rec' : 'rand')">
+        <span class="bal-sw" aria-hidden="true"></span>
+        <span class="bal-txt"><b>📊 전적 기반 밸런스</b><small>켜면 지금까지 전적으로 예측 승률 50 : 50에 가깝게 · 끄면 완전 랜덤</small></span>
+        <span class="bal-st"></span>
+      </label>
+      <div class="bal-note" id="balNote-random"></div>
       <div class="fix-hint" id="randFixHint">라인 칩을 누르면 <b>보통 → 🚫제외 → 📌고정</b> 순으로 바뀌어요. 고정은 1개, 제외는 여러 개 가능해요. 같은 라인을 2명이 고정하면 그 라인은 팀만 랜덤으로 갈려요.</div>
       <div class="rand-grid" id="randGrid"></div>
-      <div class="bal-pick" data-tab="random">
-        <button class="bal-btn" data-v="rand" onclick="setBalMode('random','rand')"><b>🎲 그냥 랜덤</b><small>완전 무작위 팀 + 포지션</small></button>
-        <button class="bal-btn" data-v="rec" onclick="setBalMode('random','rec')"><b>📊 전적 기반 밸런스</b><small>지금까지 전적으로 승률 50 : 50에 가깝게</small></button>
-      </div>
-      <div class="bal-note" id="balNote-random"></div>
       <button class="btn-main" id="btnRand" onclick="doRandom()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errRand"></div>
     </div>
@@ -2350,12 +2368,14 @@
   <div class="panel" id="panel-ability">
     <div class="card">
       <div class="card-title"><span>▸ 참가자 이름 + 능력치 입력 (1~10)</span><button class="btn-tab-reset" onclick="resetTab('ability')">↺ 초기화</button></div>
-      <div class="ability-grid" id="abilityGrid"></div>
-      <div class="bal-pick" data-tab="ability">
-        <button class="bal-btn" data-v="rand" onclick="setBalMode('ability','rand')"><b>🎲 그냥 랜덤</b><small>입력한 능력치 평균 균형</small></button>
-        <button class="bal-btn" data-v="rec" onclick="setBalMode('ability','rec')"><b>📊 전적 기반 밸런스</b><small>지금까지 전적으로 승률 50 : 50에 가깝게</small></button>
-      </div>
+      <label class="bal-opt" data-tab="ability">
+        <input type="checkbox" onchange="setBalMode('ability', this.checked ? 'rec' : 'rand')">
+        <span class="bal-sw" aria-hidden="true"></span>
+        <span class="bal-txt"><b>📊 전적 기반 밸런스</b><small>켜면 지금까지 전적으로 예측 승률 50 : 50에 가깝게 · 끄면 입력한 능력치로 균형</small></span>
+        <span class="bal-st"></span>
+      </label>
       <div class="bal-note" id="balNote-ability"></div>
+      <div class="ability-grid" id="abilityGrid"></div>
       <button class="btn-main" id="btnAbility" onclick="doAbility()">⚔&nbsp; 팀 배정 시작</button>
       <div class="error-msg" id="errAbility"></div>
     </div>
@@ -2959,7 +2979,11 @@ function paintBal() {
   }
   ['random', 'ability'].forEach(tab => {
     const v = balMode(tab);
-    document.querySelectorAll(`.bal-pick[data-tab="${tab}"] .bal-btn`).forEach(b => b.classList.toggle('on', b.dataset.v === v));
+    document.querySelectorAll(`.bal-opt[data-tab="${tab}"]`).forEach(l => {
+      l.classList.toggle('on', v === 'rec');
+      const cb = l.querySelector('input'); if (cb) cb.checked = v === 'rec';
+      const st = l.querySelector('.bal-st'); if (st) st.textContent = v === 'rec' ? 'ON' : 'OFF';
+    });
     const note = document.getElementById('balNote-' + tab);
     if (!note) return;
     if (v !== 'rec') { note.textContent = ''; note.className = 'bal-note'; return; }
