@@ -2228,7 +2228,7 @@
     .mb-brand .bl { font-size: 20px; }
     .dcp-av { overflow: hidden; } .dcp-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    /* ══ 새 팀 배정 모션 (룰렛 · 사다리 · 밴픽 · 캡슐) ══ */
+    /* ══ 새 팀 배정 모션 (룰렛 · 밴픽 · 캡슐) ══ */
     .ax-teams { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .ax-tcol { border-radius: 10px; padding: 8px; min-height: 120px; }
     .ax-tcol.b { background: rgba(74,158,255,.08); border: 1px solid rgba(74,158,255,.35); } .ax-tcol.r { background: rgba(255,90,90,.08); border: 1px solid rgba(255,90,90,.35); }
@@ -2244,14 +2244,6 @@
     .ax-wheel span { position: absolute; left: 50%; top: 50%; transform-origin: 0 0; font-size: .68rem; font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000; white-space: nowrap; }
     .ax-pin { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 22px solid #f0c45a; filter: drop-shadow(0 2px 2px #000); z-index: 2; }
     .ax-hub { position: absolute; inset: 0; margin: auto; width: 52px; height: 52px; border-radius: 50%; background: radial-gradient(#3a2a10, #140d04); border: 3px solid #c89b3c; display: grid; place-items: center; font: 900 .85rem 'Noto Sans KR', sans-serif; color: #f0c45a; }
-    /* 사다리 */
-    .ax-ld { padding: 4px 0; }
-    .ax-ld-names, .ax-ld-goals { display: grid; grid-template-columns: repeat(10, 1fr); text-align: center; }
-    .ax-ld-names div { font-size: .66rem; font-weight: 700; color: #fff; padding: 4px 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color .3s; }
-    .ax-ld-goals div { margin: 0 2px; padding: 5px 0; border-radius: 6px; color: #fff; font: 700 .66rem 'Rajdhani', sans-serif; letter-spacing: 1px; transition: box-shadow .3s; }
-    .ax-ld-goals div.b { background: #2160b8; } .ax-ld-goals div.r { background: #b8323a; }
-    .ax-ld-svg { width: 100%; height: 240px; display: block; }
-    @media (max-width: 500px) { .ax-ld-names div { font-size: .56rem; writing-mode: vertical-rl; height: 74px; margin: 0 auto; } .ax-ld-goals div { font-size: .54rem; letter-spacing: 0; } .ax-ld-svg { height: 220px; } }
     /* 밴픽 */
     .ax-dr { display: grid; grid-template-columns: 1fr 1.05fr 1fr; gap: 10px; align-items: start; }
     .ax-side { display: flex; flex-direction: column; gap: 6px; }
@@ -2736,11 +2728,6 @@
         <div class="ax-rl"><div class="ax-wheelbox"><div class="ax-pin"></div><div class="ax-wheel" id="axWheel"></div><div class="ax-hub">의P</div></div>
           <div class="ax-msg" id="axRlMsg"></div>
           <div class="ax-teams"><div class="ax-tcol b"><h4>🔵 블루팀</h4><div id="axRlB"></div></div><div class="ax-tcol r"><h4>🔴 레드팀</h4><div id="axRlR"></div></div></div></div>
-      </div>
-
-      <!-- 사다리 타기 (올 랜덤) -->
-      <div class="modal-section" id="modalLadder">
-        <div class="ax-ld"><div class="ax-ld-names" id="axLdN"></div><svg class="ax-ld-svg" id="axLdSvg" viewBox="0 0 1000 240" preserveAspectRatio="none"></svg><div class="ax-ld-goals" id="axLdG"></div></div>
       </div>
 
       <!-- 밴픽 드래프트 (올 랜덤) -->
@@ -3277,7 +3264,7 @@ function runScaleAnimation(t1, t2, onDone) {
 }
 
 
-// ══ 새 모션 4가지: 룰렛 · 사다리 · 밴픽 · 캡슐 (모두 약 10초, 결과는 members 그대로) ══
+// ══ 새 모션 3가지: 룰렛 · 밴픽 · 캡슐 (모두 약 10초, 결과는 members 그대로) ══
 const axSleep = ms => new Promise(r => setTimeout(r, ms));
 const axLane = (members, i) => (members[0] && members[0].role) ? ROLES[i % 5] : `${(i % 5) + 1}번`;
 const axChip = (name, lane) => { const el = mkEl('div', 'ax-chip'); el.appendChild(mkEl('i', '', lane)); el.appendChild(document.createTextNode(name)); return el; };
@@ -3316,40 +3303,6 @@ async function runRouletteAnimation(members, onDone) {
   }
   axMsg(msg, '✅ 팀 배정 완료!', '#f0c45a');
   if (live()) setTimeout(onDone, 500);
-}
-
-// ② 사다리 타기 (아래 블루/레드는 처음부터 보이고, 검은 선으로 타다가 도착하면 팀 색으로)
-async function runLadderAnimation(members, onDone) {
-  const tk = _animToken, live = () => tk === _animToken;
-  const svg = document.getElementById('axLdSvg'), N = document.getElementById('axLdN'), G = document.getElementById('axLdG');
-  const H = 240, X = i => 50 + i * 100, rungs = [];
-  for (let row = 0; row < 10; row++) { const y = 16 + row * 21; for (let c = 0; c < 9; c++) if (Math.random() < .42 && !rungs.some(r => r.y === y && (r.c === c - 1 || r.c === c + 1 || r.c === c))) rungs.push({ c, y }); }
-  rungs.sort((a, b) => a.y - b.y);
-  const pathOf = i => { let c = i; const pts = [[X(c), 0]]; rungs.forEach(r => { if (r.c === c) { pts.push([X(c), r.y], [X(c + 1), r.y]); c++; } else if (r.c === c - 1) { pts.push([X(c), r.y], [X(c - 1), r.y]); c--; } }); pts.push([X(c), H]); return { pts, end: c }; };
-  // 위 칸 순서는 무작위, 아래 칸 색은 도착 위치에 맞춰 정해요 (결과는 members 그대로)
-  const top = shuffle(members.map((m, i) => i)), goal = [];
-  top.forEach((who, i) => { goal[pathOf(i).end] = who < 5 ? 'b' : 'r'; });
-  N.innerHTML = top.map(w => `<div>${escapeHtml(members[w].name)}</div>`).join('');
-  G.innerHTML = goal.map(g => `<div class="${g}">${g === 'b' ? 'BLUE' : 'RED'}</div>`).join('');
-  svg.innerHTML = Array.from({ length: 10 }, (_, i) => `<line x1="${X(i)}" y1="0" x2="${X(i)}" y2="${H}" stroke="#3a4a62" stroke-width="4"/>`).join('') +
-    rungs.map(r => `<line x1="${X(r.c)}" y1="${r.y}" x2="${X(r.c + 1)}" y2="${r.y}" stroke="#3a4a62" stroke-width="4"/>`).join('');
-  await axSleep(500);
-  for (let i = 0; i < 10; i++) {
-    if (!live()) return;
-    const { pts, end } = pathOf(i), blue = goal[end] === 'b', col = blue ? '#4a9eff' : '#ff5a5a';
-    const len = pts.reduce((t, p, k) => k ? t + Math.hypot(p[0] - pts[k - 1][0], p[1] - pts[k - 1][1]) : 0, 0);
-    const mk = (stroke, w) => { const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline'); pl.setAttribute('points', pts.map(p => p.join(',')).join(' '));
-      pl.setAttribute('fill', 'none'); pl.setAttribute('stroke', stroke); pl.setAttribute('stroke-width', w); pl.setAttribute('stroke-linejoin', 'round');
-      pl.style.strokeDasharray = len; pl.style.strokeDashoffset = len; pl.style.transition = 'stroke-dashoffset .7s linear, stroke .3s'; svg.appendChild(pl); return pl; };
-    const edge = mk('#c9d1dd', 9), pl = mk('#05070b', 5);
-    N.children[i].style.color = '#f0c45a'; await axSleep(30);
-    edge.style.strokeDashoffset = 0; pl.style.strokeDashoffset = 0; await axSleep(740); if (!live()) return;
-    pl.setAttribute('stroke', col); edge.setAttribute('stroke', blue ? '#bfe0ff' : '#ffd0d0');
-    const g = G.children[end]; g.style.boxShadow = `0 0 0 2px #fff, 0 0 14px ${col}`; setTimeout(() => { g.style.boxShadow = ''; }, 600);
-    N.children[i].style.color = blue ? '#7db8ff' : '#ff8a8a';
-    await axSleep(160);
-  }
-  if (live()) setTimeout(onDone, 600);
 }
 
 // ③ 밴픽 드래프트 (실제 픽 순서 B1 → R1 R2 → B2 B3 → R3 R4 → B4 B5 → R5)
@@ -4174,9 +4127,9 @@ function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
   }
 
   if (mode === 'rand-flip') {
-    // 7가지 모션 중 랜덤: 배정 창을 연 뒤로는 아직 안 나온 모션부터 한 번씩,
+    // 6가지 모션 중 랜덤: 배정 창을 연 뒤로는 아직 안 나온 모션부터 한 번씩,
     // 모두 한 번씩 나온 뒤에는 그냥 랜덤 (단, 바로 직전 모션은 연속으로 안 나와요)
-    const ALL = ['flip', 'slot', 'shuffle', 'roulette', 'ladder', 'draft', 'gacha'];
+    const ALL = ['flip', 'slot', 'shuffle', 'roulette', 'draft', 'gacha'];
     const fresh = ALL.filter(m => !_randSeen.has(m));
     const cand = fresh.length ? fresh : ALL.filter(m => m !== _lastRandMode);
     const picked = cand[Math.floor(Math.random() * cand.length)];
@@ -4193,9 +4146,6 @@ function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
     } else if (picked === 'roulette') {
       openModal('modalRoulette', '▸ 룰렛을 돌리는 중...');
       runRouletteAnimation(members, done);
-    } else if (picked === 'ladder') {
-      openModal('modalLadder', '▸ 사다리 타는 중...');
-      runLadderAnimation(members, done);
     } else if (picked === 'draft') {
       openModal('modalDraft', '▸ 밴픽 진행 중...');
       runDraftAnimation(members, done);
