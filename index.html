@@ -2207,10 +2207,9 @@
     .dk-brand .bl { font-size: 34px; letter-spacing: 0; }
     .dk-ft .bl { font-size: 15px; margin-right: 8px; vertical-align: middle; }
     .dk-ft > span:first-child { display: inline-flex; align-items: center; }
-    .am-logo { text-align: center; margin: -10px 0 6px; font-size: 26px; opacity: .95; }
-    @media (max-width: 760px) { .am-logo { font-size: 21px; margin: -14px 0 4px; } }
-    .mb-brand { display: none; align-items: center; justify-content: space-between; padding: 10px 18px; background: rgba(0,0,0,.28); border-top: 1px solid rgba(240,196,90,.25); font-size: 12px; color: #8d99ae; font-family: 'Noto Sans KR', sans-serif; }
-    .mb-brand .bl { font-size: 20px; }
+    .am-logo { text-align: right; margin: 12px -10px -12px 0; font-size: 15px; opacity: .8; line-height: 1; }   /* 배정 창 오른쪽 아래 작게 */
+    .mb-brand { display: none; justify-content: flex-end; padding: 4px 12px 8px; }                              /* 캡처·디스코드 이미지 오른쪽 아래 작게 */
+    .mb-brand .bl { font-size: 14px; opacity: .85; }
     .dcp-av { overflow: hidden; } .dcp-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
     /* ══ 새 팀 배정 모션 (룰렛 · 밴픽) ══ */
@@ -2594,7 +2593,6 @@
 <!-- ══ 배정 모달 ══ -->
 <div class="anim-modal" id="animModal">
   <div class="anim-modal-box">
-    <div class="am-logo"><span class="bl"><i class="u">의</i><i class="p">P</i><i class="g">.GG</i></span></div>
     <div class="anim-modal-title" id="animModalTitle">팀 배정 중...</div>
 
     <!-- 애니메이션 영역 -->
@@ -2718,7 +2716,7 @@
       <div class="match-board" id="matchBoard">
         <div class="pred" id="predBox"></div>
         <div class="modal-teams-row" id="modalTeamsRow"></div>
-        <div class="mb-brand" id="mbBrand"><span class="bl"><i class="u">의</i><i class="p">P</i><i class="g">.GG</i></span><span>우리끼리 내전 · 팀 배정</span></div>
+        <div class="mb-brand" id="mbBrand"><span class="bl"><i class="u">의</i><i class="p">P</i><i class="g">.GG</i></span></div>
       </div>
       <!-- 복사 버튼 -->
       <div class="modal-copy-row">
@@ -2740,7 +2738,7 @@
         <button class="btn-modal-close" onclick="closeModalAndReset()">✕ 닫기</button>
       </div>
     </div>
-
+    <div class="am-logo"><span class="bl"><i class="u">의</i><i class="p">P</i><i class="g">.GG</i></span></div>
   </div>
 </div>
 
