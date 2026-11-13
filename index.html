@@ -1970,7 +1970,6 @@
     .dk-bg { position: absolute; inset: 0; background-size: cover; background-position: center 22%; }
     .dk-sh { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,9,4,.94) 0%, rgba(12,9,4,.72) 50%, rgba(12,9,4,.4) 100%), linear-gradient(0deg, #141d2e 0%, transparent 45%); }
     .dk-hin, .dk-mvp { position: relative; }
-    .dk-brand { font-size: 15px; font-weight: 700; color: #f0c45a; letter-spacing: 2px; }
     .dk-date { font-family: 'Rajdhani', 'Bebas Neue', sans-serif; font-size: 76px; font-weight: 700; color: #fff; line-height: 1; margin-top: 6px; }
     .dk-date small { font-family: 'Noto Sans KR', sans-serif; font-size: 22px; color: #e8d6a8; margin-left: 8px; font-weight: 600; }
     .dk-mode { font-size: 16px; color: #d8c7a0; margin-top: 8px; }
@@ -2204,9 +2203,8 @@
     .bl .u { font-family: 'Noto Sans KR', sans-serif; color: #f7d77a; text-shadow: 0 2px 0 #7a5214, 0 0 10px rgba(255,190,70,.35); }
     .bl .p { font-family: 'Arial Black', 'Rajdhani', sans-serif; color: #f7d77a; text-shadow: 0 2px 0 #7a5214, 0 0 10px rgba(255,190,70,.35); margin-left: 1px; }
     .bl .g { font-family: 'Arial Black', 'Rajdhani', sans-serif; color: #1a1205; background: linear-gradient(180deg, #f7d77a, #b07a1e); border-radius: .28em; padding: .14em .34em .18em; margin-left: .3em; box-shadow: 0 .12em 0 #5a3a0c; font-size: .55em; }
-    .dk-brand .bl { font-size: 34px; letter-spacing: 0; }
-    .dk-ft .bl { font-size: 15px; margin-right: 8px; vertical-align: middle; }
-    .dk-ft > span:first-child { display: inline-flex; align-items: center; }
+    .dk-ft { align-items: center; }
+    .dk-ft .bl { font-size: 16px; opacity: .85; }                 /* 공유 이미지 로고: 오른쪽 아래 작게 */
     .am-logo { text-align: right; margin: 12px -10px -12px 0; font-size: 15px; opacity: .8; line-height: 1; }   /* 배정 창 오른쪽 아래 작게 */
     .mb-brand { display: none; justify-content: flex-end; padding: 4px 12px 8px; }                              /* 캡처·디스코드 이미지 오른쪽 아래 작게 */
     .mb-brand .bl { font-size: 14px; opacity: .85; }
@@ -6209,14 +6207,14 @@ async function dayCardBlob(g, d0, target) {
   el.className = 'dk-wrap';
   el.innerHTML = `<div class="dk">
     <div class="dk-hd">${mvp ? `<div class="dk-bg" style="background-image:url('${splashOf(mvp.p.champ)}')"></div>` : ''}<div class="dk-sh"></div>
-      <div class="dk-hin"><div class="dk-brand">${brandLogo()}</div>
+      <div class="dk-hin">
         <div class="dk-date">${fmtDate(dayMs[0].date).slice(5, 10).replace('.', '/')} <small>${WD[d0.getDay()]}요일</small></div>
         <div class="dk-mode">${recMode === 'aram' ? '❄️' : '🌲'} ${MODE_NAME[recMode]} · ${dayMs.length}판 · ${mins}분</div></div>
       ${mvp ? `<div class="dk-mvp">${icon(mvp.p.name, 'dk-mv')}<div><span>👑 오늘의 MVP</span><b>${escapeHtml(mvp.p.name)}</b><em>${mvp.w}승 ${mvp.g - mvp.w}패 · KDA ${mvpKda} · MVP ${mvp.mvp}회</em></div></div>` : ''}
     </div>
     <div class="dk-wl${g.drew.length ? ' three' : ''}">${people(g.won, '🏆 최종 승리', 'w')}${people(g.lost, '💀 최종 패배', 'l')}${people(g.drew, '🤝 무승부', 'd')}</div>
     ${stHtml}${tHtml}${xHtml}
-    <div class="dk-ft"><span>${brandLogo()}${escapeHtml(location.host + location.pathname.replace(/index\.html$/, ''))}</span><span>${target === 'discord' ? '↓ 아래 버튼을 누르면 사이트로 이동해요' : '자세한 기록은 사이트에서 ↗'}</span></div>
+    <div class="dk-ft"><span>${escapeHtml(location.host + location.pathname.replace(/index\.html$/, ''))} · ${target === 'discord' ? '↓ 아래 버튼을 누르면 사이트로 이동해요' : '자세한 기록은 사이트에서 ↗'}</span>${brandLogo()}</div>
   </div>`;
   document.body.appendChild(el);
   try {
