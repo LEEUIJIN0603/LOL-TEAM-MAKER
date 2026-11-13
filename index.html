@@ -645,22 +645,7 @@
       transition: color 0.2s;
     }
     .anim-modal-skip:hover { color: var(--text); }
-    /* 배경음 켜기/끄기 */
-    .bgm-btn { position: absolute; top: 14px; right: 14px; z-index: 3; width: 36px; height: 36px; border-radius: 50%;
-      display: grid; place-items: center; cursor: pointer; transition: all .2s;
-      background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--muted); }
-    .bgm-btn svg { width: 18px; height: 18px; display: block; }
-    .bgm-btn:hover { color: var(--text); border-color: var(--gold); }
-    .bgm-btn.on { color: var(--gold2); border-color: rgba(200,155,60,.55); background: var(--gold-dim); }
-    .bgm-btn.on .bgm-wave { animation: bgmPulse 1s ease-in-out infinite; transform-origin: 40% 50%; }
-    .bgm-btn .bgm-x, .bgm-btn.on .bgm-wave { display: inline; } .bgm-btn .bgm-wave, .bgm-btn.on .bgm-x { display: none; }
-    @keyframes bgmPulse { 0%,100% { opacity: .55; } 50% { opacity: 1; } }
-    .bgm-btn::after { content: attr(data-tip); position: absolute; right: 44px; top: 50%; transform: translateY(-50%); white-space: nowrap;
-      font-size: .7rem; color: var(--text); background: var(--panel2); border: 1px solid var(--border); padding: 3px 8px; border-radius: 6px;
-      opacity: 0; pointer-events: none; transition: opacity .2s; }
-    .bgm-btn:hover::after { opacity: 1; }
     .anim-modal-title { padding: 0 40px; }
-    @media (max-width: 600px) { .bgm-btn { top: 10px; right: 10px; width: 32px; height: 32px; } .bgm-btn::after { display: none; } }
     /* 모달 내 팀 결과 카드 */
     .modal-teams-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
     @media (max-width: 500px) { .modal-teams-row { grid-template-columns: 1fr; } }
@@ -2622,9 +2607,6 @@
 <!-- ══ 배정 모달 ══ -->
 <div class="anim-modal" id="animModal">
   <div class="anim-modal-box">
-    <button class="bgm-btn" id="bgmBtn" type="button" onclick="Bgm.toggle()" aria-label="배경음 켜기/끄기" data-tip="배경음">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="currentColor" fill-opacity=".2"/><g class="bgm-wave"><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></g><g class="bgm-x"><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></g></svg>
-    </button>
     <div class="am-logo"><span class="bl"><i class="u">의</i><i class="p">P</i><i class="g">.GG</i></span></div>
     <div class="anim-modal-title" id="animModalTitle">팀 배정 중...</div>
 
@@ -3762,185 +3744,13 @@ function openModal(sectionId, title) {
   document.getElementById('animSkipBtn').style.display  = 'block';
   document.getElementById('modalResultSection').classList.remove('active');
   document.getElementById('animModal').classList.add('open');
-  Bgm.start();
 }
 
 function closeModal() {
   document.getElementById('animModal').classList.remove('open');
   _randSeen = new Set();                 // 창을 닫으면 '한 번씩 다 보기'를 처음부터
   _animSkipData = null;
-  Bgm.stop();
 }
-
-// ══════════════════ 팀 배정 배경음 (브라우저가 직접 연주 · 음원 파일 없음) ══════════════════
-//   배정 창이 열려 있는 동안만 재생 · 스피커 버튼으로 켜고 끄기 (선택은 이 기기에 기억)
-//   PC는 기본 켜짐, 휴대폰·태블릿은 기본 꺼짐
-const Bgm = (() => {
-  const KEY = 'lol_bgm';
-  const isTouch = () => matchMedia('(hover: none) and (pointer: coarse)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
-  let on = (() => { try { const v = localStorage.getItem(KEY); if (v) return v === 'on'; } catch (e) {} return !isTouch(); })();
-  let ctx = null, master = null, dry = null, wet = null, timer = null, stopT = null, playing = false;
-  let step = 0, nextT = 0, level = 1;                       // level 1 = 배정 중(웅장·긴장), 0 = 결과 나온 뒤(여운)
-  const BPM = 96, S16 = 60 / BPM / 4;
-  const hz = n => 440 * Math.pow(2, (n - 69) / 12);
-  // 2마디마다 바뀌는 화음: Dm → B♭ → Gm → A (영화 음악식 진행)
-  const CH = [
-    { root: 38, chord: [50, 53, 57], arp: [62, 57, 62, 65, 62, 57, 62, 69] },
-    { root: 34, chord: [46, 50, 53], arp: [62, 58, 62, 65, 62, 58, 62, 70] },
-    { root: 31, chord: [43, 46, 50], arp: [62, 58, 62, 67, 62, 58, 62, 70] },
-    { root: 33, chord: [45, 49, 52], arp: [61, 57, 61, 64, 61, 57, 61, 69] }
-  ];
-  function ensure() {
-    if (ctx) return true;
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return false;
-    ctx = new AC();
-    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 5; comp.attack.value = .005; comp.release.value = .2;
-    master = ctx.createGain(); master.gain.value = 0;
-    master.connect(comp); comp.connect(ctx.destination);
-    dry = ctx.createGain(); dry.gain.value = 1; dry.connect(master);
-    // 넓은 공간 울림 (리버브): 3초짜리 잔향을 직접 만들어 써요
-    const rv = ctx.createConvolver(), len = ctx.sampleRate * 3.2, ir = ctx.createBuffer(2, len, ctx.sampleRate);
-    for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
-    rv.buffer = ir; wet = ctx.createGain(); wet.gain.value = .55; rv.connect(wet); wet.connect(master);
-    wet._in = rv;
-    return true;
-  }
-  const out = (node, send) => { node.connect(dry); if (send) { const s = ctx.createGain(); s.gain.value = send; node.connect(s); s.connect(wet._in); } };
-  let _noise = null;
-  function noiseBuf() {
-    if (_noise) return _noise;
-    _noise = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
-    const d = _noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-    return _noise;
-  }
-  function env(g, t, a, peak, dec) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec); }
-  // 큰 북 (타이코): 낮은 울림 + 가죽 때리는 소리
-  function taiko(t, v, pitch) {
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.frequency.setValueAtTime(pitch || 95, t); o.frequency.exponentialRampToValueAtTime(38, t + .35);
-    env(g, t, .004, v, .7); o.connect(g); out(g, .35); o.start(t); o.stop(t + .8);
-    const n = ctx.createBufferSource(), lp = ctx.createBiquadFilter(), g2 = ctx.createGain();
-    n.buffer = noiseBuf(); lp.type = 'lowpass'; lp.frequency.value = 900;
-    env(g2, t, .002, v * .5, .12); n.connect(lp); lp.connect(g2); out(g2, .5); n.start(t, Math.random()); n.stop(t + .2);
-  }
-  // 작은 북 (림·스네어 느낌)
-  function hit(t, v) {
-    const n = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
-    n.buffer = noiseBuf(); bp.type = 'bandpass'; bp.frequency.value = 1400; bp.Q.value = .9;
-    env(g, t, .002, v, .14); n.connect(bp); bp.connect(g); out(g, .45); n.start(t, Math.random()); n.stop(t + .2);
-  }
-  // 현악기처럼 몰아치는 16분음표 반주
-  function str(t, note, v) {
-    const lp = ctx.createBiquadFilter(), g = ctx.createGain();
-    lp.type = 'lowpass'; lp.frequency.setValueAtTime(2400, t); lp.frequency.exponentialRampToValueAtTime(700, t + .12);
-    env(g, t, .006, v, .14); lp.connect(g); out(g, .3);
-    [-7, 7].forEach(det => { const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(note); o.detune.value = det; o.connect(lp); o.start(t); o.stop(t + .2); });
-  }
-  // 낮은 금관 화음 (브라스): 천천히 열리는 묵직한 소리
-  function brass(t, notes, dur, v) {
-    const lp = ctx.createBiquadFilter(), g = ctx.createGain();
-    lp.type = 'lowpass'; lp.Q.value = 1.5;
-    lp.frequency.setValueAtTime(250, t); lp.frequency.exponentialRampToValueAtTime(1800, t + .18); lp.frequency.exponentialRampToValueAtTime(600, t + dur);
-    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .06); g.gain.setValueAtTime(v, t + dur * .7); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    lp.connect(g); out(g, .4);
-    notes.forEach(n => [-9, 0, 9].forEach(det => { const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(n); o.detune.value = det; o.connect(lp); o.start(t); o.stop(t + dur + .05); }));
-  }
-  // 합창 같은 긴 화음 (패드)
-  function choir(t, notes, dur, v) {
-    const lp = ctx.createBiquadFilter(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
-    lp.type = 'lowpass'; lp.frequency.value = 1300;
-    lfo.frequency.value = 5; lg.gain.value = 6; lfo.connect(lg);
-    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + dur * .35); g.gain.linearRampToValueAtTime(0.0001, t + dur);
-    lp.connect(g); out(g, .9); lfo.start(t); lfo.stop(t + dur + .05);
-    notes.forEach(n => [-12, 12].forEach(det => { const o = ctx.createOscillator(); o.type = det < 0 ? 'sawtooth' : 'triangle'; o.frequency.value = hz(n); o.detune.value = det; lg.connect(o.detune); o.connect(lp); o.start(t); o.stop(t + dur + .05); }));
-  }
-  // 아주 낮은 베이스
-  function sub(t, note, dur, v) {
-    const o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.value = hz(note);
-    env(g, t, .01, v, dur); o.connect(g); out(g, 0); o.start(t); o.stop(t + dur + .05);
-  }
-  // 심벌이 점점 커지는 소리 (다음 구간으로 넘어가기 직전)
-  function swell(t, dur, v) {
-    const n = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), g = ctx.createGain();
-    n.buffer = noiseBuf(); n.loop = true; hp.type = 'highpass'; hp.frequency.setValueAtTime(2000, t); hp.frequency.linearRampToValueAtTime(6000, t + dur);
-    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + dur); g.gain.linearRampToValueAtTime(0.0001, t + dur + .03);
-    n.connect(hp); hp.connect(g); out(g, .6); n.start(t); n.stop(t + dur + .05);
-  }
-  function crash(t, v) {
-    const n = ctx.createBufferSource(), hp = ctx.createBiquadFilter(), g = ctx.createGain();
-    n.buffer = noiseBuf(); hp.type = 'highpass'; hp.frequency.value = 3500; env(g, t, .005, v, 2.2);
-    n.connect(hp); hp.connect(g); out(g, .7); n.start(t); n.stop(t + 2.3);
-  }
-  const TAIKO = { 0: 1, 3: .45, 6: .8, 8: .9, 11: .4, 12: .75, 14: .5 };   // 한 마디 북 리듬
-  function schedule() {
-    while (nextT < ctx.currentTime + 0.2) {
-      const t = nextT, i = step % 16, bar = Math.floor(step / 16), c = CH[Math.floor(bar / 2) % 4], phraseEnd = bar % 8 === 7;
-      if (level) {
-        if (TAIKO[i] != null) taiko(t, TAIKO[i], i === 0 ? 110 : 90);
-        if (phraseEnd && i >= 8) taiko(t, .35 + (i - 8) * .08, 120);          // 8마디마다 북이 몰아쳐요
-        if (i === 4 || i === 12) hit(t, .12);
-        str(t, c.arp[i % 8], bar < 2 ? .05 : .08);                             // 처음 2마디는 작게 시작
-        if (i === 0) sub(t, c.root, S16 * 14, .55);
-        if (bar % 2 === 0 && i === 0 && bar >= 2) brass(t, [c.root + 12, c.chord[0], c.chord[2]], S16 * 12, .16);
-        if (bar % 2 === 1 && (i === 10 || i === 14) && bar >= 2) brass(t, [c.root + 12, c.chord[0]], S16 * 2, .1);
-        if (bar % 2 === 0 && i === 0) choir(t, c.chord.map(n => n + 12), S16 * 32, bar >= 4 ? .05 : .03);
-        if (phraseEnd && i === 0) swell(t, S16 * 16, .12);
-        if (bar % 8 === 0 && i === 0 && bar > 0) crash(t, .16);
-      } else {
-        if (i === 0) taiko(t, .55, 90);
-        if (i === 8 && bar % 2) taiko(t, .3, 80);
-        if (i === 0) sub(t, c.root, S16 * 14, .35);
-        if (bar % 2 === 0 && i === 0) choir(t, c.chord.map(n => n + 12), S16 * 32, .045);
-        if (i % 4 === 0) str(t, c.arp[i % 8], .025);
-      }
-      step++; nextT += S16;
-    }
-  }
-  function sting() {                                                       // 결과 공개 순간: 크게 쾅 + 장엄한 장조 화음
-    if (!ctx || !playing) return;
-    const t = ctx.currentTime + .03;
-    taiko(t, 1.4, 120); taiko(t + .11, .8, 100); crash(t, .3);
-    brass(t, [38, 50, 54, 57, 62], 2.8, .2);                               // D 장조로 끝맺음
-    choir(t, [62, 66, 69], 4, .08); sub(t, 26, 2.5, .7);
-    step = 0; nextT = t + 2.6;                                              // 여운 뒤에 잔잔한 부분 시작
-  }
-  function paint() {
-    const b = document.getElementById('bgmBtn'); if (!b) return;
-    b.classList.toggle('on', on);
-    b.dataset.tip = on ? '배경음 끄기' : '배경음 켜기';
-  }
-  function play() {
-    if (!on || !ensure()) return;
-    clearTimeout(stopT); stopT = null;
-    if (ctx.state === 'suspended') ctx.resume();
-    master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.setTargetAtTime(.36, ctx.currentTime, .08);
-    if (playing) return;
-    playing = true; step = 0; nextT = ctx.currentTime + .06;
-    timer = setInterval(schedule, 25); schedule();
-  }
-  function halt(fast) {
-    if (!ctx || !playing) return;
-    master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.setTargetAtTime(0, ctx.currentTime, fast ? .05 : .2);
-    clearTimeout(stopT);
-    stopT = setTimeout(() => { clearInterval(timer); timer = null; playing = false; stopT = null; }, fast ? 300 : 900);
-  }
-  const modalOpen = () => document.getElementById('animModal').classList.contains('open');
-  return {
-    start() { if (level === 0 && playing) { step = 0; nextT = ctx.currentTime + .06; } level = 1; paint(); play(); },
-    reveal() { sting(); level = 0; },
-    stop() { if (stopT) clearTimeout(stopT); stopT = setTimeout(() => { stopT = null; if (!modalOpen()) halt(false); }, 120); },
-    toggle() {
-      on = !on;
-      try { localStorage.setItem(KEY, on ? 'on' : 'off'); } catch (e) {}
-      paint();
-      if (on && modalOpen()) play(); else if (!on) halt(true);
-    },
-    get on() { return on; }, get playing() { return playing; }, get level() { return level; }
-  };
-})();
 
 function closeModalAndReset() {
   closeModal();
@@ -3966,7 +3776,6 @@ function showResultInModal(t1, t2, rerollFn, showScore) {
   document.getElementById('animSections').style.display = 'none';
   document.getElementById('animSkipBtn').style.display  = 'none';
   document.getElementById('animModalTitle').textContent = '▸ 팀 배정 완료';
-  Bgm.reveal();
 
   document.getElementById('modalTeamsRow').classList.remove('no-anim');
   renderResultCards();
