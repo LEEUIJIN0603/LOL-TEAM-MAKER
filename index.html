@@ -3102,7 +3102,7 @@ function balancedSplit(players) {
 function runFlipAnimation(gridId, progId, progTxtId, members, onDone) {
   const grid = document.getElementById(gridId);
   grid.innerHTML = '';
-  const TOTAL_MS   = 7500;
+  const TOTAL_MS   = 10000;
   const CARD_COUNT = members.length; // 10
   const INTERVAL   = (TOTAL_MS - 2000) / CARD_COUNT;
   const cardEls    = [];
@@ -3158,14 +3158,14 @@ function runFlipAnimation(gridId, progId, progTxtId, members, onDone) {
     }, INTERVAL * seq + 600);
   });
 
-  setTimeout(onDone, TOTAL_MS);
+  setTimeout(onDone, INTERVAL * (CARD_COUNT - 1) + 600 + 900);   // 마지막 카드가 뒤집히고 바로 결과로
 }
 
 // ── 시소 애니메이션 (능력치) ──
 // SVG 시소가 기울며 이름은 아래 별도 영역에 표시
 function runScaleAnimation(t1, t2, onDone) {
-  const TOTAL    = 7500;
-  const INTERVAL = (TOTAL - 2000) / 10;
+  const TOTAL    = 10000;
+  const INTERVAL = (TOTAL - 2500) / 10;
 
   const beamG    = document.getElementById('seesawBeamG');
   const bCountEl = document.getElementById('ssBlueCount');
@@ -3213,7 +3213,7 @@ function runScaleAnimation(t1, t2, onDone) {
   });
 
   setTimeout(() => { beamG.style.transform = 'rotate(0deg)'; }, TOTAL - 900);
-  setTimeout(onDone, TOTAL);
+  setTimeout(onDone, TOTAL - 250);
 }
 
 
@@ -3241,21 +3241,21 @@ async function runRouletteAnimation(members, onDone) {
       return `<span style="transform:${tf}">${escapeHtml(members[x].name)}</span>`;
     }).join('');
   };
-  const reset = () => { wheel.style.transition = 'none'; rot = 0; wheel.style.transform = 'rotate(0deg)'; draw(); void wheel.offsetWidth; wheel.style.transition = 'transform .6s cubic-bezier(.12,.75,.2,1)'; };
+  const reset = () => { wheel.style.transition = 'none'; rot = 0; wheel.style.transform = 'rotate(0deg)'; draw(); void wheel.offsetWidth; wheel.style.transition = 'transform .8s cubic-bezier(.12,.75,.2,1)'; };
   reset(); await axSleep(250);
   for (const who of axAltOrder()) {
     if (!live()) return;
     const n = pool.length, seg = 360 / n, at = pool.indexOf(who);
     rot += 360 * 2 + ((360 - (at * seg + seg / 2) - rot % 360) + 720) % 360;
     wheel.style.transform = `rotate(${rot}deg)`; axMsg(msg, '🎡 돌아가는 중…', '#8d99ae');
-    await axSleep(620); if (!live()) return;
+    await axSleep(820); if (!live()) return;
     const blue = who < 5;
     axMsg(msg, `${members[who].name} → ${blue ? '🔵 블루팀' : '🔴 레드팀'}`, blue ? '#7db8ff' : '#ff8a8a');
     (blue ? B : R).appendChild(axChip(members[who].name, axLane(members, who)));
-    await axSleep(150); pool.splice(at, 1); if (pool.length) reset();
+    await axSleep(200); pool.splice(at, 1); if (pool.length) reset();
   }
   axMsg(msg, '✅ 팀 배정 완료!', '#f0c45a');
-  if (live()) setTimeout(onDone, 500);
+  if (live()) setTimeout(onDone, 150);
 }
 
 // ③ 밴픽 드래프트 (실제 픽 순서 B1 → R1 R2 → B2 B3 → R3 R4 → B4 B5 → R5)
@@ -3277,15 +3277,15 @@ async function runDraftAnimation(members, onDone) {
     K.innerHTML = ''; const badge = mkEl('div', `ax-pick ${tc} in`); if (hasRole) badge.appendChild(mkLaneIcon(ROLES[idx]));
     badge.appendChild(mkEl('span', '', `${side === 'B' ? '블루' : '레드'} · ${axLane(members, idx)} 픽`)); K.appendChild(badge);
     C.className = 'ax-cand ' + tc;
-    for (let t = 0; t < 8; t++) { if (!live()) return; C.textContent = left[Math.random() * left.length | 0]; T.textContent = String(Math.max(1, 30 - t * 4)).padStart(2, '0'); await axSleep(35 + t * 7); }
-    C.textContent = who.name; L.classList.add('hit'); await axSleep(180); L.classList.remove('hit');
+    for (let t = 0; t < 10; t++) { if (!live()) return; C.textContent = left[Math.random() * left.length | 0]; T.textContent = String(Math.max(1, 30 - t * 3)).padStart(2, '0'); await axSleep(45 + t * 8); }
+    C.textContent = who.name; L.classList.add('hit'); await axSleep(220); L.classList.remove('hit');
     slot.classList.remove('now'); slot.classList.add('lock', 'done'); slot.querySelector('span').textContent = who.name;
     const ring = mkEl('div', 'ax-ring'); slot.appendChild(ring); setTimeout(() => ring.remove(), 600);
-    left = left.filter(n => n !== who.name); await axSleep(200);
+    left = left.filter(n => n !== who.name); await axSleep(260);
   }
   D.classList.remove('picking'); K.innerHTML = ''; C.className = 'ax-cand';
   axMsg(P, '✅ 픽 완료 · 게임 시작!', '#f0c45a'); T.textContent = '00'; C.textContent = 'GG';
-  if (live()) setTimeout(onDone, 600);
+  if (live()) setTimeout(onDone, 150);
 }
 
 
@@ -3311,12 +3311,12 @@ function runSlotAnimation(members, onDone) {
   const tk = _animToken;
   const grid = document.getElementById('slotGrid');
   grid.innerHTML = '';
-  const TOTAL = 7500;
+  const TOTAL = 10000;
   const H = 32;            // 한 칸 높이(px)
   const V = 600;           // 회전 속도(px/초)
-  const DEC = 1300;        // 감속 시간(ms)
-  const FIRST_STOP = 900; // 첫 릴이 감속을 시작하는 시점(ms)
-  const GAP = 520;         // 릴 사이 간격(ms)
+  const DEC = 1700;        // 감속 시간(ms)
+  const FIRST_STOP = 1200; // 첫 릴이 감속을 시작하는 시점(ms)
+  const GAP = 700;         // 릴 사이 간격(ms)
   const hasRole = !!(members[0] && members[0].role);
   const names = members.map(m => m.name);
   const L = names.length;
@@ -3378,7 +3378,7 @@ function runSlotAnimation(members, onDone) {
     if (t < TOTAL) requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  setTimeout(onDone, TOTAL);
+  setTimeout(onDone, FIRST_STOP + 9 * GAP + DEC + 250);   // 마지막 릴이 멈추고 바로 결과로
 }
 
 // ── 라인 매치업 VS ──
@@ -3439,7 +3439,7 @@ function runShuffleAnimation(members, onDone) {
   const board = document.getElementById('shBoard');
   board.innerHTML = '';
   board.classList.remove('ready');
-  const TOTAL = 7500, ROWH = 56, N = 10;
+  const TOTAL = 10000, ROWH = 56, N = 10;
   const hasRole = !!(members[0] && members[0].role);
 
   const lanes = [];
@@ -3478,18 +3478,18 @@ function runShuffleAnimation(members, onDone) {
   const sim = slotOf.slice();
   const plan = [];
   const simSwap = (a, b) => { const t = sim[a]; sim[a] = sim[b]; sim[b] = t; };
-  for (let t = 525; t < 4650; t += 255) {
+  for (let t = 700; t < 6200; t += 340) {
     const pk = shuffle([...Array(N).keys()]);
     plan.push({ a: pk[0], b: pk[1], t }); simSwap(pk[0], pk[1]);
     plan.push({ a: pk[2], b: pk[3], t }); simSwap(pk[2], pk[3]);
   }
   const atSlot = []; sim.forEach((s, c) => { atSlot[s] = c; });
-  let tt = 4800;
+  let tt = 6400;
   for (let s = 0; s < N; s++) {
     const x = atSlot[s];                                // 지금 s번 칸에 있는 칩
     if (x === s) continue;
     const ps = sim[s];                                  // s번 칩의 현재 자리
-    plan.push({ a: x, b: s, t: tt }); tt += 160;
+    plan.push({ a: x, b: s, t: tt }); tt += 210;
     sim[s] = s; sim[x] = ps; atSlot[s] = s; atSlot[ps] = x;
   }
 
@@ -3507,12 +3507,12 @@ function runShuffleAnimation(members, onDone) {
   setTimeout(() => {                                    // 색 공개
     if (tk !== _animToken) return;
     chips.forEach((el, c) => el.classList.add(c < 5 ? 'blue' : 'red'));
-  }, 6490);
+  }, 8650);
   lanes.forEach((ln, i) => setTimeout(() => {          // TOP → SPT 순서로 불 켜기
     if (tk !== _animToken) return;
     ln.classList.add('on');
     chips[i].classList.add('pulse'); chips[i + 5].classList.add('pulse');
-  }, 6560 + i * 175));
+  }, 8750 + i * 230));
   setTimeout(onDone, TOTAL);
 }
 
@@ -3553,7 +3553,7 @@ function miniMapSVG(side) {
     ${base(9, 39, 'blue')}${base(39, 9, 'red')}
   </svg>`;
 }
-const RESULT_HOLD_MS = 1300;   // 모션이 끝난 뒤 최종 화면을 보여주는 시간
+const RESULT_HOLD_MS = 700;    // 모션이 끝난 뒤 최종 화면을 보여주는 시간 (짧게)
 
 // ── 텍스트 복사 ──
 function copyAsText() {
