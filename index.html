@@ -2213,7 +2213,7 @@
     .mb-brand .bl { font-size: 20px; }
     .dcp-av { overflow: hidden; } .dcp-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    /* ══ 새 팀 배정 모션 (룰렛 · 밴픽 · 캡슐) ══ */
+    /* ══ 새 팀 배정 모션 (룰렛 · 밴픽) ══ */
     .ax-teams { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .ax-tcol { border-radius: 10px; padding: 8px; min-height: 120px; }
     .ax-tcol.b { background: rgba(74,158,255,.08); border: 1px solid rgba(74,158,255,.35); } .ax-tcol.r { background: rgba(255,90,90,.08); border: 1px solid rgba(255,90,90,.35); }
@@ -2237,9 +2237,30 @@
     .ax-side.b .ax-slot { background: linear-gradient(90deg, rgba(74,158,255,.2), rgba(74,158,255,.04)); border: 1px solid rgba(74,158,255,.3); }
     .ax-side.r .ax-slot { background: linear-gradient(270deg, rgba(255,90,90,.2), rgba(255,90,90,.04)); border: 1px solid rgba(255,90,90,.3); flex-direction: row-reverse; }
     .ax-slot small { font: 700 .6rem 'Rajdhani', sans-serif; color: var(--muted); flex-shrink: 0; }
-    .ax-slot.now { box-shadow: 0 0 0 2px var(--gold2), 0 0 16px rgba(240,196,90,.5); animation: axBlink 1s infinite; }
-    @keyframes axBlink { 50% { box-shadow: 0 0 0 2px rgba(240,196,90,.4), 0 0 4px rgba(240,196,90,.2); } }
-    .ax-slot.lock { animation: axLock .5s; } @keyframes axLock { 0% { filter: brightness(2.2); } 100% { filter: none; } }
+    .ax-slot { position: relative; }
+    .ax-dr.picking .ax-slot:not(.now):not(.done) { opacity: .45; filter: saturate(.6); }   /* 차례 아닌 칸은 흐리게 */
+    .ax-slot.now { opacity: 1; transform: scale(1.07); z-index: 2; border: 2px solid var(--gold2) !important;
+                   box-shadow: 0 0 0 3px rgba(240,196,90,.25), 0 0 26px rgba(240,196,90,.65); animation: axNow .7s ease-in-out infinite alternate; }
+    .ax-side.b .ax-slot.now { background: linear-gradient(90deg, rgba(74,158,255,.55), rgba(74,158,255,.12)); }
+    .ax-side.r .ax-slot.now { background: linear-gradient(270deg, rgba(255,90,90,.55), rgba(255,90,90,.12)); }
+    .ax-slot.now::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent); animation: axSweep .8s linear infinite; }
+    .ax-slot.now small { color: #fff; font-size: .74rem; }
+    .ax-slot.now span { color: var(--gold2); letter-spacing: 2px; font-size: .72rem; animation: axDots .5s steps(2) infinite; }
+    @keyframes axNow { to { box-shadow: 0 0 0 5px rgba(240,196,90,.12), 0 0 40px rgba(240,196,90,.85); } }
+    @keyframes axSweep { to { left: 110%; } }
+    @keyframes axDots { 50% { opacity: .35; } }
+    .ax-slot.lock { animation: axLock .55s cubic-bezier(.2,1.6,.4,1); } .ax-slot.done { opacity: 1; }
+    .ax-slot.lock span { animation: axName .45s cubic-bezier(.2,1.6,.4,1); }
+    @keyframes axLock { 0% { transform: scale(1.18); filter: brightness(2.6); } 60% { transform: scale(.97); } 100% { transform: none; filter: none; } }
+    @keyframes axName { from { transform: translateY(10px) scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+    .ax-ring { position: absolute; inset: -2px; border-radius: 10px; border: 3px solid #fff; pointer-events: none; animation: axRing .55s ease-out forwards; }
+    @keyframes axRing { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(1.35, 1.9); } }
+    .ax-pick { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 8px; padding: 6px 14px; border-radius: 999px; font: 800 .95rem 'Noto Sans KR', sans-serif; color: #fff; }
+    .ax-pick img { width: 22px; height: 22px; }
+    .ax-pick.b { background: linear-gradient(90deg, #1f5fbf, #3d8bff); box-shadow: 0 0 18px rgba(74,158,255,.6); }
+    .ax-pick.r { background: linear-gradient(90deg, #c2283c, #ff5a5a); box-shadow: 0 0 18px rgba(255,90,90,.6); }
+    .ax-pick.in { animation: axPickIn .35s cubic-bezier(.2,1.6,.4,1); } @keyframes axPickIn { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+    .ax-cand.b { border-color: #4a9eff; box-shadow: inset 0 0 18px rgba(74,158,255,.25); } .ax-cand.r { border-color: #ff5a5a; box-shadow: inset 0 0 18px rgba(255,90,90,.25); }
     .ax-center { text-align: center; }
     .ax-timer { font: 700 2.1rem 'Rajdhani', sans-serif; color: var(--gold2); line-height: 1; }
     .ax-phase { font-size: .72rem; color: var(--muted); margin: 2px 0 10px; font-weight: 700; }
@@ -2247,40 +2268,6 @@
     .ax-lock { margin-top: 10px; display: inline-block; padding: 7px 18px; border-radius: 8px; border: 1.5px solid var(--gold); color: var(--gold2); font: 800 .74rem 'Noto Sans KR', sans-serif; letter-spacing: 2px; transition: all .15s; }
     .ax-lock.hit { background: var(--gold); color: #1a1205; transform: scale(1.08); }
     @media (max-width: 500px) { .ax-dr { grid-template-columns: 1fr 1fr; } .ax-center { grid-column: 1 / -1; order: -1; } .ax-cand { height: 48px; } .ax-slot { height: 38px; font-size: .76rem; } }
-    /* 캡슐 뽑기 (귀여운 기계) */
-    .ax-gc { display: grid; grid-template-columns: 210px 1fr; gap: 12px; align-items: center; }
-    .ax-mc { position: relative; width: 190px; height: 290px; margin: 0 auto; }
-    .ax-dome { position: absolute; top: 0; left: 5px; width: 180px; height: 170px; border-radius: 90px 90px 70px 70px; overflow: hidden;
-               background: radial-gradient(circle at 35% 28%, rgba(255,255,255,.55), rgba(255,240,250,.12) 40%, rgba(180,210,255,.10) 70%); border: 4px solid #ffd6e8; box-shadow: inset 0 -8px 18px rgba(255,160,200,.25), 0 6px 18px rgba(0,0,0,.35); }
-    .ax-shine { position: absolute; left: 24px; top: 18px; width: 30px; height: 56px; border-radius: 50%; background: rgba(255,255,255,.5); transform: rotate(20deg); z-index: 3; }
-    .ax-ball { position: absolute; width: 32px; height: 32px; border-radius: 50%; box-shadow: inset -3px -3px 6px rgba(0,0,0,.18); background: linear-gradient(180deg, #fffdf8 0 48%, var(--sh, #ffb3d1) 52% 100%); }
-    .ax-ball::after { content: ''; position: absolute; left: 7px; top: 6px; width: 8px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.9); }
-    .ax-dome.shake .ax-ball { animation: axJig .16s infinite alternate; } @keyframes axJig { to { transform: translate(4px,-7px) rotate(25deg); } }
-    .ax-body { position: absolute; top: 150px; left: 15px; width: 160px; height: 130px; border-radius: 26px 26px 34px 34px; background: linear-gradient(180deg, #ff9fc6, #f2679f); border: 4px solid #ffd6e8; box-shadow: 0 8px 18px rgba(0,0,0,.35), inset 0 -10px 0 rgba(0,0,0,.08); }
-    .ax-face { position: absolute; left: 0; right: 0; top: 12px; height: 26px; }
-    .ax-face .e { position: absolute; top: 4px; width: 9px; height: 11px; border-radius: 50%; background: #3a1626; } .ax-face .e.l { left: 54px; } .ax-face .e.r { right: 54px; }
-    .ax-face .e::after { content: ''; position: absolute; left: 2px; top: 2px; width: 3px; height: 3px; border-radius: 50%; background: #fff; }
-    .ax-face .bl { position: absolute; top: 14px; width: 14px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.45); } .ax-face .bl.l { left: 36px; } .ax-face .bl.r { right: 36px; }
-    .ax-face .mo { position: absolute; left: 50%; top: 13px; width: 12px; height: 7px; margin-left: -6px; border-bottom: 2.5px solid #3a1626; border-radius: 0 0 10px 10px; }
-    .ax-knob { position: absolute; left: 22px; top: 54px; width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #fff7c2, #ffd35a 60%, #e0a21e); border: 3px solid #fff; box-shadow: 0 3px 0 rgba(0,0,0,.2); transition: transform .3s; }
-    .ax-knob::after { content: '★'; position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 1rem; text-shadow: 0 1px 0 #c98a10; }
-    .ax-knob.turn { transform: rotate(360deg); }
-    .ax-door { position: absolute; right: 22px; top: 56px; width: 52px; height: 44px; border-radius: 12px; background: #8a2f58; border: 3px solid #ffd6e8; box-shadow: inset 0 4px 8px rgba(0,0,0,.4); }
-    .ax-cap { position: absolute; left: 106px; top: 200px; width: 48px; height: 48px; opacity: 0; pointer-events: none; z-index: 4; }
-    .ax-cap .h1, .ax-cap .h2 { position: absolute; left: 0; width: 48px; height: 24px; transition: transform .35s cubic-bezier(.3,1.4,.5,1); }
-    .ax-cap .h1 { top: 0; border-radius: 24px 24px 0 0; background: #fffdf8; box-shadow: inset 0 -2px 0 rgba(0,0,0,.08); }
-    .ax-cap .h2 { top: 24px; border-radius: 0 0 24px 24px; background: var(--sh, #ffb3d1); }
-    .ax-cap .core { position: absolute; inset: 8px; border-radius: 50%; opacity: 0; transform: scale(.3); transition: all .3s .08s; }
-    .ax-cap.b .core { background: radial-gradient(circle at 35% 30%, #bfe0ff, #2f7fe0 60%, #1a4f96); box-shadow: 0 0 22px #4a9eff; }
-    .ax-cap.r .core { background: radial-gradient(circle at 35% 30%, #ffd0d0, #e04848 60%, #8f2020); box-shadow: 0 0 22px #ff5a5a; }
-    .ax-cap.show { opacity: 1; animation: axCapIn .45s cubic-bezier(.3,1.5,.5,1); }
-    @keyframes axCapIn { 0% { transform: translateY(-40px) scale(.5); } 70% { transform: translateY(0) scale(1.08); } 100% { transform: none; } }
-    .ax-cap.wob { animation: axWob .1s 2 alternate; } @keyframes axWob { from { transform: rotate(-12deg); } to { transform: rotate(12deg); } }
-    .ax-cap.open .h1 { transform: translate(-12px,-22px) rotate(-35deg); } .ax-cap.open .h2 { transform: translate(12px,18px) rotate(30deg); }
-    .ax-cap.open .core { opacity: 1; transform: scale(1); }
-    .ax-spark { position: absolute; left: 118px; top: 186px; font-size: 1.4rem; color: #fff6b0; opacity: 0; pointer-events: none; z-index: 5; }
-    .ax-spark.go { animation: axSpark .5s; } @keyframes axSpark { 0% { opacity: 1; transform: scale(.4); } 100% { opacity: 0; transform: scale(2.2) rotate(40deg); } }
-    @media (max-width: 500px) { .ax-gc { grid-template-columns: 1fr; } .ax-mc { transform: scale(.82); margin: -26px auto -40px; } }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -2714,23 +2701,11 @@
 
       <!-- 밴픽 드래프트 (올 랜덤) -->
       <div class="modal-section" id="modalDraft">
-        <div class="ax-dr"><div class="ax-side b" id="axDrB"></div>
-          <div class="ax-center"><div class="ax-timer" id="axDrT">30</div><div class="ax-phase" id="axDrP">픽 준비</div><div class="ax-cand" id="axDrC">?</div><div class="ax-lock" id="axDrL">LOCK IN</div></div>
+        <div class="ax-dr" id="axDr"><div class="ax-side b" id="axDrB"></div>
+          <div class="ax-center"><div class="ax-timer" id="axDrT">30</div><div class="ax-phase" id="axDrP">픽 준비</div><div id="axDrK"></div><div class="ax-cand" id="axDrC">?</div><div class="ax-lock" id="axDrL">LOCK IN</div></div>
           <div class="ax-side r" id="axDrR"></div></div>
       </div>
 
-      <!-- 캡슐 뽑기 (올 랜덤) -->
-      <div class="modal-section" id="modalGacha">
-        <div class="ax-gc"><div class="ax-mc">
-            <div class="ax-dome" id="axDome"><i class="ax-shine"></i></div>
-            <div class="ax-body"><div class="ax-face"><i class="e l"></i><i class="e r"></i><i class="bl l"></i><i class="bl r"></i><i class="mo"></i></div>
-              <div class="ax-knob" id="axKnob"></div><div class="ax-door"></div></div>
-            <div class="ax-cap" id="axCap"><div class="core"></div><div class="h1"></div><div class="h2"></div></div>
-            <div class="ax-spark" id="axSpark">✦</div>
-          </div>
-          <div class="ax-gside"><div class="ax-msg" id="axGcMsg"></div>
-            <div class="ax-teams"><div class="ax-tcol b"><h4>🔵 블루팀</h4><div id="axGcB"></div></div><div class="ax-tcol r"><h4>🔴 레드팀</h4><div id="axGcR"></div></div></div></div></div>
-      </div>
 
     </div><!-- animSections -->
 
@@ -3246,7 +3221,7 @@ function runScaleAnimation(t1, t2, onDone) {
 }
 
 
-// ══ 새 모션 3가지: 룰렛 · 밴픽 · 캡슐 (모두 약 10초, 결과는 members 그대로) ══
+// ══ 새 모션 2가지: 룰렛 · 밴픽 (모두 약 10초, 결과는 members 그대로) ══
 const axSleep = ms => new Promise(r => setTimeout(r, ms));
 const axLane = (members, i) => (members[0] && members[0].role) ? ROLES[i % 5] : `${(i % 5) + 1}번`;
 const axChip = (name, lane) => { const el = mkEl('div', 'ax-chip'); el.appendChild(mkEl('i', '', lane)); el.appendChild(document.createTextNode(name)); return el; };
@@ -3295,50 +3270,28 @@ async function runDraftAnimation(members, onDone) {
   [['B', B], ['R', R]].forEach(([k, box]) => { box.innerHTML = ''; for (let i = 0; i < 5; i++) { const sl = mkEl('div', 'ax-slot'); sl.appendChild(mkEl('small', '', axLane(members, i))); sl.appendChild(mkEl('span')); box.appendChild(sl); slots[k].push(sl); } });
   const ORDER = ['B', 'R', 'R', 'B', 'B', 'R', 'R', 'B', 'B', 'R'], cnt = { B: 0, R: 0 };
   let left = members.map(m => m.name);
-  C.textContent = '?'; T.textContent = '30'; axMsg(P, '픽 준비'); await axSleep(300);
+  const D = document.getElementById('axDr'), K = document.getElementById('axDrK'), hasRole = !!(members[0] && members[0].role);
+  C.textContent = '?'; C.className = 'ax-cand'; T.textContent = '30'; axMsg(P, '픽 준비'); K.innerHTML = ''; D.classList.add('picking'); await axSleep(300);
   for (const side of ORDER) {
     if (!live()) return;
-    const idx = cnt[side]++, slot = slots[side][idx], who = members[(side === 'B' ? 0 : 5) + idx];
-    slot.classList.add('now'); axMsg(P, `${side === 'B' ? '🔵 블루' : '🔴 레드'} ${idx + 1}번째 픽`, side === 'B' ? '#7db8ff' : '#ff8a8a');
-    for (let t = 0; t < 9; t++) { if (!live()) return; C.textContent = left[Math.random() * left.length | 0]; T.textContent = String(Math.max(1, 30 - t * 3)).padStart(2, '0'); await axSleep(45 + t * 7); }
-    C.textContent = who.name; L.classList.add('hit'); await axSleep(200); L.classList.remove('hit');
-    slot.classList.remove('now'); slot.classList.add('lock'); slot.querySelector('span').textContent = who.name;
-    left = left.filter(n => n !== who.name); await axSleep(160);
+    const idx = cnt[side]++, slot = slots[side][idx], who = members[(side === 'B' ? 0 : 5) + idx], tc = side === 'B' ? 'b' : 'r';
+    // 이번 차례 라인을 크게: 칸 확대 + 금빛 테두리 + 빛 지나감, 가운데엔 '블루 · TOP 픽' 배지
+    slot.classList.add('now'); slot.querySelector('span').textContent = 'PICKING';
+    axMsg(P, `${side === 'B' ? '블루' : '레드'} ${idx + 1}번째 픽`, side === 'B' ? '#7db8ff' : '#ff8a8a');
+    K.innerHTML = ''; const badge = mkEl('div', `ax-pick ${tc} in`); if (hasRole) badge.appendChild(mkLaneIcon(ROLES[idx]));
+    badge.appendChild(mkEl('span', '', `${side === 'B' ? '블루' : '레드'} · ${axLane(members, idx)} 픽`)); K.appendChild(badge);
+    C.className = 'ax-cand ' + tc;
+    for (let t = 0; t < 10; t++) { if (!live()) return; C.textContent = left[Math.random() * left.length | 0]; T.textContent = String(Math.max(1, 30 - t * 3)).padStart(2, '0'); await axSleep(45 + t * 8); }
+    C.textContent = who.name; L.classList.add('hit'); await axSleep(220); L.classList.remove('hit');
+    slot.classList.remove('now'); slot.classList.add('lock', 'done'); slot.querySelector('span').textContent = who.name;
+    const ring = mkEl('div', 'ax-ring'); slot.appendChild(ring); setTimeout(() => ring.remove(), 600);
+    left = left.filter(n => n !== who.name); await axSleep(260);
   }
+  D.classList.remove('picking'); K.innerHTML = ''; C.className = 'ax-cand';
   axMsg(P, '✅ 픽 완료 · 게임 시작!', '#f0c45a'); T.textContent = '00'; C.textContent = 'GG';
   if (live()) setTimeout(onDone, 600);
 }
 
-// ④ 캡슐 뽑기 (캡슐은 모두 같은 모양 → 열려야 팀이 보여요)
-async function runGachaAnimation(members, onDone) {
-  const tk = _animToken, live = () => tk === _animToken;
-  const dome = document.getElementById('axDome'), knob = document.getElementById('axKnob'), cap = document.getElementById('axCap'), spark = document.getElementById('axSpark'),
-        msg = document.getElementById('axGcMsg'), B = document.getElementById('axGcB'), R = document.getElementById('axGcR');
-  B.innerHTML = ''; R.innerHTML = ''; axMsg(msg, '');
-  const SH = ['#ffb3d1', '#b8f0d8', '#ffe28a', '#c9b8ff', '#9fdcff'];
-  let left = 10;
-  const paint = () => {
-    dome.querySelectorAll('.ax-ball').forEach(b => b.remove());
-    for (let i = 0; i < left; i++) { const b = mkEl('div', 'ax-ball'); b.style.cssText = `--sh:${SH[i % 5]};left:${18 + (i % 4) * 36 + (Math.floor(i / 4) % 2) * 16}px;top:${124 - Math.floor(i / 4) * 32 + (i % 2) * 5}px`; dome.appendChild(b); }
-  };
-  paint(); await axSleep(250);
-  const order = shuffle(members.map((m, i) => i));
-  for (const who of order) {
-    if (!live()) return;
-    const blue = who < 5;
-    axMsg(msg, `🎟 ${members[who].name} 차례`, '#e3e7ef');
-    dome.classList.add('shake'); knob.classList.add('turn'); await axSleep(300); dome.classList.remove('shake'); knob.classList.remove('turn');
-    left--; paint();
-    cap.style.setProperty('--sh', SH[left % 5]); cap.className = 'ax-cap ' + (blue ? 'b' : 'r'); void cap.offsetWidth; cap.classList.add('show'); await axSleep(330); if (!live()) return;
-    cap.classList.add('wob'); await axSleep(220); cap.classList.remove('wob'); cap.classList.add('open');
-    spark.classList.remove('go'); void spark.offsetWidth; spark.classList.add('go'); await axSleep(220); if (!live()) return;
-    axMsg(msg, `${members[who].name} → ${blue ? '🔵 블루팀!' : '🔴 레드팀!'}`, blue ? '#7db8ff' : '#ff8a8a');
-    (blue ? B : R).appendChild(axChip(members[who].name, axLane(members, who)));
-    await axSleep(160); cap.className = 'ax-cap';
-  }
-  axMsg(msg, '✅ 팀 배정 완료!', '#f0c45a');
-  if (live()) setTimeout(onDone, 500);
-}
 
 // ── 공통 헬퍼 ──
 function mkEl(tag, cls, text) {
@@ -3936,9 +3889,9 @@ function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
   }
 
   if (mode === 'rand-flip') {
-    // 6가지 모션 중 랜덤: 배정 창을 연 뒤로는 아직 안 나온 모션부터 한 번씩,
+    // 5가지 모션 중 랜덤: 배정 창을 연 뒤로는 아직 안 나온 모션부터 한 번씩,
     // 모두 한 번씩 나온 뒤에는 그냥 랜덤 (단, 바로 직전 모션은 연속으로 안 나와요)
-    const ALL = ['flip', 'slot', 'shuffle', 'roulette', 'draft', 'gacha'];
+    const ALL = ['flip', 'slot', 'shuffle', 'roulette', 'draft'];
     const fresh = ALL.filter(m => !_randSeen.has(m));
     const cand = fresh.length ? fresh : ALL.filter(m => m !== _lastRandMode);
     const picked = cand[Math.floor(Math.random() * cand.length)];
@@ -3958,9 +3911,6 @@ function startAnim(mode, btnId, members, resEl, rerollFn, showScore) {
     } else if (picked === 'draft') {
       openModal('modalDraft', '▸ 밴픽 진행 중...');
       runDraftAnimation(members, done);
-    } else if (picked === 'gacha') {
-      openModal('modalGacha', '▸ 캡슐을 뽑는 중...');
-      runGachaAnimation(members, done);
     } else {
       openModal('modalShuffle', '▸ 이름표를 섞는 중...');
       runShuffleAnimation(members, done);
