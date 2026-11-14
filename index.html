@@ -3015,6 +3015,9 @@ function switchPage(id, btn, keepMode) {
   if (btn) btn.classList.add('active');
   const view = document.getElementById('view-' + id);
   if (view) view.classList.add('active');
+  // 다른 메뉴로 넘어가면 항상 맨 위부터 보여줘요 (보던 스크롤 위치를 이어가지 않게)
+  window.scrollTo(0, 0);
+  document.querySelectorAll('.main, .layout-main').forEach(el => { if (el.scrollTop) el.scrollTop = 0; });
   setTimeout(renderMembers, 50);
   setTimeout(carLayout, 30);
   if (typeof logVisit === 'function' && PAGE_NAME[id]) logVisit(PAGE_NAME[id]);
