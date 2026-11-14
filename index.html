@@ -2265,6 +2265,51 @@
     .ax-lock { margin-top: 10px; display: inline-block; padding: 7px 18px; border-radius: 8px; border: 1.5px solid var(--gold); color: var(--gold2); font: 800 .74rem 'Noto Sans KR', sans-serif; letter-spacing: 2px; transition: all .15s; }
     .ax-lock.hit { background: var(--gold); color: #1a1205; transform: scale(1.08); }
     @media (max-width: 500px) { .ax-dr { grid-template-columns: 1fr 1fr; } .ax-center { grid-column: 1 / -1; order: -1; } .ax-cand { height: 48px; } .ax-slot { height: 38px; font-size: .76rem; } }
+
+    /* ══ 팀 배정 결과 (팀 카드 2단 + 위 승률 막대) ══ */
+    #matchBoard.match-board { background: transparent; border: none; box-shadow: none; border-radius: 0; overflow: visible; margin-bottom: 0; }
+    .mx-meter { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; margin-bottom: 4px; }
+    .mx-pct { font: 700 2rem 'Rajdhani', 'Bebas Neue', sans-serif; line-height: 1; opacity: .7; min-width: 44px; }
+    .mx-pct small { display: block; font: 800 .62rem 'Noto Sans KR', sans-serif; letter-spacing: 2px; margin-bottom: 2px; opacity: .85; }
+    .mx-pct.b { color: #5aa9ff; } .mx-pct.r { color: #ff6b6b; text-align: right; } .mx-pct.win { opacity: 1; }
+    .mx-meter.none .mx-pct small { font-size: .78rem; margin: 0; }
+    .mx-bar { height: 10px; border-radius: 99px; background: #e84a4a; overflow: hidden; position: relative; }
+    .mx-bar i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, #2f7fe0, #5aa9ff); border-right: 2px solid var(--panel); transition: width .8s cubic-bezier(.2,.8,.2,1); }
+    .mx-sub { text-align: center; font-size: .72rem; color: var(--muted); margin: 6px 0 12px; }
+    .mx-sub b { color: var(--gold2); }
+    .mx-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mx-team { border-radius: 14px; padding: 12px; }
+    .mx-team.blue { background: linear-gradient(160deg, #1d3a66, #16243c 60%); border: 1px solid rgba(74,158,255,.45); }
+    .mx-team.red { background: linear-gradient(200deg, #5a1f2a, #2a1a22 60%); border: 1px solid rgba(255,90,90,.35); }
+    .mx-th { display: flex; align-items: baseline; justify-content: space-between; margin: 0 2px 8px; }
+    .mx-th span { font: 700 .82rem 'Rajdhani', sans-serif; letter-spacing: 3px; }
+    .mx-team.blue .mx-th span { color: #7db8ff; } .mx-team.red .mx-th span { color: #ff8a8a; }
+    .mx-th em { font-style: normal; font-size: .7rem; color: var(--gold2); font-weight: 700; }
+    .mx .mx-row { display: flex; align-items: center; gap: 9px; min-height: 42px; padding: 0 10px; margin: 0 0 6px; border: none; border-radius: 9px; background: rgba(0,0,0,.24);
+                  cursor: grab; animation: slideIn .35s ease both; touch-action: none; }
+    .mx .mx-row:last-child { margin-bottom: 0; }
+    #modalTeamsRow.no-anim .mx-row { animation: none; }
+    .mx-team.blue .mx-row:hover { background: rgba(74,158,255,.18); } .mx-team.red .mx-row:hover { background: rgba(255,90,90,.16); }
+    .mx-ln { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    .mx-ln small { font: 700 .62rem 'Rajdhani', sans-serif; letter-spacing: 1px; color: var(--muted); width: 24px; }
+    .mx-ln .ri { width: 17px; height: 17px; opacity: .9; }
+    .mx .pname-wrap { flex: 1; min-width: 0; display: flex; align-items: center; gap: 4px; justify-content: flex-start; text-align: left; }
+    .mx .pname { font-weight: 800; font-size: .92rem; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .mx .mb-score { flex-shrink: 0; }
+    .mx .mx-row.dragging { opacity: .5; } .mx .mx-row.drop-target { box-shadow: 0 0 0 2px var(--gold2); }
+    .mx .mx-row.swapped { animation: axPop .35s; }
+    #modalResultSection .modal-hint { font-size: .7rem; margin-bottom: 12px; }
+    #modalResultSection .modal-action-row { margin-top: 14px; }
+    #modalResultSection .btn-modal-reroll { background: var(--panel2); border-color: var(--border); color: #c3cad6; }       /* 다시 배정하기: 색 죽임 */
+    #modalResultSection .btn-modal-reroll:hover { background: #2a3448; border-color: #4a5a78; color: #fff; }
+    #modalResultSection .modal-copy-row { justify-content: center; margin: 10px 0 0; flex-wrap: wrap; gap: 6px; }
+    #modalResultSection .btn-copy { background: transparent; }
+    @media (max-width: 520px) {
+      .mx-cols { gap: 7px; } .mx-team { padding: 10px 7px; }
+      .mx-ln small { display: none; } .mx .mx-row { padding: 0 8px; gap: 7px; min-height: 40px; }
+      .mx .pname { font-size: .84rem; } .mx-pct { font-size: 1.75rem; }
+      .mx .mb-bar { display: none; }
+    }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -2710,13 +2755,17 @@
 
     <!-- 결과 섹션 (애니 완료 후 교체) -->
     <div class="modal-result-section" id="modalResultSection">
-      <div class="modal-hint">이름을 끌어서 다른 이름 위에 놓으면 서로 바뀌어요 (라인은 그대로). 바뀐 닉네임에는 🔄가 표시돼요</div>
+      <div class="modal-hint">이름을 끌어 다른 이름 위에 놓으면 서로 자리가 바뀌어요 (라인은 그대로 · 바뀐 이름엔 🔄)</div>
       <div class="match-board" id="matchBoard">
         <div class="pred" id="predBox"></div>
         <div class="modal-teams-row" id="modalTeamsRow"></div>
         <div class="mb-brand" id="mbBrand"><span class="bl"><i class="u">의</i><i class="p">P</i><i class="g">.GG</i></span></div>
       </div>
       <!-- 복사 버튼 -->
+      <div class="modal-action-row">
+        <button class="btn-modal-reroll" id="btnModalReroll">↺ 다시 배정하기</button>
+        <button class="btn-modal-close" onclick="closeModalAndReset()">✕ 닫기</button>
+      </div>
       <div class="modal-copy-row">
         <button class="btn-copy" id="btnModalRestore" onclick="restoreAssignment()" disabled>
           <span class="btn-copy-icon">↩</span> 배정 원복하기
@@ -2730,10 +2779,6 @@
         <button class="btn-copy btn-dc" id="btnDcTeam" onclick="sendTeamToDiscord()" style="display:none">
           <span class="btn-copy-icon">📣</span> 디스코드
         </button>
-      </div>
-      <div class="modal-action-row">
-        <button class="btn-modal-reroll" id="btnModalReroll">↺ 다시 배정하기</button>
-        <button class="btn-modal-close" onclick="closeModalAndReset()">✕ 닫기</button>
       </div>
     </div>
     <div class="am-logo"><span class="bl"><i class="u">의</i><i class="p">P</i><i class="g">.GG</i></span></div>
@@ -3642,7 +3687,7 @@ function captureResultBlob() {
         // 복제된 화면에서 등장 애니메이션을 꺼야 글자가 투명하게 찍히지 않아요
         const st = doc.createElement('style');
         st.textContent = '*{animation:none!important;transition:none!important}' +
-                         '#matchBoard{margin:0!important}#mbBrand{display:flex!important}';
+                         '#matchBoard{margin:0!important;padding:16px 16px 4px!important;background:#1a2130!important;border:1px solid #2c3850!important;border-radius:14px!important}#mbBrand{display:flex!important}';
         doc.head.appendChild(st);
         doc.querySelectorAll('#modalTeamsRow .role-row').forEach(r => r.classList.remove('dragging','drop-target','swapped'));
       }
@@ -3931,43 +3976,32 @@ function makeBoard(t1, t2, showScore) {
   try { pr = (typeof predictCurrent === 'function' && matches.length) ? predictCurrent() : null; } catch (e) { pr = null; }
   const ok = pr && pr.known >= 3;
   const pb = ok ? Math.round(pr.p * 100) : 50, prd = 100 - pb;
-  const head = (cls, ko) => {
-    const v = cls === 'blue' ? pb : prd, o = cls === 'blue' ? prd : pb;
-    return `
-    <div class="team-head banner mb-banner ${cls}">
-      <div class="side-left">
-        <div class="side-text"><span class="side-en">${cls === 'blue' ? 'BLUE SIDE' : 'RED SIDE'}</span><span class="side-ko">${ko}${showScore ? `<em>평균 ${avg(cls === 'blue' ? t1 : t2)}</em>` : ''}</span></div>
-      </div>
-      ${ok ? `<span class="mb-pct${v > o ? ' win' : ''}">${v}%</span>` : ''}
-    </div>`;
-  };
   const fav = !ok ? '' : Math.abs(pb - 50) < 4 ? '막상막하' : pb > 50 ? '블루팀 우세' : '레드팀 우세';
   const sub = !pr || !matches.length ? '' : ok
-    ? `🔮 승부 예측 · <b>${fav}</b> · 평균 전력 ${pr.a1.toFixed(1)} : ${pr.a2.toFixed(1)} · 기록 있는 소환사 ${pr.known}/10명 · ${MODE_NAME[pr.mode]} 전적${pr.mode === 'rift' ? '·라인 점수' : ''} 기준`
-    : `🔮 승부 예측 · 기록이 있는 소환사가 ${pr.known}/10명이라 아직 예측하기 어려워요`;
-  // 같은 라인끼리 한 줄로 (라인이 없으면 순서대로)
+    ? `🔮 <b>${fav}</b> · 기록 있는 소환사 ${pr.known}/10명`
+    : `🔮 기록이 있는 소환사가 ${pr.known}/10명이라 아직 예측하기 어려워요`;
+  const tip = ok ? `평균 전력 ${pr.a1.toFixed(1)} : ${pr.a2.toFixed(1)} · ${MODE_NAME[pr.mode]} 전적${pr.mode === 'rift' ? '·라인 점수' : ''} 기준` : '';
+  // 위: 큰 승률 숫자 + 막대 (예측이 없으면 숫자 대신 팀 이름만)
+  const meter = (ok ? `<div class="mx-meter">
+      <div class="mx-pct b${ok && pb >= prd ? ' win' : ''}"><small>BLUE</small>${ok ? pb + '%' : ''}</div>
+      <div class="mx-bar"><i style="width:${pb}%"></i></div>
+      <div class="mx-pct r${ok && prd > pb ? ' win' : ''}"><small>RED</small>${ok ? prd + '%' : ''}</div>
+    </div>` : '') + (sub ? `<div class="mx-sub" title="${tip}">${sub}</div>` : '<div style="height:4px"></div>');   // 예측이 없으면 막대는 숨겨요
   const hasRole = t1[0] && t1[0].role;
-  const order = hasRole ? ROLES.filter(r => t1.some(m => m.role === r) || t2.some(m => m.role === r)) : t1.map((_, i) => i);
-  const idxOf = (list, key, n) => hasRole ? list.findIndex(m => m.role === key) : n;
-  const cell = (cls, list, i) => {
-    const m = list[i];
-    if (!m) return `<div class="mb-cell ${cls} empty"></div>`;
-    const sc = showScore && m.score ? `<span class="mb-score"><span class="mb-bar"><i style="width:${m.score * 10}%"></i></span><b>${m.score}</b></span>` : '';
-    const sw = m.moved ? '<span class="swap-mark" title="자리가 바뀐 닉네임">🔄</span>' : '';
-    return `<div class="role-row mb-cell ${cls}" data-team="${cls}" data-idx="${i}">${sc}<span class="pname-wrap">${sw}<span class="pname">${escapeHtml(m.name)}</span></span></div>`;
-  };
-  const lines = order.map((key, n) => {
-    const bi = idxOf(t1, key, n), ri = idxOf(t2, key, n);
-    const lane = hasRole
-      ? `<img class="ri" src="${ICONS[key]}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'role-emoji-sm',textContent:'${ROLE_EMOJI[key]}'}))"><span class="rn">${key}</span>`
-      : `<span class="rn">${n + 1}</span>`;
-    return `<div class="mb-line" style="animation-delay:${n * 0.07}s">${cell('blue', t1, bi)}<div class="mb-lane">${lane}</div>${cell('red', t2, ri)}</div>`;
-  }).join('');
+  const card = (cls, list) => `<div class="mx-team ${cls}">
+      <div class="mx-th"><span>${cls === 'blue' ? 'BLUE SIDE' : 'RED SIDE'}</span>${showScore ? `<em>평균 ${avg(list)}</em>` : ''}</div>
+      ${list.map((m, i) => {
+        const lane = hasRole
+          ? `<span class="mx-ln"><small>${m.role}</small><img class="ri" src="${ICONS[m.role]}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'role-emoji-sm',textContent:'${ROLE_EMOJI[m.role]}'}))"></span>`
+          : `<span class="mx-ln"><small>${i + 1}</small></span>`;
+        const sc = showScore && m.score ? `<span class="mb-score"><span class="mb-bar"><i style="width:${m.score * 10}%"></i></span><b>${m.score}</b></span>` : '';
+        const sw = m.moved ? '<span class="swap-mark" title="자리가 바뀐 닉네임">🔄</span>' : '';
+        return `<div class="role-row mx-row ${cls}" data-team="${cls}" data-idx="${i}" style="animation-delay:${i * 0.06}s">${lane}<span class="pname-wrap"><span class="pname">${escapeHtml(m.name)}</span>${sw}</span>${sc}</div>`;
+      }).join('')}
+    </div>`;
   const b = document.createElement('div');
-  b.className = 'mb';
-  b.innerHTML = `<div class="mb-head">${head('blue', '블루팀')}<span class="mb-vs">VS</span>${head('red', '레드팀')}</div>` +
-    `<div class="mb-split"><i class="b" style="flex:${pb}"></i><i class="r" style="flex:${prd}"></i></div>` +
-    (sub ? `<div class="mb-sub">${sub}</div>` : '') + `<div class="mb-rows">${lines}</div>`;
+  b.className = 'mb mx';
+  b.innerHTML = meter + `<div class="mx-cols">${card('blue', t1)}${card('red', t2)}</div>`;
   return b;
 }
 
