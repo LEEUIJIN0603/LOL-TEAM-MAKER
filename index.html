@@ -2313,6 +2313,22 @@
       .mx .pname { font-size: .84rem; } .mx-pct { font-size: 1.75rem; }
       .mx .mb-bar { display: none; }
     }
+
+    /* 모바일 소환사 카드: 이름 헤더 줄 + 최근 승패 점 (배경 그림·최근 챔프 얼굴은 숨겨서 사람별로 또렷하게) */
+    .sm-hd { display: none; }
+    @media (max-width: 760px) {
+      .sm-grid { gap: 16px !important; }
+      .sm-card { background: #111826; border: 1px solid #2c3a52; }
+      .sm-card .sm-bg, .sm-card .sm-shade { display: none; }
+      .sm-hd { position: relative; display: flex; align-items: center; gap: 4px; padding: 10px 14px; background: linear-gradient(90deg, #22314c, #172033); border-bottom: 1px solid #2c3a52; }
+      .sm-hd b { font-size: 1.02rem; color: #fff; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .sm-hd small { color: #8d99ae; font-size: .7rem; flex-shrink: 0; }
+      .sm-dots { margin-left: auto; display: flex; gap: 4px; flex-shrink: 0; padding-left: 8px; }
+      .sm-dots i { width: 9px; height: 9px; border-radius: 50%; background: #e04848; } .sm-dots i.w { background: #3f8cff; }
+      .sm-card .sm-name { display: none; }
+      .sm-card .sm-recent { display: none; }
+      .sm-card .sm-top { align-items: center; }
+    }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -5232,6 +5248,8 @@ function renderSummoners() {
     return `<div class="sm-card" data-name="${escapeHtml(r.name)}" data-q="${escapeHtml(smKey(r.name + ' ' + (r.tag || '')))}" style="animation-delay:${Math.min(i, 12) * 0.04}s" onclick="openSummonerHist(${i})">
       <div class="sm-bg" style="background-image:url('${mainC ? splashOf(mainC) : ''}')"></div>
       <div class="sm-shade"></div>
+      <div class="sm-hd"><b>${escapeHtml(r.name)}</b><small>#${escapeHtml(r.tag)}</small>
+        <span class="sm-dots" title="최근 ${r.recent.length}경기 (파랑 승 · 빨강 패)">${r.recent.map(g => `<i class="${g.p.win ? 'w' : 'l'}"></i>`).join('')}</span></div>
       <div class="sm-in">
         <div class="sm-top">
           <div class="sm-ic" data-i="${escapeHtml(String(mainC).slice(0, 2))}" title="모스트: ${escapeHtml(ci.name)} ${r.main ? r.main[1].g + '판' : ''}">
