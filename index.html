@@ -3768,6 +3768,28 @@ function copyAsImage() {
     });
 }
 
+// ══ 휴대폰 '뒤로 가기'로 열린 창 닫기 ══
+// 창을 열 때 브라우저 기록을 한 칸 쌓아 두고, 뒤로 가기를 누르면 페이지 대신 그 창이 닫혀요.
+const _layers = [];
+let _layerSkip = 0;
+function layerOpen(id, closeFn) {
+  if (_layers.some(l => l.id === id)) return;
+  _layers.push({ id, closeFn });
+  try { history.pushState({ uipLayer: id }, ''); } catch (e) {}
+}
+function layerClose(id) {              // 화면의 ✕ 버튼 등으로 닫을 때: 쌓아 둔 기록도 같이 지워요
+  const i = _layers.findIndex(l => l.id === id);
+  if (i < 0) return;
+  const top = i === _layers.length - 1;
+  _layers.splice(i, 1);
+  if (top) { _layerSkip++; try { history.back(); } catch (e) { _layerSkip--; } }
+}
+window.addEventListener('popstate', () => {
+  if (_layerSkip > 0) { _layerSkip--; return; }
+  const l = _layers.pop();
+  if (l) l.closeFn();
+});
+
 function openModal(sectionId, title) {
   document.querySelectorAll('.modal-section').forEach(s => s.classList.remove('active'));
   document.getElementById(sectionId).classList.add('active');
@@ -3776,9 +3798,11 @@ function openModal(sectionId, title) {
   document.getElementById('animSkipBtn').style.display  = 'block';
   document.getElementById('modalResultSection').classList.remove('active');
   document.getElementById('animModal').classList.add('open');
+  layerOpen('assign', () => closeModal(true));
 }
 
-function closeModal() {
+function closeModal(keepLayer) {
+  if (!keepLayer) layerClose('assign');
   document.getElementById('animModal').classList.remove('open');
   _randSeen = new Set();                 // 창을 닫으면 '한 번씩 다 보기'를 처음부터
   _animSkipData = null;
@@ -3814,7 +3838,7 @@ function showResultInModal(t1, t2, rerollFn, showScore) {
 
   document.getElementById('btnModalReroll').onclick = () => {
     const seen = _randSeen;              // 다시 배정은 같은 창 안이라 '나온 모션' 기록을 이어가요
-    closeModal();
+    closeModal(true);
     _randSeen = seen;
     rerollFn();
   };
@@ -4775,8 +4799,9 @@ function showStreakHist(i) {
       <span class="hp-ch">${d.games.map(g => `<span class="hp-g ${g.p.win ? 'w' : 'l'}" title="${gameNo(g.m)}번째 판 · ${escapeHtml(champInfo(g.p.champ).name)} ${g.p.k}/${g.p.d}/${g.p.a} ${g.p.win ? '승' : '패'}">${champIcon(g.m, g.p.champ, 'sm')}</span>`).join('')}</span>
     </div>`).join('');
   pop.classList.add('open');
+  layerOpen('hist', () => closeStreakHist(true));
 }
-function closeStreakHist() { document.getElementById('histPop').classList.remove('open'); }          // '2026.11.03'
+function closeStreakHist(fromBack) { document.getElementById('histPop').classList.remove('open'); if (!fromBack) layerClose('hist'); }          // '2026.11.03'
 // 연승/연패는 '내전 날짜' 기준: 그날 승이 많으면 승, 패가 많으면 패, 같으면 무승부(연승·연패 계산에서 빼요)
 function calcStreaks() {
   const P = {};
