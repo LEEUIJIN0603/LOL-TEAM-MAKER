@@ -2329,6 +2329,22 @@
       .sm-card .sm-recent { display: none; }
       .sm-card .sm-top { align-items: center; }
     }
+
+    /* 소환사 카드: 칭호 설명 펼치기 · 칭호 없음 안내 · 상세 보기 버튼 */
+    .sm-card { cursor: default; }
+    .sm-a[data-d], .sm-tr[data-d] { cursor: pointer; }
+    .sm-a.on, .sm-tr.on { box-shadow: 0 0 0 2px rgba(240,196,90,.6); }
+    .sm-a.empty { color: #8d99ae; border: 1px dashed rgba(141,153,174,.55); background: transparent; }
+    .sm-tr.ln { width: auto; padding: 0 7px; font-size: .64rem; font-weight: 800; color: #cfd6e2; }
+    .sm-pop { position: relative; flex-basis: 100%; margin: 8px 0 2px; background: #0d1320; border: 1px solid #f0c45a; border-radius: 12px; padding: 10px 12px;
+              box-shadow: 0 8px 22px rgba(0,0,0,.5); font-size: .78rem; color: #cfd6e2; line-height: 1.5; animation: axPop .25s ease; }
+    .sm-pop b { display: block; color: #f0c45a; font-size: .86rem; margin-bottom: 2px; }
+    .sm-pop::before { content: ''; position: absolute; top: -7px; left: var(--ax, 30px); width: 12px; height: 12px; background: #0d1320; border-left: 1px solid #f0c45a; border-top: 1px solid #f0c45a; transform: rotate(45deg); }
+    .sm-in > .sm-pop { margin: 10px 0 0; }
+    .sm-detail { display: flex; align-items: center; justify-content: center; gap: 6px; width: calc(100% + 36px); margin: 12px -18px -14px; padding: 11px; border: none; border-top: 1px solid rgba(255,255,255,.1);
+                 background: rgba(255,255,255,.03); color: #aab4c5; font: 700 .8rem 'Noto Sans KR', sans-serif; cursor: pointer; position: relative; }
+    .sm-detail:hover { background: rgba(240,196,90,.08); color: var(--gold2); }
+    @media (max-width: 760px) { .sm-detail { width: calc(100% + 28px); margin: 12px -14px -14px; } }
     /* 디스코드 미리보기 창 */
     .dcp-wrap { position: fixed; inset: 0; z-index: 3000; background: rgba(5,9,16,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
     .dcp-box { width: min(640px, 100%); max-height: 92vh; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
@@ -2574,7 +2590,7 @@
       <span class="t-sub">칼바람 나락 · 증강 칼바람</span>
     </button>
   </div>
-  <div class="sm-head"><span class="rec-list-title">▸ 소환사 정보</span><span class="sm-sub">판수 많은 순 · 카드를 누르면 날짜별 전체 기록이 나와요</span></div>
+  <div class="sm-head"><span class="rec-list-title">▸ 소환사 정보</span><span class="sm-sub">판수 많은 순 · 칭호를 누르면 설명이, 상세 보기를 누르면 날짜별 전체 기록이 나와요</span></div>
   <div class="sm-search">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
     <input type="search" id="smQ" placeholder="소환사 이름 검색 (초성도 돼요 · 예: ㅎㄱㄷ)" autocomplete="off" spellcheck="false" oninput="smFilter()" onkeydown="if(event.key==='Escape'){this.value='';smFilter();}">
@@ -5238,14 +5254,14 @@ function renderSummoners() {
     const mainPos = Object.entries(r.pos).sort((a, b) => b[1] - a[1])[0];
     const traits = [];
     if (recMode === 'rift' && mainPos && ICONS[mainPos[0]])
-      traits.push(`<span class="sm-tr" title="주 라인: ${POS_KO[mainPos[0]]} (${mainPos[1]}판)"><img src="${ICONS[mainPos[0]]}" alt="" onerror="this.parentElement.remove()"></span>`);
-    SM_TRAITS.forEach(t => { if (top[t.key] && top[t.key].has(r.key)) traits.push(`<span class="sm-tr" title="${t.name} · ${t.desc}">${t.ico}</span>`); });
+      traits.push(`<span class="sm-tr ln" data-t="주 라인 · ${POS_KO[mainPos[0]]}" data-d="가장 많이 간 라인이에요 (${mainPos[1]}판)">${POS_KO[mainPos[0]]}</span>`);   // 그림 대신 글자 (일부 휴대폰에서 아이콘이 빈칸으로 보여서)
+    SM_TRAITS.forEach(t => { if (top[t.key] && top[t.key].has(r.key)) traits.push(`<span class="sm-tr" data-t="${t.ico} ${t.name}" data-d="${t.desc}">${t.ico}</span>`); });
     const ach = (titleMap[r.key] || []).map(t => [`${t.ico} ${t.name}`, t.desc + (titleBasis(t) ? ` (기준: ${titleBasis(t)})` : ''), true]).concat(summonerAchievements(r, totalDays));
     const achHtml = ach.length
-      ? ach.map(([t, d, isTitle], j) => `<span class="sm-a${isTitle ? ' title' : ''}${j >= 2 ? ' extra' : ''}" title="${escapeHtml(d)}">${escapeHtml(t)}</span>`).join('') +
-        (ach.length > 2 ? `<span class="sm-a more" title="${escapeHtml(ach.slice(2).map(a => a[0]).join(', '))}" onclick="event.stopPropagation(); this.parentElement.classList.add('all')">+${ach.length - 2}</span>` : '')
-      : '<span class="sm-none">아직 획득한 업적이 없어요</span>';
-    return `<div class="sm-card" data-name="${escapeHtml(r.name)}" data-q="${escapeHtml(smKey(r.name + ' ' + (r.tag || '')))}" style="animation-delay:${Math.min(i, 12) * 0.04}s" onclick="openSummonerHist(${i})">
+      ? ach.map(([t, d, isTitle], j) => `<span class="sm-a${isTitle ? ' title' : ''}${j >= 2 ? ' extra' : ''}" data-t="${escapeHtml(t)}" data-d="${escapeHtml(d)}">${escapeHtml(t)}</span>`).join('') +
+        (ach.length > 2 ? `<span class="sm-a more" onclick="event.stopPropagation(); this.parentElement.classList.add('all')">+${ach.length - 2}</span>` : '')
+      : '<span class="sm-a empty" data-t="아직 칭호가 없어요" data-d="판수가 쌓이면 학살자 · 시야 장인 같은 칭호(분야별 1등)나 MVP · 연승 · 멀티킬 같은 업적이 여기에 붙어요.">🏅 아직 칭호 없음 · 받는 방법 보기</span>';
+    return `<div class="sm-card" data-name="${escapeHtml(r.name)}" data-q="${escapeHtml(smKey(r.name + ' ' + (r.tag || '')))}" style="animation-delay:${Math.min(i, 12) * 0.04}s">
       <div class="sm-bg" style="background-image:url('${mainC ? splashOf(mainC) : ''}')"></div>
       <div class="sm-shade"></div>
       <div class="sm-hd"><b>${escapeHtml(r.name)}</b><small>#${escapeHtml(r.tag)}</small>
@@ -5278,6 +5294,7 @@ function renderSummoners() {
             return `<span class="sm-g ${g.p.win ? 'w' : 'l'}" data-i="${escapeHtml(String(g.p.champ).slice(0, 2))}" title="${fmtDate(g.m.date).slice(5, 10)}${' ' + gameNo(g.m) + '번째 판'} · ${escapeHtml(c.name)} ${g.p.k}/${g.p.d}/${g.p.a} · ${g.p.win ? '승리' : '패배'}"><img src="${DD_BASE}${ddVer(g.m)}/img/champion/${encodeURIComponent(c.id)}.png" alt="" loading="lazy" onerror="this.remove()"></span>`;
           }).join('')}</div>
         </div>
+        <button class="sm-detail" type="button" onclick="openSummonerHist(${i})">📊 전체 전적 상세 보기 ›</button>
       </div>
     </div>`;
   }).join('');
@@ -5329,6 +5346,21 @@ function renderSmMatches(name) {
   _hlName = '';
 }
 
+// 칭호 · 특성 아이콘을 누르면 그 아래에 설명이 펼쳐져요 (한 번 더 누르거나 다른 곳을 누르면 닫혀요)
+document.addEventListener('click', e => {
+  const pill = e.target.closest && e.target.closest('#smGrid .sm-a[data-d], #smGrid .sm-tr[data-d]');
+  const open = document.querySelector('#smGrid .sm-pop');
+  if (!pill) { if (open && !e.target.closest('.sm-pop')) { open._pill && open._pill.classList.remove('on'); open.remove(); } return; }
+  e.stopPropagation();
+  if (open) { const same = open._pill === pill; open._pill && open._pill.classList.remove('on'); open.remove(); if (same) return; }
+  const host = pill.closest('.sm-ach') || pill.closest('.sm-in');
+  const pop = mkEl('div', 'sm-pop');
+  pop.innerHTML = `<b>${pill.dataset.t}</b>${pill.dataset.d}`;
+  pop._pill = pill; pill.classList.add('on');
+  if (host.classList.contains('sm-ach')) host.appendChild(pop); else host.insertBefore(pop, host.querySelector('.sm-ach'));
+  const hb = host.getBoundingClientRect(), pb = pill.getBoundingClientRect();
+  pop.style.setProperty('--ax', Math.max(10, pb.left - hb.left + pb.width / 2 - 6) + 'px');
+});
 function openSummonerHist(i) {
   const r = _smList[i];
   if (!r) return;
